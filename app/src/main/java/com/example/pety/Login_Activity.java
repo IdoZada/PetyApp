@@ -1,5 +1,6 @@
 package com.example.pety;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -7,11 +8,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthSettings;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -102,8 +108,8 @@ public class Login_Activity extends AppCompatActivity {
 
         @Override
         public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-            theVerificationCompleted(phoneAuthCredential);
-
+            Log.d("test", "theVerificationCompleted: ");
+            signInWithPhoneAuthCredential(phoneAuthCredential);
         }
 
         @Override
@@ -116,10 +122,6 @@ public class Login_Activity extends AppCompatActivity {
         }
     };
 
-
-    private void theVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-        Log.d("test", "theVerificationCompleted: ");
-    }
 
     private void updateUI() {
         if(login_state == LOGIN_STATE.ENTERING_NUMBER){
@@ -134,6 +136,30 @@ public class Login_Activity extends AppCompatActivity {
             signUp_BTN_continue.setText(getString(R.string.login));
 
         }
+    }
+
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("test", "signInWithCredential:success");
+
+                            FirebaseUser user = task.getResult().getUser();
+                            // ...
+                        } else {
+                            // Sign in failed, display a message and update the UI
+                            Log.w("test", "signInWithCredential:failure", task.getException());
+                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                // The verification code entered was invalid
+                            }
+                        }
+                    }
+                });
     }
 
     private void initViews(){
