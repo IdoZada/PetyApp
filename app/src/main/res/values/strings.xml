@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">pety</string>
+    <string name="title_app" translatable="false">Pety</string>
+    <string name="phone_number" translatable="true">Phone number</string>
+    <string name="continue_" translatable="true">Continue</string>
+    <string name="enter_code" translatable="true">Enter Code</string>
+    <string name="login" translatable="true">Login</string>
+</resources>

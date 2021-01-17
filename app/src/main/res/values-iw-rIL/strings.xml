@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">pety</string>
+    <string name="phone_number">מספר טלפון</string>
+    <string name="continue_">המשך</string>
+    <string name="enter_code">הכנס קוד</string>
+    <string name="login">התחבר</string>
+</resources>
