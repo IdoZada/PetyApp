@@ -5,4 +5,6 @@
     <string name="continue_">המשך</string>
     <string name="enter_code">הכנס קוד</string>
     <string name="login">התחבר</string>
+    <string name="first_name">שם פרטי</string>
+    <string name="last_name">שם משפחה</string>
 </resources>

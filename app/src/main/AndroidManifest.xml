@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.pety">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Pety">
-        <activity android:name=".Login_Activity">
+        <activity android:name=".activities.Profile_Activity"></activity>
+        <activity android:name=".activities.Main_Activity" />
+        <activity android:name=".activities.Login_Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

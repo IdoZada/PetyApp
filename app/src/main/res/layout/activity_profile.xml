@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.Login_Activity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="100">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="15"
+            android:background="@drawable/gradient_background">
+
+            <TextView
+                android:layout_above="@id/main_IMG_dog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:layout_marginBottom="20dp"
+                android:textColor="@color/white"
+                android:text="Profile"
+                >
+
+            </TextView>
+
+
+            <ImageView
+                android:id="@+id/main_IMG_parrot"
+                android:layout_width="27dp"
+                android:layout_height="39dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_toLeftOf="@id/main_IMG_hamster"
+                android:src="@drawable/img_parrot"></ImageView>
+
+            <ImageView
+                android:id="@+id/main_IMG_hamster"
+                android:layout_width="40dp"
+                android:layout_height="45dp"
+                android:layout_alignParentBottom="true"
+
+                android:layout_centerInParent="true"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="1dp"
+                android:layout_toLeftOf="@id/main_IMG_dog"
+                android:src="@drawable/img_hamster"></ImageView>
+
+            <ImageView
+                android:id="@+id/main_IMG_dog"
+                android:layout_width="70dp"
+                android:layout_height="74dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="0dp"
+                android:src="@drawable/img_dog"></ImageView>
+
+            <ImageView
+                android:id="@+id/main_IMG_cat"
+                android:layout_width="39dp"
+                android:layout_height="45dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="1dp"
+                android:layout_marginBottom="2dp"
+                android:layout_toRightOf="@id/main_IMG_dog"
+                android:src="@drawable/img_cat"></ImageView>
+
+            <ImageView
+                android:id="@+id/main_IMG_rabbit"
+                android:layout_width="24dp"
+                android:layout_height="41dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="0dp"
+                android:layout_marginBottom="2dp"
+                android:layout_toRightOf="@id/main_IMG_cat"
+                android:src="@drawable/img_rabbit"></ImageView>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/profile_LAY_firstName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:padding="15dp"
+        android:hint="@string/first_name"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/profile_LAY_lastName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/profile_LAY_firstName"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:padding="15dp"
+        android:hint="@string/last_name"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/profile_BTN_continue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_marginTop="80dp"
+        android:layout_marginHorizontal="100dp"
+        android:layout_below="@id/profile_LAY_lastName"
+        android:text="@string/continue_"
+        app:cornerRadius="10dp"
+        app:strokeColor="@color/purple_500"
+        >
+    </com.google.android.material.button.MaterialButton>
+
+
+</RelativeLayout>

@@ -1,128 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Login_Activity">
+    tools:context=".activities.Main_Activity">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="100">
+        android:padding="16dp"
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="40"
-            android:background="@drawable/gradient_background">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/main_BTN_updateUser1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update User 1">
 
-            <TextView
-                android:layout_above="@id/main_IMG_dog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="60dp"
-                android:gravity="center"
-                android:layout_marginBottom="20dp"
-                android:textColor="@color/white"
-                android:text="@string/title_app"
-                >
+        </com.google.android.material.button.MaterialButton>
 
-            </TextView>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/main_BTN_updateUser2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update User 2">
+
+        </com.google.android.material.button.MaterialButton>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/main_BTN_newFamily"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update new Family">
+
+        </com.google.android.material.button.MaterialButton>
 
 
-            <ImageView
-                android:id="@+id/main_IMG_parrot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="0dp"
-                android:layout_toLeftOf="@id/main_IMG_hamster"
-                android:paddingRight="10dp"
-                android:paddingBottom="20dp"
-                android:src="@drawable/img_parrot"></ImageView>
 
-            <ImageView
-                android:id="@+id/main_IMG_hamster"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="0dp"
-                android:layout_toLeftOf="@id/main_IMG_dog"
-                android:paddingRight="10dp"
-                android:paddingBottom="10dp"
-                android:src="@drawable/img_hamster"></ImageView>
-
-            <ImageView
-                android:id="@+id/main_IMG_dog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="0dp"
-                android:src="@drawable/img_dog"></ImageView>
-
-            <ImageView
-                android:id="@+id/main_IMG_cat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@id/main_IMG_dog"
-                android:paddingLeft="10dp"
-                android:paddingBottom="10dp"
-                android:src="@drawable/img_cat"></ImageView>
-
-            <ImageView
-                android:id="@+id/main_IMG_rabbit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@id/main_IMG_cat"
-                android:paddingLeft="10dp"
-                android:paddingBottom="20dp"
-                android:src="@drawable/img_rabbit"></ImageView>
-
-        </RelativeLayout>
 
 
     </LinearLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/signUp_LAY_phone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:padding="15dp"
-        android:hint="@string/phone_number"
-        app:placeholderText="+972521234567"
-        >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="phone"
-            android:ems="10"
-            />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/signUp_BTN_continue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_marginTop="80dp"
-        android:layout_marginHorizontal="100dp"
-        android:layout_below="@id/signUp_LAY_phone"
-        android:text="@string/continue_"
-        app:cornerRadius="10dp"
-        app:strokeColor="@color/purple_500"
-        >
-    </com.google.android.material.button.MaterialButton>
-
 
 </RelativeLayout>

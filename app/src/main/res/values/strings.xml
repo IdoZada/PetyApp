@@ -5,4 +5,6 @@
     <string name="continue_" translatable="true">Continue</string>
     <string name="enter_code" translatable="true">Enter Code</string>
     <string name="login" translatable="true">Login</string>
+    <string name="first_name" translatable="true">First Name</string>
+    <string name="last_name" translatable="true">Last Name</string>
 </resources>

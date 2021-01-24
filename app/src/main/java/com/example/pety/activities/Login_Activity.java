@@ -1,13 +1,15 @@
-package com.example.pety;
+package com.example.pety.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.pety.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -21,6 +23,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,36 +34,40 @@ public class Login_Activity extends AppCompatActivity {
         ENTERING_NUMBER,
         ENTERING_CODE,
     }
-
-
+    
     MaterialButton signUp_BTN_continue;
     TextInputLayout signUp_LAY_phone;
     private String phoneInput = "";
-
     private LOGIN_STATE login_state = LOGIN_STATE.ENTERING_NUMBER;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
+        validateUser();
         findViews();
         initViews();
+    }
 
+    private void validateUser() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
+        if(firebaseUser != null){
+            Intent myIntent = new Intent(this,Main_Activity.class);
+            startActivity(myIntent);
+            finish();
+            return;
+        }
     }
 
     private void continueClicked() {
-
         if(login_state == LOGIN_STATE.ENTERING_NUMBER){
             startLoginProcess();
         }else if(login_state == LOGIN_STATE.ENTERING_CODE){
             codeEntered();
         }
-
-
-
-
     }
 
     private void codeEntered() {
@@ -77,9 +85,6 @@ public class Login_Activity extends AppCompatActivity {
                 .setCallbacks(onVerificationStateChangedCallbacks)
                 .build();
         PhoneAuthProvider.verifyPhoneNumber(options);
-
-
-
     }
 
     private void startLoginProcess() {
@@ -96,7 +101,6 @@ public class Login_Activity extends AppCompatActivity {
                 .build();
         PhoneAuthProvider.verifyPhoneNumber(options);
     }
-
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks onVerificationStateChangedCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
@@ -121,7 +125,6 @@ public class Login_Activity extends AppCompatActivity {
             updateUI();
         }
     };
-
 
     private void updateUI() {
         if(login_state == LOGIN_STATE.ENTERING_NUMBER){
@@ -150,7 +153,9 @@ public class Login_Activity extends AppCompatActivity {
                             Log.d("test", "signInWithCredential:success");
 
                             FirebaseUser user = task.getResult().getUser();
-                            // ...
+                            
+                            checkAndCreateUser(user);
+
                         } else {
                             // Sign in failed, display a message and update the UI
                             Log.w("test", "signInWithCredential:failure", task.getException());
@@ -161,6 +166,34 @@ public class Login_Activity extends AppCompatActivity {
                     }
                 });
     }
+
+    private void checkAndCreateUser(FirebaseUser firebaseUser) {
+        String user_id = firebaseUser.getUid();
+        String phone_number = firebaseUser.getPhoneNumber();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference userRef = database.getReference("users");
+        if(userRef.child(user_id).child("f_name") != null){
+            //TODO Move to Main Menu Activity
+            Intent myIntent = new Intent(this,Main_Activity.class);
+            startActivity(myIntent);
+            finish();
+            //return;
+        }else{
+            userRef.child(user_id);
+            userRef.child(user_id).child("phone_number").setValue(phone_number);
+        }
+    }
+
+//    private void createNewUser(FirebaseUser firebaseUser){
+//        String user_id = firebaseUser.getUid();
+//        String phone_number = firebaseUser.getPhoneNumber();
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference userRef = database.getReference("users");
+//        if(userRef.child(user_id).get() != null){
+//            userRef.child(user_id);
+//            userRef.child(user_id).setValue(phone_number);
+//        }
+//    }
 
     private void initViews(){
         signUp_BTN_continue.setOnClickListener(new View.OnClickListener() {
@@ -175,6 +208,4 @@ public class Login_Activity extends AppCompatActivity {
         signUp_BTN_continue = findViewById(R.id.signUp_BTN_continue);
         signUp_LAY_phone = findViewById(R.id.signUp_LAY_phone);
     }
-
-
 }
