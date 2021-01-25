@@ -43,30 +43,30 @@ public class Main_Activity extends AppCompatActivity {
         initViews();
 
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        String user_id = firebaseUser.getUid();
-        String phone_number = firebaseUser.getPhoneNumber();
-        String f_name = "Dani";
-        String l_name = "Mizrahi";
-
-        User user = new User(user_id,null,f_name,l_name,phone_number,"");
-        Pet pet = new Pet("p0001","Bony",new Date(), Type.Dog,"",null,null,null,null);
-        ArrayList<Walk> walks = new ArrayList<Walk>();
-        walks.add(new Walk("11:00",false));
-        pet.setWalks(walks);
-        Map<String, Pet> pets = new HashMap<>();
-        pets.put("p0001",pet);
-        Family f = new Family("f0001", pets, "Zada");
-
-        ArrayList<String> families_keys = new ArrayList<>();
-        families_keys.add("f0001");
-        user.setFamilies_keys(families_keys);
-        // Write a message to the database
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference userRef = database.getReference("users");
-        DatabaseReference familyRef = database.getReference("families");
-        userRef.child(user_id).setValue(user);
-        familyRef.child("f0001").setValue(f);
+//        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+//        String user_id = firebaseUser.getUid();
+//        String phone_number = firebaseUser.getPhoneNumber();
+//        String f_name = "D";
+//        String l_name = "M";
+//
+//        User user = new User(user_id,null,f_name,l_name,phone_number,"");
+//        Pet pet = new Pet("p0001","Bony",new Date(), Type.Dog,"",null,null,null,null);
+//        ArrayList<Walk> walks = new ArrayList<Walk>();
+//        walks.add(new Walk("11:00",false));
+//        pet.setWalks(walks);
+//        Map<String, Pet> pets = new HashMap<>();
+//        pets.put("p0001",pet);
+//        Family f = new Family("f0001", pets, "Zada");
+//
+//        ArrayList<String> families_keys = new ArrayList<>();
+//        families_keys.add("f0001");
+//        user.setFamilies_keys(families_keys);
+//        // Write a message to the database
+//        database = FirebaseDatabase.getInstance();
+//        DatabaseReference userRef = database.getReference("users");
+//        DatabaseReference familyRef = database.getReference("families");
+//        userRef.child(user_id).setValue(user);
+//        familyRef.child("f0001").setValue(f);
 
     }
 
