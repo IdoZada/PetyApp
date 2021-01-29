@@ -1,10 +1,8 @@
 package com.example.pety.objects;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class User {
-    private String user_id;
     private ArrayList<String> families_keys; //Each user contains a map for all families
     private String f_name;
     private String l_name;
@@ -15,20 +13,11 @@ public class User {
     }
 
     public User(String user_id, ArrayList<String> families_keys, String f_name, String l_name, String phone_number, String image_url) {
-        this.user_id = user_id;
         this.families_keys = families_keys;
         this.f_name = f_name;
         this.l_name = l_name;
         this.phone_number = phone_number;
         this.image_url = image_url;
-    }
-
-    public String getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
     }
 
     public ArrayList<String> getFamilies_keys() {

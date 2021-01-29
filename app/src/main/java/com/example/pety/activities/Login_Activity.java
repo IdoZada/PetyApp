@@ -59,8 +59,7 @@ public class Login_Activity extends AppCompatActivity {
      * This method check if user already registered
      */
     private void validateUser() {
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        FirebaseUser firebaseUser = firebaseDB.getFirebaseAuth().getCurrentUser();
 
         if (firebaseUser != null) {
             Log.d("ttst", "User Exist In The Firebase");
@@ -112,7 +111,7 @@ public class Login_Activity extends AppCompatActivity {
         Log.d("test", "phoneInput:" + phoneInput);
 
 
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = firebaseDB.getFirebaseAuth();
         PhoneAuthOptions options = PhoneAuthOptions.newBuilder(firebaseAuth)
                 .setPhoneNumber(phoneInput)
                 .setTimeout(60L, TimeUnit.SECONDS)
@@ -161,7 +160,6 @@ public class Login_Activity extends AppCompatActivity {
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-        //FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseAuth firebaseAuth = firebaseDB.getFirebaseAuth();
         firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

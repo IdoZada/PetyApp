@@ -1,6 +1,11 @@
 package com.example.pety.activities;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +19,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
+import java.util.List;
 
 public class Profile_Activity extends AppCompatActivity {
 
@@ -29,7 +38,6 @@ public class Profile_Activity extends AppCompatActivity {
 
         findViews();
         initViews();
-
     }
 
     private void initViews() {
@@ -46,8 +54,8 @@ public class Profile_Activity extends AppCompatActivity {
         String firstName = profile_LAY_firstName.getEditText().getText().toString();
         String LastName = profile_LAY_lastName.getEditText().getText().toString();
         //Update first name and last name in the firebase database
-        firebaseDB.updateFirstNameAndLastName(firstName,LastName);
-        Intent myIntent = new Intent(this,Main_Activity.class);
+        firebaseDB.updateFirstNameAndLastName(firstName, LastName);
+        Intent myIntent = new Intent(this, Main_Activity.class);
         startActivity(myIntent);
         finish();
         return;

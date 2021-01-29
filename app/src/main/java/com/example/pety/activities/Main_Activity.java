@@ -2,36 +2,47 @@ package com.example.pety.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.pety.R;
-import com.example.pety.objects.Family;
-import com.example.pety.objects.Pet;
-import com.example.pety.objects.Type;
-import com.example.pety.objects.User;
-import com.example.pety.objects.Walk;
-import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.pety.fragments.HomeFragment;
+import com.example.pety.fragments.PetFragment;
+import com.example.pety.objects.InsertDialog;
+import com.example.pety.utils.FirebaseDB;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+public class Main_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-public class Main_Activity extends AppCompatActivity {
-
-    private MaterialButton main_BTN_updateUser1;
-    private MaterialButton main_BTN_updateUser2;
-    private MaterialButton main_BTN_newFamily;
     FirebaseDatabase database;
+    FirebaseDB firebaseDB = FirebaseDB.getInstance();
+    DrawerLayout drawer_layout;
+    NavigationView nav_view;
+    BottomNavigationView bottomNavigationView;
+
+    Toolbar main_toolbar;
+    FloatingActionButton fab_button;
+
+    //Fragments
+    Fragment selectedFragment = null;
+    InsertDialog insertDialog;
+    HomeFragment homeFragment;
 
 
     @Override
@@ -41,6 +52,143 @@ public class Main_Activity extends AppCompatActivity {
 
         findViews();
         initViews();
+
+        nav_view.setNavigationItemSelectedListener(this);
+        setSupportActionBar(main_toolbar);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer_layout, main_toolbar,
+                R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        drawer_layout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        insertDialog = new InsertDialog();
+        homeFragment = new HomeFragment();
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+
+
+        String uid = firebaseDB.getFirebaseAuth().getCurrentUser().getUid();
+        DatabaseReference myRef =  firebaseDB.getDatabase().getReference("users");
+
+        //String userName = dataSnapshot.getValue(String.class);
+//        Log.d("ttttt", "onChildAdded:userName: " + userName);
+//        View headerView = nav_view.getHeaderView(0);
+//        TextView navUsername = headerView.findViewById(R.id.navMenuUserNameDisplay);
+//        navUsername.setText(userName);
+
+
+
+
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,homeFragment).commit();
+
+        fab_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                insertDialog.show(getSupportFragmentManager(),"Insert item");
+                insertDialog.setInsertDialogInterface(insert_dialogInterface);
+            }
+        });
+
+
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                    toolbarFragment).commit();
+//            nav_view.setCheckedItem(R.id.nav_family);
+//        }
+        //final FloatingActionButton fab = findViewById(R.id.fab_main);
+
+        //setSupportActionBar(toolbar);
+//        itemData = new ArrayList<>();
+//        recyclerView.setHasFixedSize(true);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+//
+//
+//        itemAdapter = new ItemAdapter(itemData,this);
+//
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//        recyclerView.setAdapter(itemAdapter);
+
+    }
+
+    private InsertDialog.insert_DialogInterface insert_dialogInterface = new InsertDialog.insert_DialogInterface() {
+        @Override
+        public void applyTexts(String familyName) {
+            Log.d("ttttt", "familyName: "+ familyName);
+            homeFragment.setItem(familyName);
+        }
+    };
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+            switch(item.getItemId()){
+                case R.id.nav_home:
+                        fab_button.setVisibility(View.VISIBLE);
+                        selectedFragment = homeFragment;
+                    break;
+                case R.id.nav_pets:
+//                        selectedFragment = new PetFragment();
+//                        fab_button.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.nav_info:
+                        fab_button.setVisibility(View.INVISIBLE);
+                    break;
+
+            }
+
+            if(selectedFragment != null){
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectedFragment).commit();
+            }
+            return true;
+        }
+    };
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+////        MenuInflater menuInflater = getMenuInflater();
+////        menuInflater.inflate(R.menu.item_menu,menu);
+//        return true;
+//    }
+
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()){
+//            case R.id.iconInsert: {
+//                InsertDialog dialog = new InsertDialog();
+//                dialog.show(getSupportFragmentManager(),"Insert Item");
+//            }
+//
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+
+    private void initViews() {
+
+    }
+
+    private void findViews() {
+        fab_button = findViewById(R.id.fab_button);
+        main_toolbar = findViewById(R.id.main_toolbar);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        drawer_layout = findViewById(R.id.drawer_layout);
+        nav_view = findViewById(R.id.nav_view);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
+
+//    @Override
+//    public void applyTexts(String familyName) {
+//        Family family = new Family(R.drawable.ic_baseline_android_24,UUID.randomUUID(),null,familyName);
+//        Log.d("ttst", "applyTexts: " + family.getF_name() + " UUID: " + family.getFamily_id());
+//        itemData.add(0,family);
+//        itemAdapter.notifyItemInserted(0);
+//    }
+}
 
 
 //        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -67,37 +215,3 @@ public class Main_Activity extends AppCompatActivity {
 //        DatabaseReference familyRef = database.getReference("families");
 //        userRef.child(user_id).setValue(user);
 //        familyRef.child("f0001").setValue(f);
-
-    }
-
-    private void updateUser() {
-
-    }
-
-    private void updateFamily() {
-    }
-
-    private void initViews() {
-
-        main_BTN_updateUser1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateUser();
-            }
-        });
-
-
-        main_BTN_updateUser1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateFamily();
-            }
-        });
-    }
-
-    private void findViews() {
-        main_BTN_updateUser1 = findViewById(R.id.main_BTN_updateUser1);
-        main_BTN_updateUser2 = findViewById(R.id.main_BTN_updateUser2);
-        main_BTN_newFamily = findViewById(R.id.main_BTN_newFamily);
-    }
-}
