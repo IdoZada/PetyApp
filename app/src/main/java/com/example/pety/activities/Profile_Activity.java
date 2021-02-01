@@ -1,28 +1,17 @@
 package com.example.pety.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import com.example.pety.R;
+import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
+import com.example.pety.utils.MySP;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
-import java.util.List;
 
 public class Profile_Activity extends AppCompatActivity {
 
@@ -30,6 +19,7 @@ public class Profile_Activity extends AppCompatActivity {
     TextInputLayout profile_LAY_lastName;
     MaterialButton profile_BTN_continue;
     FirebaseDB firebaseDB = FirebaseDB.getInstance();
+    MySP mySP = MySP.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +43,10 @@ public class Profile_Activity extends AppCompatActivity {
     private void updateUserProfile() {
         String firstName = profile_LAY_firstName.getEditText().getText().toString();
         String LastName = profile_LAY_lastName.getEditText().getText().toString();
+        User user =  mySP.readDataFromStorage();
+        user.setF_name(firstName);
+        user.setL_name(LastName);
+        mySP.writeDataToStorage(user);
         //Update first name and last name in the firebase database
         firebaseDB.updateFirstNameAndLastName(firstName, LastName);
         Intent myIntent = new Intent(this, Main_Activity.class);

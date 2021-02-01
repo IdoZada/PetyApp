@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pety.R;
 import com.example.pety.objects.Family;
-import com.example.pety.objects.itemData;
 
 import java.util.ArrayList;
 
@@ -43,13 +41,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_row,parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_family,parent,false);
         return new ViewHolder(view , mListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.txtLine1.setText(mArrayList.get(position).getF_name());
+        holder.family_item_title.setText(mArrayList.get(position).getF_name());
+        //holder.family_item_img.setImageURI(mArrayList.get(position).getImageUri());
     }
 
     @Override
@@ -58,11 +57,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView txtLine1;
+        private TextView family_item_title;
+        private ImageView family_item_img;
 
         public ViewHolder(@NonNull View itemView, OnItemClickListener mListener) {
             super(itemView);
-            txtLine1 = itemView.findViewById(R.id.txtline1);
+            family_item_title = itemView.findViewById(R.id.family_item_title);
+            family_item_img = itemView.findViewById(R.id.family_item_img);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -8,25 +8,31 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.example.pety.R;
+import com.example.pety.fragments.FamilyFragment;
 import com.example.pety.fragments.HomeFragment;
 import com.example.pety.fragments.PetFragment;
+import com.example.pety.objects.Family;
 import com.example.pety.objects.InsertDialog;
+import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
+import com.example.pety.utils.MySP;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 public class Main_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -39,19 +45,32 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
     Toolbar main_toolbar;
     FloatingActionButton fab_button;
 
+    User currentUser;
+
+    //My shared preference singleton class
+    MySP mySP;
+
     //Fragments
     Fragment selectedFragment = null;
     InsertDialog insertDialog;
     HomeFragment homeFragment;
+    PetFragment petFragment;
+    FamilyFragment familyFragment;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MySP.initialize(Main_Activity.this);
+
 
         findViews();
         initViews();
+
+        insertDialog = new InsertDialog();
+        homeFragment = new HomeFragment();
+        petFragment = new PetFragment();
 
         nav_view.setNavigationItemSelectedListener(this);
         setSupportActionBar(main_toolbar);
@@ -61,14 +80,13 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         drawer_layout.addDrawerListener(toggle);
         toggle.syncState();
 
-        insertDialog = new InsertDialog();
-        homeFragment = new HomeFragment();
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
 
-        String uid = firebaseDB.getFirebaseAuth().getCurrentUser().getUid();
-        DatabaseReference myRef =  firebaseDB.getDatabase().getReference("users");
+//        String uid = firebaseDB.getFirebaseAuth().getCurrentUser().getUid();
+//        DatabaseReference myRef =  firebaseDB.getDatabase().getReference("users");
 
         //String userName = dataSnapshot.getValue(String.class);
 //        Log.d("ttttt", "onChildAdded:userName: " + userName);
@@ -76,11 +94,20 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
 //        TextView navUsername = headerView.findViewById(R.id.navMenuUserNameDisplay);
 //        navUsername.setText(userName);
 
-
-
-
+        firebaseDB.retrieveUserDataFromDB();
+        currentUser = getCurrentUser();
+//        Log.d("ttttt", currentUser.toString());
+        familyFragment = new FamilyFragment(this);
+//        ArrayList<Family> families = MySP.getInstance().readFamiliesFromStorage();
+//        Log.d("tttttt", "main " + families);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,homeFragment).commit();
+
+        if(currentUser.getFamilies_keys().size() == 0){
+            insertDialog.show(getSupportFragmentManager(),"Insert item");
+            insertDialog.setInsertDialogInterface(insert_dialogInterface);
+        }
+
 
         fab_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,11 +138,18 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
 
     }
 
+
+   private User getCurrentUser(){
+        mySP = MySP.getInstance();
+       return mySP.readDataFromStorage();
+   }
+
+
     private InsertDialog.insert_DialogInterface insert_dialogInterface = new InsertDialog.insert_DialogInterface() {
         @Override
         public void applyTexts(String familyName) {
             Log.d("ttttt", "familyName: "+ familyName);
-            homeFragment.setItem(familyName);
+            familyFragment.setItem(familyName);
         }
     };
 
@@ -128,7 +162,13 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
                         fab_button.setVisibility(View.VISIBLE);
                         selectedFragment = homeFragment;
                     break;
-                case R.id.nav_pets:
+                case R.id.nav_my_families:
+                        selectedFragment = familyFragment;
+//                        fab_button.setVisibility(View.VISIBLE);
+                    Log.d("ttttt", "nav_my_families ");
+                    break;
+                case R.id.nav_share_families:
+                    Log.d("ttttt", "nav_share_families ");
 //                        selectedFragment = new PetFragment();
 //                        fab_button.setVisibility(View.VISIBLE);
                     break;

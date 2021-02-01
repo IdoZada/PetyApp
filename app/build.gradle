@@ -44,9 +44,20 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-database'
 
+    //Dependency for the Cloud Storage library
+    implementation 'com.google.firebase:firebase-storage'
+
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
 
 
+    //Gson object
+    implementation 'com.google.code.gson:gson:2.8.6'
+
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+
+//    //ImagePicker library
+//    implementation 'com.github.dhaval2404:imagepicker-support:1.7.1'
+    implementation 'com.github.dhaval2404:imagepicker:1.8'
+
 }

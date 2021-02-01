@@ -27,9 +27,9 @@ public class HomeFragment extends Fragment  {
 
     RecyclerView recyclerView;
     //FloatingActionButton fab_button;
-    ArrayList<Family> itemData = new ArrayList<>();
+    //ArrayList<Family> itemData = new ArrayList<>();
     FirebaseDatabase database;
-    ItemAdapter itemAdapter;
+    //ItemAdapter itemAdapter;
     View view;
 
 
@@ -38,14 +38,14 @@ public class HomeFragment extends Fragment  {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
         findViews(view);
-
-
-        itemAdapter = new ItemAdapter(itemData, getContext());
-        itemAdapter.setOnItemClickListener(position -> {
-            Log.d("ttttt", "onCreateView: ffffff");
-        });
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(itemAdapter);
+//
+//
+//        itemAdapter = new ItemAdapter(itemData, getContext());
+//        itemAdapter.setOnItemClickListener(position -> {
+//            Log.d("ttttt", "onCreateView: ffffff");
+//        });
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        recyclerView.setAdapter(itemAdapter);
         return view;
     }
 
@@ -58,11 +58,11 @@ public class HomeFragment extends Fragment  {
 //    }
 
 
-    public void setItem(String familyName){
-        Family family = new Family(R.drawable.ic_baseline_android_24, UUID.randomUUID(),null,familyName);
-        itemData.add(0,family);
-        itemAdapter.notifyItemInserted(0);
-    }
+//    public void setItem(String familyName){
+//        Family family = new Family(R.drawable.ic_baseline_android_24, UUID.randomUUID(),null,familyName);
+//        itemData.add(0,family);
+//        itemAdapter.notifyItemInserted(0);
+//    }
 
     private void findViews(View view) {
         recyclerView = view.findViewById(R.id.recyclerView);

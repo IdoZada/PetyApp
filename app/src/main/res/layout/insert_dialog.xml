@@ -6,10 +6,24 @@
     android:padding="16dp"
     >
 
+
+<!--    <de.hdodenhof.circleimageview.CircleImageView-->
+<!--        android:id="@+id/insertDialog_family_img"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:src="@drawable/ic_my_families"-->
+<!--        >-->
+
+<!--    </de.hdodenhof.circleimageview.CircleImageView>-->
+
+    <include android:id="@+id/dialog_family_person" layout="@layout/content_profile"></include>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/insertDialog_LAY_familyName1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/dialog_family_person"
+
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:padding="15dp"
         android:hint="Family name"

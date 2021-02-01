@@ -10,7 +10,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.pety.R;
+import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
+import com.example.pety.utils.MySP;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -27,7 +29,6 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
@@ -202,6 +203,13 @@ public class Login_Activity extends AppCompatActivity {
                     //write an entry to your user table
                     //writeUserEntryToDB();
                     firebaseDB.addNewUserProfile(user_id,phone_number);
+                    User user = new User("","",phone_number,"");
+
+                    //Write the data of user to shared preference memory
+                    MySP.initialize(Login_Activity.this);
+                    MySP mySP = MySP.getInstance();
+                    mySP.writeDataToStorage(user);
+
 //                    userRef.child(user_id);
 //                    userRef.child(user_id).child("phone_number").setValue(phone_number);
                     Log.d("ttst", "onDataChange:  It is new users");

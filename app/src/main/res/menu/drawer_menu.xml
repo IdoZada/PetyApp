@@ -14,7 +14,7 @@
             android:title="Pets" />
         <item
             android:id="@+id/nav_share"
-            android:icon="@drawable/ic_share_family"
+            android:icon="@drawable/ic_share_families"
             android:title="Share My Family" />
 
 

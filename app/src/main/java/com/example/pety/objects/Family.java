@@ -7,26 +7,34 @@ import java.util.UUID;
 public class Family {
     public static final String FAMILY_ID = "f_";
     private String family_id;
-    private Map<String,Pet> pets;
     private String f_name;
-    private int mImage;
+    private String imageURL;
+    private Map<String,Pet> pets = new HashMap<>();
 
     public Family() {
     }
 
-    public Family(int mImage, UUID uuid, Map<String, Pet> pets, String f_name) {
+    public Family(String imageURL, UUID uuid, String f_name) {
         this.family_id = FAMILY_ID + uuid.toString();
-        this.pets = pets;
         this.f_name = f_name;
-        this.mImage = mImage;
+        this.imageURL = imageURL;
     }
 
-    public int getmImage() {
-        return mImage;
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("family_id", family_id);
+        result.put("f_name", f_name);
+        result.put("imageURL", imageURL);
+        result.put("pets", pets);
+        return result;
     }
 
-    public void setmImage(int mImage) {
-        this.mImage = mImage;
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     public String getFamily_id() {
