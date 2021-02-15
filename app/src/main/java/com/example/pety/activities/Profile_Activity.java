@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-
 import com.example.pety.R;
 import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
@@ -30,16 +29,6 @@ public class Profile_Activity extends AppCompatActivity {
         initViews();
     }
 
-    private void initViews() {
-
-        profile_BTN_continue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateUserProfile();
-            }
-        });
-    }
-
     private void updateUserProfile() {
         String firstName = profile_LAY_firstName.getEditText().getText().toString();
         String LastName = profile_LAY_lastName.getEditText().getText().toString();
@@ -53,6 +42,15 @@ public class Profile_Activity extends AppCompatActivity {
         startActivity(myIntent);
         finish();
         return;
+    }
+
+    private void initViews() {
+        profile_BTN_continue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateUserProfile();
+            }
+        });
     }
 
     private void findViews() {

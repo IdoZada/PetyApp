@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "521966620397",
-    "project_id": "petiapp-5931a",
-    "storage_bucket": "petiapp-5931a.appspot.com"
+    "project_number": "218839136885",
+    "project_id": "pety-47235",
+    "storage_bucket": "pety-47235.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:521966620397:android:6700d9ecb917f3dab106e4",
+        "mobilesdk_app_id": "1:218839136885:android:4299a6926d0d29acb3d63c",
         "android_client_info": {
           "package_name": "com.example.pety"
         }
       },
       "oauth_client": [
         {
-          "client_id": "521966620397-7m7j8j6p1t9tuph9h46ehcj45p2jre2t.apps.googleusercontent.com",
+          "client_id": "218839136885-aog97n2rt918i5r7hlel9khb4t0k8neg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBYMgd3HiiaF5fNdGlU0cfsxILhvRCBVoA"
+          "current_key": "AIzaSyB_FkqkeEwkupx19F3ZUh7mR1NbZfirdUQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "521966620397-7m7j8j6p1t9tuph9h46ehcj45p2jre2t.apps.googleusercontent.com",
+              "client_id": "218839136885-aog97n2rt918i5r7hlel9khb4t0k8neg.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

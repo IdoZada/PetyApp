@@ -1,12 +1,15 @@
 package com.example.pety.utils;
 
+import android.net.Uri;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.example.pety.objects.Family;
 import com.example.pety.objects.Pet;
 import com.example.pety.objects.User;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -15,32 +18,30 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//import com.google.firebase.storage.StorageReference;
 
 
 public class FirebaseDB {
     private static final String TAG = "RealTimeDatabase";
-    private FirebaseAuth authDatabase;
-    private FirebaseDatabase database;
-    private FirebaseUser firebaseUser;
-    private static FirebaseDB firebaseDB;
-    private FirebaseStorage storage;
-
     public static final String USERS = "users";
     public static final String FIRST_NAME = "f_name";
     public static final String LAST_NAME = "l_name";
     public static final String PHONE_NUMBER = "phone_number";
-
     public static final String FAMILIES = "families";
     public static final String PETS = "pets";
 
-
+    private FirebaseAuth authDatabase;
+    private FirebaseDatabase database;
+    private static FirebaseDB firebaseDB;
+    private FirebaseStorage storage;
+    Family family;
 
     private FirebaseDB() {
         database = FirebaseDatabase.getInstance();
@@ -89,7 +90,6 @@ public class FirebaseDB {
         userRef.child(uid).child(LAST_NAME).setValue(LastName);
     }
 
-
     public void retrieveUserDataFromDB(){
         User user = new User();
         String uid = getFirebaseAuth().getCurrentUser().getUid();
@@ -108,6 +108,7 @@ public class FirebaseDB {
                 user.setF_name(firstName);
                 user.setL_name(lastName);
                 user.setPhone_number(phoneNumber);
+                Log.d("ttttt", "onDataChange: " + user.toString());
                 MySP.getInstance().writeDataToStorage(user);
             }
 
@@ -122,29 +123,24 @@ public class FirebaseDB {
     public void retrieveAllFamilies(List<String> families_keys , ArrayList<Family> families){
         DatabaseReference myFamilies = getDatabase().getReference().child(FAMILIES);
         int i;
+
         for(i = 0 ; i < families_keys.size(); i++){
             int finalI = i;
             myFamilies.child(families_keys.get(i)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                     Map<String , Pet> pets;
-                    Family family = new Family();
+                    family = new Family();
                     String familyName = snapshot.child("f_name").getValue().toString();
-                    String family_id = snapshot.child("family_id").getValue().toString();
-                    String imageURL = snapshot.child("imageURL").getValue().toString();
+                    String familyImagePath = snapshot.child("imageURL").getValue().toString();
                     if(snapshot.hasChild("pets")){
                         pets = (Map<String, Pet>) snapshot.child("pets").getValue();
                         family.setPets(pets);
                     }
                     family.setF_name(familyName);
-                    family.setFamily_id(family_id);
-                    family.setImageURL(imageURL);
+                    family.setImageUrl(familyImagePath);
                     families.add(family);
-//                    if(finalI == families_keys.size() - 1){
-//                        Log.d("tttttt", "onDataChange: " + families.toString());
-//                        MySP.getInstance().writeFamiliesToStorage(families);
-//                    }
-
                 }
 
                 @Override
@@ -154,89 +150,40 @@ public class FirebaseDB {
             });
         }
     }
-//    public String getFirstNameFromDB(){
-//        String uid = getFirebaseAuth().getCurrentUser().getUid();
-//        String firstName = getDatabase().getReference(USERS).child(uid).child("firstName").
-//        return firstName;
-//    }
 
     /**
      * This function store in the database new family
      * @param family
      */
-    public void writeNewFamilyToDB(Family family , List<String> families){
-        String key = getDatabase().getReference().child(FAMILIES).push().getKey();
-        Map<String, Object> familyValues = family.toMap();
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/" + FAMILIES + "/" + key, familyValues);
-        getDatabase().getReference().updateChildren(childUpdates);
+    public void writeNewFamilyToDB(Family family , List<String> families , String imageName , Uri contentUri){
+        final StorageReference image = getFirebaseStorage().getReference().child("pictures/"+ FAMILIES +"/" + imageName);
+        image.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        family.setImageUrl(uri.toString());
 
+                        String key = getDatabase().getReference().child(FAMILIES).push().getKey();
+                        Map<String, Object> familyValues = family.toMap();
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        childUpdates.put("/" + FAMILIES + "/" + key, familyValues);
+                        getDatabase().getReference().updateChildren(childUpdates);
 
-        String uid = getFirebaseAuth().getCurrentUser().getUid();
-        families.add(key);
-        //Map<String, Object> childUpdatesFamily = new HashMap<>();
-        childUpdates.put("/" + USERS + "/" + uid + "/" + FAMILIES + "/", families);
-        getDatabase().getReference().updateChildren(childUpdates);
+                        String uid = getFirebaseAuth().getCurrentUser().getUid();
+                        families.add(key);
+                        childUpdates.put("/" + USERS + "/" + uid + "/" + FAMILIES + "/", families);
+                        getDatabase().getReference().updateChildren(childUpdates);
+                    }
+                    });
+                Log.d("TAG", "onSuccess: Upload family successfully");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("TAG", "onFailure: Upload family failed");
+            }
+        });
     }
-
-//    public void writeFamilyKeyToUser(List<String> families, String key){
-//        String uid = getFirebaseAuth().getCurrentUser().getUid();
-//        families.add(key);
-//        Map<String, Object> childUpdates = new HashMap<>();
-//        childUpdates.put("/users/" + uid + "/families/", families);
-//        getDatabase().getReference().updateChildren(childUpdates);
-//    }
-
-    public void readFamiliesFromDB(){
-
-    }
-
-    public void addNewPet(String family_id,String petName){
-
-    }
-
-//    public void updateField(String docId, String path, String field, String newValue) {
-//        getDatabase().collection(path).document(docId).update(field, newValue);
-//    }
-//
-//
-//    public void updateListField(String docId, String path, String field, String newValue) {
-//        getDatabase().collection(path).document(docId).update(field, FieldValue.arrayUnion(newValue));
-//    }
-//
-//    public void removeListField(String docId, String path, String field, String newValue) {
-//        getDatabase().collection(path).document(docId).update(field, FieldValue.arrayRemove(newValue));
-//    }
-//
-//    public void writeSocialMediaSetting(String userId, SocialMedia socialMedia) {
-//        getDatabase()
-//                .collection(FireStoreDatabase.SOCIAL_MEDIA_STORAGE)
-//                .document(userId).set(socialMedia)
-//                .addOnSuccessListener(aVoid -> Log.d(TAG, "Social media has been write to storage successfully! "))
-//                .addOnFailureListener(e -> Log.d(TAG, "Failed to upload social media object! "));
-//    }
-//
-//    public void writeUserSetting(String userId, StudentSetting studentSetting) {
-//        getDatabase()
-//                .collection(FireStoreDatabase.SETTING_STORAGE)
-//                .document(userId).set(studentSetting)
-//                .addOnSuccessListener(aVoid -> Log.d(TAG, "Setting has been write to storage successfully! "))
-//                .addOnFailureListener(e -> Log.d(TAG, "Failed to upload user's setting! "));
-//    }
-//
-//    public void getUserImageFromDatabase(Student student) {
-//        if (!student.getUri().matches("")) {
-//            StorageReference storageReference = fireStoreDatabase.getStorageDatabase().getReference().child((student.getEmail()));
-//            storageReference.getDownloadUrl().addOnCompleteListener(task -> {
-//                if (task.isSuccessful() && task.getResult() != null) {
-//                    student.setUri(task.getResult().toString());
-//                }
-//            }).addOnFailureListener(e -> Log.d(TAG, "getImageFromDatabase: " + "Download image failed"));
-//        }
-//
-//    }
-    public String encodeDot(String caller) {
-        return caller.replace('.', ':');
-    }
-
 }

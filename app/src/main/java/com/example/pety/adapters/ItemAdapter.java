@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.pety.R;
 import com.example.pety.objects.Family;
 
@@ -48,7 +49,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.family_item_title.setText(mArrayList.get(position).getF_name());
-        //holder.family_item_img.setImageURI(mArrayList.get(position).getImageUri());
+        Glide.with(mContext).load(mArrayList.get(position).getImageUrl()).into(holder.family_item_img);
     }
 
     @Override
@@ -69,7 +70,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
                 public void onClick(View v) {
                     if(mListener != null){
                         int position = getAdapterPosition();
-                        Log.d("ttttt", "onClick: position:" + position );
+                        Log.d("TAG", "onClick: ViewHolder position:" + position );
                     }
                 }
             });
