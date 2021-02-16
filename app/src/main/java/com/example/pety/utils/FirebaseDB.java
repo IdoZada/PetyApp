@@ -132,12 +132,14 @@ public class FirebaseDB {
 
                     Map<String , Pet> pets;
                     family = new Family();
+                    String family_key = snapshot.child("family_key").getValue().toString();
                     String familyName = snapshot.child("f_name").getValue().toString();
                     String familyImagePath = snapshot.child("imageURL").getValue().toString();
                     if(snapshot.hasChild("pets")){
                         pets = (Map<String, Pet>) snapshot.child("pets").getValue();
                         family.setPets(pets);
                     }
+                    family.setFamily_key(family_key);
                     family.setF_name(familyName);
                     family.setImageUrl(familyImagePath);
                     families.add(family);
@@ -164,8 +166,8 @@ public class FirebaseDB {
                     @Override
                     public void onSuccess(Uri uri) {
                         family.setImageUrl(uri.toString());
-
                         String key = getDatabase().getReference().child(FAMILIES).push().getKey();
+                        family.setFamily_key(key);
                         Map<String, Object> familyValues = family.toMap();
                         Map<String, Object> childUpdates = new HashMap<>();
                         childUpdates.put("/" + FAMILIES + "/" + key, familyValues);

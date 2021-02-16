@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Family {
+    private String family_key;
     private String f_name;
     private String imageUrl;
     private Map<String,Pet> pets = new HashMap<>();
@@ -19,6 +20,7 @@ public class Family {
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
+        result.put("family_key",family_key);
         result.put("f_name", f_name);
         result.put("imageURL", imageUrl);
         result.put("pets", pets);
@@ -47,5 +49,13 @@ public class Family {
 
     public void setF_name(String f_name) {
         this.f_name = f_name;
+    }
+
+    public String getFamily_key() {
+        return family_key;
+    }
+
+    public void setFamily_key(String family_key) {
+        this.family_key = family_key;
     }
 }

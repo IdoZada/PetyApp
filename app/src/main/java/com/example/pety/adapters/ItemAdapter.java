@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.pety.R;
+import com.example.pety.fragments.PetFragment;
 import com.example.pety.objects.Family;
 
 import java.util.ArrayList;
@@ -70,7 +71,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
                 public void onClick(View v) {
                     if(mListener != null){
                         int position = getAdapterPosition();
-                        Log.d("TAG", "onClick: ViewHolder position:" + position );
+                        if (position != RecyclerView.NO_POSITION) {
+                            mListener.onItemClick(position);
+                        }
+//                        Family family = mArrayList.get(position);
+//                        PetFragment pet = new PetFragment();
+
+                        //Log.d("TAG", "onClick: ViewHolder position:" + mArrayList.get(position).getF_name() );
                     }
                 }
             });

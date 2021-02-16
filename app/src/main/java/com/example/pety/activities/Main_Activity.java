@@ -17,6 +17,9 @@ import com.example.pety.R;
 import com.example.pety.fragments.FamilyFragment;
 import com.example.pety.fragments.HomeFragment;
 import com.example.pety.fragments.PetFragment;
+import com.example.pety.fragments.ShareFamilyFragment;
+import com.example.pety.objects.Fab;
+import com.example.pety.objects.Family;
 import com.example.pety.objects.InsertDialog;
 import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
@@ -46,6 +49,8 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
     HomeFragment homeFragment;
     PetFragment petFragment;
     FamilyFragment familyFragment;
+    ShareFamilyFragment shareFamilyFragment;
+    Fab fab = Fab.FAMILY_FAB;
 
 
     @Override
@@ -59,6 +64,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         setSupportActionBar(main_toolbar);
         initFragments();
 
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer_layout, main_toolbar,
                 R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawer_layout.addDrawerListener(toggle);
@@ -68,7 +74,8 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         currentUser = getCurrentUserFromSP();
         Log.d("TAG", currentUser.toString());
         familyFragment = new FamilyFragment(this);
-
+        Log.d("TAG", "after init family fragment ");
+        familyFragment.setSendFamilyCallback(sendFamilyCallback);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,homeFragment).commit();
 
         if(currentUser.getFamilies_keys().size() == 0){
@@ -84,6 +91,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         insertDialog = new InsertDialog();
         homeFragment = new HomeFragment();
         petFragment = new PetFragment();
+        shareFamilyFragment = new ShareFamilyFragment();
     }
 
    private User getCurrentUserFromSP(){
@@ -91,6 +99,15 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
        return mySP.readDataFromStorage();
    }
 
+    private FamilyFragment.SendFamilyCallback sendFamilyCallback = new FamilyFragment.SendFamilyCallback() {
+        @Override
+        public void sendFamily(Family family) {
+            Log.d("TAG", "implement family callback: "+"familyName: "+ family.getF_name() + "imageName: " + family.getImageUrl());
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,petFragment).commit();
+            fab = Fab.PET_FAB;
+            petFragment.displayReceivedData(family);
+        }
+    };
 
     private InsertDialog.insert_DialogInterface insert_dialogInterface = new InsertDialog.insert_DialogInterface() {
         @Override
@@ -108,18 +125,19 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
                 case R.id.nav_home:
                         Log.d("TAG", "nav home");
                         fab_button.setVisibility(View.VISIBLE);
+                        fab = Fab.PET_FAB;
                         selectedFragment = homeFragment;
                     break;
                 case R.id.nav_my_families:
                         Log.d("TAG", "nav my families");
                         selectedFragment = familyFragment;
-//                        fab_button.setVisibility(View.VISIBLE);
+                        fab  = Fab.FAMILY_FAB;
 
                     break;
                 case R.id.nav_share_families:
                         Log.d("TAG", "nav share families ");
-//                        selectedFragment = new PetFragment();
-//                        fab_button.setVisibility(View.VISIBLE);
+                        selectedFragment = shareFamilyFragment;
+                        fab  = Fab.SHARE_MY_FAMILY_FAB;
                     break;
                 case R.id.nav_info:
                         Log.d("TAG", "nav info");
@@ -141,8 +159,20 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         fab_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertDialog.show(getSupportFragmentManager(),"Insert item");
-                insertDialog.setInsertDialogInterface(insert_dialogInterface);
+                switch (fab){
+                    case PET_FAB:
+                        Log.d("TAG", "onClick: PET_FAB");
+                        break;
+                    case FAMILY_FAB:
+                        Log.d("TAG", "onClick: FAMILY_FAB");
+                        insertDialog.show(getSupportFragmentManager(),"Insert item");
+                        insertDialog.setInsertDialogInterface(insert_dialogInterface);
+                        break;
+                    case SHARE_MY_FAMILY_FAB:
+                        Log.d("TAG", "onClick: SHARE_MY_FAMILY");
+                        break;
+                }
+
             }
         });
     }

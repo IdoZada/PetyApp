@@ -33,6 +33,7 @@ public class FamilyFragment extends Fragment  {
     FirebaseDB firebaseDB = FirebaseDB.getInstance();
     User user;
     ArrayList<Family> families;
+    SendFamilyCallback sendFamilyCallback;
 
     public FamilyFragment(Context context){
         MySP.initialize(context);
@@ -58,12 +59,26 @@ public class FamilyFragment extends Fragment  {
         view = inflater.inflate(R.layout.fragment_family, container, false);
         findViews(view);
 
-        itemAdapter.setOnItemClickListener(position -> {
-            Log.d("ttttt", "onCreateView: ffffff");
+        itemAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+
+                Family family = families.get(position);
+                sendFamilyCallback.sendFamily(family);
+                //Log.d("TAG", "onCreateView: " + family.getF_name());
+            }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(itemAdapter);
         return view;
+    }
+
+    public interface SendFamilyCallback {
+        void sendFamily(Family family);
+    }
+
+    public void setSendFamilyCallback(SendFamilyCallback sendFamilyCallback){
+        this.sendFamilyCallback = sendFamilyCallback;
     }
 
 
