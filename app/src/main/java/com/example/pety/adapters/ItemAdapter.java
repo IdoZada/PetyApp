@@ -1,7 +1,6 @@
 package com.example.pety.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.pety.R;
-import com.example.pety.fragments.PetFragment;
 import com.example.pety.objects.Family;
 
 import java.util.ArrayList;
 
-public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
+public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     ArrayList<Family> mArrayList;
     Context mContext;
     private OnItemClickListener mListener;
@@ -27,11 +25,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
         void onItemClick(int position);
     }
 
+
     public ItemAdapter(ArrayList<Family> mArrayList, Context mContext) {
         this.mContext = mContext;
-        if(mArrayList != null){
+        if (mArrayList != null) {
             this.mArrayList = mArrayList;
-        }else{
+        } else {
             this.mArrayList = new ArrayList<>();
         }
     }
@@ -43,8 +42,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_family,parent,false);
-        return new ViewHolder(view , mListener);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_family, parent, false);
+
+
+        return new ViewHolder(view, mListener);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
         return mArrayList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView family_item_title;
         private ImageView family_item_img;
 
@@ -69,7 +70,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mListener != null){
+                    if (mListener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
                             mListener.onItemClick(position);
@@ -81,6 +82,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder>{
                     }
                 }
             });
+
         }
     }
 }

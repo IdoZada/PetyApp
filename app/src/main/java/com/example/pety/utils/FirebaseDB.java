@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -158,7 +159,8 @@ public class FirebaseDB {
      * @param family
      */
     public void writeNewFamilyToDB(Family family , List<String> families , String imageName , Uri contentUri){
-        final StorageReference image = getFirebaseStorage().getReference().child("pictures/"+ FAMILIES +"/" + imageName);
+        String key = getDatabase().getReference().child(FAMILIES).push().getKey();
+        final StorageReference image = getFirebaseStorage().getReference().child("pictures/"+ FAMILIES +"/" + key + "/" + imageName);
         image.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -166,7 +168,7 @@ public class FirebaseDB {
                     @Override
                     public void onSuccess(Uri uri) {
                         family.setImageUrl(uri.toString());
-                        String key = getDatabase().getReference().child(FAMILIES).push().getKey();
+
                         family.setFamily_key(key);
                         Map<String, Object> familyValues = family.toMap();
                         Map<String, Object> childUpdates = new HashMap<>();
@@ -187,5 +189,31 @@ public class FirebaseDB {
                 Log.d("TAG", "onFailure: Upload family failed");
             }
         });
+    }
+
+    public void deleteFamilyFromDB(String family_key){
+        Log.d("TAG", "deleteFamilyFromDB: " + family_key);
+        DatabaseReference myFamilies = getDatabase().getReference().child(FAMILIES).child(family_key);
+        //Query myQuery = getDatabase().getReference(FAMILIES).orderByChild("family_key").equalTo(family_key);
+        myFamilies.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //snapshot.getRef().removeValue();
+                Log.d("TAG", "onDataChange: " + snapshot.child("family_key").toString() + " " + snapshot.child("f_name").toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+        //TODO Remove specific family from user database
+
+        //TODO Remove image from database storage
+        String uid = getFirebaseAuth().getCurrentUser().getUid();
+        DatabaseReference myRef = getDatabase().getReference(USERS).child(uid).child(FAMILIES);
+
     }
 }

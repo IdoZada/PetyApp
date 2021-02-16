@@ -1,15 +1,19 @@
 package com.example.pety.fragments;
 
+import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +26,6 @@ import com.example.pety.utils.FirebaseDB;
 import com.example.pety.utils.MySP;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 
 public class FamilyFragment extends Fragment  {
@@ -68,10 +71,47 @@ public class FamilyFragment extends Fragment  {
                 //Log.d("TAG", "onCreateView: " + family.getF_name());
             }
         });
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(itemAdapter);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
         return view;
     }
+
+    public ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position  = viewHolder.getAdapterPosition();
+            Family family = families.get(position);
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Delete")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            families.remove(position);
+                            itemAdapter.notifyItemRemoved(position);
+                            firebaseDB.deleteFamilyFromDB(family.getFamily_key());
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            itemAdapter.notifyItemChanged(position);
+                        }
+                    })
+                    .setMessage("Are you sure you want to delete this family?")
+                    .show();
+        }
+    };
 
     public interface SendFamilyCallback {
         void sendFamily(Family family);
