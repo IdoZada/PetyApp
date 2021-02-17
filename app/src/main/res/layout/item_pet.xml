@@ -8,7 +8,7 @@
 
 
     <ImageView
-        android:id="@+id/family_item_container"
+        android:id="@+id/pet_item_container"
         android:layout_width="0dp"
         android:layout_height="135dp"
         android:layout_marginStart="8dp"
@@ -22,7 +22,7 @@
 
     <ImageView
 
-        android:id="@+id/family_item_img"
+        android:id="@+id/pet_item_img"
         android:layout_width="100dp"
         android:layout_height="150dp"
         android:layout_marginStart="24dp"
@@ -34,62 +34,132 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
 
-        app:srcCompat="@drawable/ic_my_families" />
+        app:srcCompat="@drawable/ic_home_pets" />
 
     <TextView
         android:textStyle="bold"
-        android:id="@+id/family_item_title"
+        android:id="@+id/pet_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:text="An American Marriage"
-        app:layout_constraintStart_toEndOf="@+id/family_item_img"
-        app:layout_constraintTop_toTopOf="@+id/family_item_container" />
+        android:text="Toy Plotkin"
+        app:layout_constraintStart_toEndOf="@+id/pet_item_img"
+        app:layout_constraintTop_toTopOf="@+id/pet_item_container" />
 
     <TextView
-        android:id="@+id/item_book_author"
+        android:id="@+id/pet_item_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:text="By Tayari Jones"
-        app:layout_constraintStart_toEndOf="@+id/family_item_img"
-        app:layout_constraintTop_toBottomOf="@+id/family_item_title" />
+        android:layout_marginTop="20dp"
+        android:text="Dog"
+        app:layout_constraintStart_toEndOf="@+id/pet_item_img"
+        app:layout_constraintTop_toBottomOf="@+id/pet_item_name" />
 
-    <RatingBar
-        style="?android:attr/ratingBarStyleSmall"
-        android:id="@+id/item_book_ratingbar"
+    <TextView
+        android:id="@+id/pet_item_birthday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@+id/family_item_img"
-        app:layout_constraintTop_toBottomOf="@+id/item_book_author" />
+        android:layout_marginTop="20dp"
+        android:text="2 Years old"
+        app:layout_constraintStart_toEndOf="@+id/pet_item_img"
+        app:layout_constraintTop_toBottomOf="@+id/pet_item_type" />
 
-    <TextView
-        android:id="@+id/item_book_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:text="score"
-        app:layout_constraintBottom_toBottomOf="@+id/item_book_ratingbar"
-        app:layout_constraintStart_toEndOf="@+id/item_book_ratingbar"
-        app:layout_constraintTop_toTopOf="@+id/item_book_ratingbar" />
+    <ProgressBar
+        android:id="@+id/pet_item_progressbar_walking"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="12dp"
+        android:indeterminateOnly="false"
+        android:progress="60"
+        android:progressDrawable="@drawable/progressbar"
+        app:layout_constraintHorizontal_bias="0.462"
+        app:layout_constraintLeft_toLeftOf="@id/pet_item_name"
+        app:layout_constraintRight_toRightOf="@id/pet_item_container"
+        app:layout_constraintTop_toTopOf="@+id/pet_item_container" />
 
-    <TextView
-        android:id="@+id/item_book_pagesrev"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:text="225 pages | 23 review"
-        app:layout_constraintStart_toEndOf="@+id/family_item_img"
-        app:layout_constraintTop_toBottomOf="@+id/item_book_ratingbar" />
+    <ImageView
+        android:id="@+id/pet_item_progressbar_walking_image"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        app:srcCompat="@drawable/ic_pet_footprint"
+        app:layout_constraintBottom_toBottomOf="@+id/pet_item_progressbar_walking"
+        app:layout_constraintEnd_toEndOf="@+id/pet_item_progressbar_walking"
+        app:layout_constraintStart_toStartOf="@+id/pet_item_progressbar_walking"
+        app:layout_constraintTop_toTopOf="@+id/pet_item_progressbar_walking" />
+
+    <ProgressBar
+        android:id="@+id/pet_item_progressbar_feeding"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="12dp"
+        android:indeterminateOnly="false"
+        android:progress="60"
+        android:progressDrawable="@drawable/progressbar"
+        app:layout_constraintHorizontal_bias="0.752"
+        app:layout_constraintLeft_toLeftOf="@id/pet_item_progressbar_walking"
+        app:layout_constraintRight_toRightOf="@id/pet_item_container"
+        app:layout_constraintTop_toTopOf="@+id/pet_item_container" />
+
+    <ImageView
+        android:id="@+id/pet_item_progressbar_feeding_image"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        app:srcCompat="@drawable/ic_pet_feeding"
+        app:layout_constraintBottom_toBottomOf="@+id/pet_item_progressbar_feeding"
+        app:layout_constraintEnd_toEndOf="@+id/pet_item_progressbar_feeding"
+        app:layout_constraintStart_toStartOf="@+id/pet_item_progressbar_feeding"
+        app:layout_constraintTop_toTopOf="@+id/pet_item_progressbar_feeding" />
+
+    <ProgressBar
+        android:id="@+id/pet_item_progressbar_beauty_care"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="68dp"
+        android:indeterminateOnly="false"
+        android:progress="60"
+        android:progressDrawable="@drawable/progressbar"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@id/pet_item_progressbar_walking"
+        app:layout_constraintRight_toRightOf="@id/pet_item_container"
+        app:layout_constraintTop_toTopOf="@+id/pet_item_container" />
+
+    <ImageView
+        android:id="@+id/pet_item_progressbar_beauty_care_image"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        app:layout_constraintBottom_toBottomOf="@+id/pet_item_progressbar_beauty_care"
+        app:layout_constraintEnd_toEndOf="@+id/pet_item_progressbar_beauty_care"
+        app:layout_constraintHorizontal_bias="0.484"
+        app:layout_constraintStart_toStartOf="@+id/pet_item_progressbar_beauty_care"
+        app:layout_constraintTop_toTopOf="@+id/pet_item_progressbar_beauty_care"
+        app:srcCompat="@drawable/ic_pet_beauty_care" />
+
+    <ProgressBar
+        android:id="@+id/pet_item_progressbar_health"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="68dp"
+        android:indeterminateOnly="false"
+        android:progress="60"
+        android:progressDrawable="@drawable/progressbar"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@id/pet_item_progressbar_feeding"
+        app:layout_constraintRight_toRightOf="@id/pet_item_container"
+        app:layout_constraintTop_toTopOf="@+id/pet_item_container" />
+
+    <ImageView
+        android:id="@+id/pet_item_progressbar_health_image"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        app:layout_constraintBottom_toBottomOf="@+id/pet_item_progressbar_health"
+        app:layout_constraintEnd_toEndOf="@+id/pet_item_progressbar_health"
+        app:layout_constraintHorizontal_bias="0.484"
+        app:layout_constraintStart_toStartOf="@+id/pet_item_progressbar_health"
+        app:layout_constraintTop_toTopOf="@+id/pet_item_progressbar_health"
+        app:srcCompat="@drawable/ic_pet_health" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
