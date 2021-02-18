@@ -212,7 +212,19 @@ public class FirebaseDB {
         String uid = getFirebaseAuth().getCurrentUser().getUid();
         DatabaseReference myRef = getDatabase().getReference(USERS).child(uid).child(FAMILIES);
         myRef.child(family_key).removeValue();
-
+        //gs://pety-47235.appspot.com/pictures/families/-MTpqJwQ3olUjsrJpFId
         //TODO Remove image from database storage
+        StorageReference myPic = getFirebaseStorage().getReference().child("/pictures/" + FAMILIES + "/" + family_key);
+        myPic.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("TAG", "onSuccess: delete pic from storage database");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("TAG", "onFailure: unable to delete pic from storage database");
+            }
+        });
     }
 }
