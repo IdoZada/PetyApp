@@ -10,7 +10,7 @@ public class User {
     private String l_name;
     private String phone_number;
     private String image_url;
-    private List<String> families = new ArrayList<>(); //Each user contains a map for all families
+    private Map<String, String> families_map = new HashMap<>(); //Each user contains a map for all families
 
     public User() {
     }
@@ -28,16 +28,17 @@ public class User {
         result.put("lastName", l_name);
         result.put("phoneNumber", phone_number);
         result.put("imageUrl", image_url);
-        result.put("families", families);
+        //result.put("families", families);
         return result;
     }
 
-    public List<String> getFamilies_keys() {
-        return families;
+
+    public Map<String, String> getFamilies_map() {
+        return families_map;
     }
 
-    public void setFamilies_keys(List<String> families) {
-        this.families = families;
+    public void setFamilies_map(Map<String, String> families_map) {
+        this.families_map = families_map;
     }
 
     public String getF_name() {
@@ -79,7 +80,7 @@ public class User {
                 ", l_name='" + l_name + '\'' +
                 ", phone_number='" + phone_number + '\'' +
                 ", image_url='" + image_url + '\'' +
-                ", families=" + families +
+                ", families_map=" + families_map +
                 '}';
     }
 }

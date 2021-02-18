@@ -1,11 +1,11 @@
 package com.example.pety.fragments;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,9 @@ import com.example.pety.utils.FirebaseDB;
 import com.example.pety.utils.MySP;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class FamilyFragment extends Fragment  {
@@ -34,26 +38,59 @@ public class FamilyFragment extends Fragment  {
     ItemAdapter itemAdapter;
     View view;
     FirebaseDB firebaseDB = FirebaseDB.getInstance();
-    User user;
+    User currentUser;
     ArrayList<Family> families;
     SendFamilyCallback sendFamilyCallback;
+    Context mContext;
 
     public FamilyFragment(Context context){
-        MySP.initialize(context);
-        user = MySP.getInstance().readDataFromStorage();
+        this.mContext = context;
+        this.currentUser = new User();
         families = new ArrayList<>();
-        firebaseDB.retrieveAllFamilies(user.getFamilies_keys(),families);
+        //MySP.initialize(context);
+
+        //firebaseDB.retrieveUserDataFromDB(currentUser);
+//        user = MySP.getInstance().readDataFromStorage();
+
+//        Handler handler = new Handler();
+//        int delay = 5000; //millisecond
+//        handler.postDelayed(new Runnable(){
+//            public void run() {
+//                if(currentUser.getFamilies_keys().size() == 0)//checking if the data is loaded or not
+//                    handler.postDelayed(this, delay);
+//            }
+//        }, delay);
 
         Handler handler = new Handler();
         int delay = 1000; //milliseconds
         handler.postDelayed(new Runnable(){
             public void run(){
-                if(families.size() != user.getFamilies_keys().size())//checking if the data is loaded or not
+                if(families.size() != currentUser.getFamilies_map().size())//checking if the data is loaded or not
                     handler.postDelayed(this, delay);
             }
         }, delay);
 
-        itemAdapter = new ItemAdapter(families, context);
+        itemAdapter = new ItemAdapter(families, mContext);
+
+
+
+//        Log.d("RealTimeDatabase", "FamilyFragment: " + currentUser.toString());
+//        Handler handler = new Handler();
+//        int delay = 1000; //milliseconds
+//        handler.postDelayed(new Runnable(){
+//            public void run(){
+//
+//                if(currentUser.getFamilies_keys() == null){
+//                    handler.postDelayed(this, delay);
+//                    //checking if the data is loaded or not
+//                }
+//
+//            }
+//        }, delay);
+
+
+
+
     }
 
     @Override
@@ -97,9 +134,9 @@ public class FamilyFragment extends Fragment  {
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            firebaseDB.deleteFamilyFromDB(currentUser,families.get(position).getFamily_key());
                             families.remove(position);
                             itemAdapter.notifyItemRemoved(position);
-                            firebaseDB.deleteFamilyFromDB(family.getFamily_key());
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -115,6 +152,7 @@ public class FamilyFragment extends Fragment  {
 
     public interface SendFamilyCallback {
         void sendFamily(Family family);
+        void sendUser(User user);
     }
 
     public void setSendFamilyCallback(SendFamilyCallback sendFamilyCallback){
@@ -125,12 +163,32 @@ public class FamilyFragment extends Fragment  {
     public void setItem(String familyName, String imageName, Uri imageUri){
         Family family = new Family(familyName);
         family.setImageUrl(imageUri.toString());
-        firebaseDB.writeNewFamilyToDB(family , user.getFamilies_keys(),imageName,imageUri);
+
+        //
+        if(currentUser.getFamilies_map() == null) {
+            Map<String,String> families_map = new HashMap<>();
+            currentUser.setFamilies_map(families_map);
+        }
+
+        firebaseDB.writeNewFamilyToDB(family , currentUser.getFamilies_map(),imageName,imageUri);
         families.add(0,family);
         itemAdapter.notifyItemInserted(0);
     }
 
     private void findViews(View view) {
         recyclerView = view.findViewById(R.id.recyclerView);
+    }
+
+    public void setCurrentUser(User user){
+        this.currentUser = user;
+
+        readFamilies(currentUser.getFamilies_map(), families);
+        Log.d("RealTimeDatabase", "setCurrentUser: " + user.toString());
+
+
+    }
+
+    public void readFamilies(Map<String, String> families_map , ArrayList<Family> families){
+        firebaseDB.retrieveAllFamilies(families_map,families);
     }
 }

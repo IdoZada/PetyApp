@@ -2,14 +2,18 @@ package com.example.pety.utils;
 
 import android.net.Uri;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 
+import com.example.pety.fragments.FamilyFragment;
 import com.example.pety.objects.Family;
 import com.example.pety.objects.Pet;
 import com.example.pety.objects.User;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,9 +28,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 
 
 public class FirebaseDB {
@@ -70,7 +74,6 @@ public class FirebaseDB {
     }
 
     /**
-     *
      * @param uid
      * @param phone_number
      */
@@ -84,103 +87,102 @@ public class FirebaseDB {
      * @param firstName
      * @param LastName
      */
-    public void updateFirstNameAndLastName(String firstName,String LastName){
+    public void updateFirstNameAndLastName(String firstName, String LastName) {
         String uid = getFirebaseAuth().getCurrentUser().getUid();
         DatabaseReference userRef = database.getReference(USERS);
         userRef.child(uid).child(FIRST_NAME).setValue(firstName);
         userRef.child(uid).child(LAST_NAME).setValue(LastName);
     }
 
-    public void retrieveUserDataFromDB(){
+    public void retrieveUserDataFromDB(FamilyFragment.SendFamilyCallback sendFamilyCallback) {
         User user = new User();
         String uid = getFirebaseAuth().getCurrentUser().getUid();
         DatabaseReference myRef = getDatabase().getReference(USERS).child(uid);
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> listOfFamiliesKey;
-                String firstName = snapshot.child(FIRST_NAME).getValue().toString();
-                String lastName = snapshot.child(LAST_NAME).getValue().toString();
-                String phoneNumber = snapshot.child(PHONE_NUMBER).getValue().toString();
-                if(snapshot.hasChild(FAMILIES)){
-                    listOfFamiliesKey = (List<String>) snapshot.child(FAMILIES).getValue();
-                    user.setFamilies_keys(listOfFamiliesKey);
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.d(TAG, "onComplete: Error getting user data");
+                } else {
+                    Map<String, String> families_map;
+                    String firstName = task.getResult().child(FIRST_NAME).getValue().toString();
+                    String lastName = task.getResult().child(LAST_NAME).getValue().toString();
+                    String phoneNumber = task.getResult().child(PHONE_NUMBER).getValue().toString();
+                    if (task.getResult().hasChild(FAMILIES)) {
+                        families_map = (Map<String, String>) task.getResult().child(FAMILIES).getValue();
+                        Log.d(TAG, "onComplete: retrieveUserDataFromDB size: " + families_map.size());
+                        user.setFamilies_map(families_map);
+                    }
+                    user.setF_name(firstName);
+                    user.setL_name(lastName);
+                    user.setPhone_number(phoneNumber);
+                    sendFamilyCallback.sendUser(user);
+                    Log.d("ttttt", "onDataChange: " + user.toString());
                 }
-                user.setF_name(firstName);
-                user.setL_name(lastName);
-                user.setPhone_number(phoneNumber);
-                Log.d("ttttt", "onDataChange: " + user.toString());
-                MySP.getInstance().writeDataToStorage(user);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
 
 
-    public void retrieveAllFamilies(List<String> families_keys , ArrayList<Family> families){
+    public void retrieveAllFamilies(Map<String, String> families_map, ArrayList<Family> families) {
         DatabaseReference myFamilies = getDatabase().getReference().child(FAMILIES);
         int i;
 
-        for(i = 0 ; i < families_keys.size(); i++){
-            int finalI = i;
-            myFamilies.child(families_keys.get(i)).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
+        Log.d(TAG, "retrieveAllFamilies: " + families_map.size());
 
-                    Map<String , Pet> pets;
-                    family = new Family();
-                    String family_key = snapshot.child("family_key").getValue().toString();
-                    String familyName = snapshot.child("f_name").getValue().toString();
-                    String familyImagePath = snapshot.child("imageURL").getValue().toString();
-                    if(snapshot.hasChild("pets")){
-                        pets = (Map<String, Pet>) snapshot.child("pets").getValue();
-                        family.setPets(pets);
+        for (String key: families_map.keySet()) {
+            myFamilies.child(key).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                        Log.d(TAG, "onComplete: Error getting families data");
+                    } else {
+                        Map<String, Pet> pets;
+                        family = new Family();
+                        String family_key = task.getResult().child("family_key").getValue().toString();
+                        String familyName = task.getResult().child("f_name").getValue().toString();
+                        String familyImagePath = task.getResult().child("imageURL").getValue().toString();
+                        if (task.getResult().hasChild("pets")) {
+                            pets = (Map<String, Pet>) task.getResult().child("pets").getValue();
+                            family.setPets(pets);
+                        }
+                        family.setFamily_key(family_key);
+                        family.setF_name(familyName);
+                        family.setImageUrl(familyImagePath);
+                        families.add(family);
                     }
-                    family.setFamily_key(family_key);
-                    family.setF_name(familyName);
-                    family.setImageUrl(familyImagePath);
-                    families.add(family);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
                 }
             });
         }
+
     }
 
     /**
      * This function store in the database new family
+     *
      * @param family
      */
-    public void writeNewFamilyToDB(Family family , List<String> families , String imageName , Uri contentUri){
+    public void writeNewFamilyToDB(Family family, Map<String, String> families_map, String imageName, Uri contentUri) {
         String key = getDatabase().getReference().child(FAMILIES).push().getKey();
-        final StorageReference image = getFirebaseStorage().getReference().child("pictures/"+ FAMILIES +"/" + key + "/" + imageName);
+        final StorageReference image = getFirebaseStorage().getReference().child("pictures/" + FAMILIES + "/" + key + "/" + imageName);
         image.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        family.setImageUrl(uri.toString());
+                image.getDownloadUrl().addOnSuccessListener(uri -> {
+                    family.setImageUrl(uri.toString());
 
-                        family.setFamily_key(key);
-                        Map<String, Object> familyValues = family.toMap();
-                        Map<String, Object> childUpdates = new HashMap<>();
-                        childUpdates.put("/" + FAMILIES + "/" + key, familyValues);
-                        getDatabase().getReference().updateChildren(childUpdates);
+                    family.setFamily_key(key);
+                    Map<String, Object> familyValues = family.toMap();
+                    Map<String, Object> childUpdates = new HashMap<>();
+                    childUpdates.put("/" + FAMILIES + "/" + key, familyValues);
+                    getDatabase().getReference().updateChildren(childUpdates);
 
-                        String uid = getFirebaseAuth().getCurrentUser().getUid();
-                        families.add(key);
-                        childUpdates.put("/" + USERS + "/" + uid + "/" + FAMILIES + "/", families);
-                        getDatabase().getReference().updateChildren(childUpdates);
-                    }
-                    });
+                    String uid = getFirebaseAuth().getCurrentUser().getUid();
+                    families_map.put(key, key);
+                    //families.add(key);
+                    childUpdates.put("/" + USERS + "/" + uid + "/" + FAMILIES + "/", families_map);
+                    getDatabase().getReference().updateChildren(childUpdates);
+                });
                 Log.d("TAG", "onSuccess: Upload family successfully");
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -191,15 +193,14 @@ public class FirebaseDB {
         });
     }
 
-    public void deleteFamilyFromDB(String family_key){
+    public void deleteFamilyFromDB(User user, String family_key) {
         Log.d("TAG", "deleteFamilyFromDB: " + family_key);
         DatabaseReference myFamilies = getDatabase().getReference().child(FAMILIES).child(family_key);
-        //Query myQuery = getDatabase().getReference(FAMILIES).orderByChild("family_key").equalTo(family_key);
         myFamilies.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //snapshot.getRef().removeValue();
-                Log.d("TAG", "onDataChange: " + snapshot.child("family_key").toString() + " " + snapshot.child("f_name").toString());
+                snapshot.getRef().removeValue();
+                Log.d("TAG", "Deleted " + snapshot.child("family_key").toString() + " family from " + snapshot.child("f_name").toString());
             }
 
             @Override
@@ -208,12 +209,10 @@ public class FirebaseDB {
             }
         });
 
-
-        //TODO Remove specific family from user database
-
-        //TODO Remove image from database storage
         String uid = getFirebaseAuth().getCurrentUser().getUid();
         DatabaseReference myRef = getDatabase().getReference(USERS).child(uid).child(FAMILIES);
+        myRef.child(family_key).removeValue();
 
+        //TODO Remove image from database storage
     }
 }

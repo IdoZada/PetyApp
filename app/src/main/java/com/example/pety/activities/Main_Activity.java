@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -70,18 +71,37 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         drawer_layout.addDrawerListener(toggle);
         toggle.syncState();
 
-        firebaseDB.retrieveUserDataFromDB();
-        currentUser = getCurrentUserFromSP();
-        Log.d("TAG", currentUser.toString());
+
         familyFragment = new FamilyFragment(this);
-        Log.d("TAG", "after init family fragment ");
         familyFragment.setSendFamilyCallback(sendFamilyCallback);
+
+        firebaseDB.retrieveUserDataFromDB(sendFamilyCallback);
+        //Log.d("TAG", "onCreate: " + currentUser.getF_name());
+
+
+//        Handler handler = new Handler();
+//        int delay = 2000; //millisecond
+//        handler.postDelayed(new Runnable(){
+//            public void run() {
+////                if(currentUser.getF_name() ==  null)//checking if the data is loaded or not
+//                    Log.d("RealTimeDatabase", "run: " );
+//
+//            }
+//        }, delay);
+
+
+
+
+        //currentUser = getCurrentUserFromSP();
+        //Log.d("RealTimeDatabase", currentUser.toString());
+
+        //sendFamilyCallback.sendUser(currentUser);
+        Log.d("TAG", "after init family fragment ");
+
+
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,homeFragment).commit();
 
-        if(currentUser.getFamilies_keys().size() == 0){
-            insertDialog.show(getSupportFragmentManager(),"Insert item");
-            insertDialog.setInsertDialogInterface(insert_dialogInterface);
-        }
+        insertDialog.setInsertDialogInterface(insert_dialogInterface);
 
     }
 
@@ -106,6 +126,17 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,petFragment).commit();
             fab = Fab.PET_FAB;
             petFragment.displayReceivedData(family);
+        }
+
+        @Override
+        public void sendUser(User user) {
+            if(user.getFamilies_map().size() == 0){
+                insertDialog.show(getSupportFragmentManager(),"Insert item");
+
+            }else if(user.getFamilies_map().size() > 0) {
+                familyFragment.setCurrentUser(user);
+            }
+
         }
     };
 
