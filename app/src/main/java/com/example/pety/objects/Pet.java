@@ -2,12 +2,14 @@ package com.example.pety.objects;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Pet {
     private String pet_id;
     private String name;
-    private Date birthday;
-    private Type pet_type;
+    private String birthday;
+    private String pet_type;
     private String image_url;
     private ArrayList<Walk> walks;
     private ArrayList<Feed> feeds;
@@ -17,7 +19,7 @@ public class Pet {
     public Pet() {
     }
 
-    public Pet(String pet_id, String name, Date birthday, Type pet_type, String image_url, ArrayList<Walk> walks, ArrayList<Feed> feeds, ArrayList<Vaccine> vaccines, ArrayList<Beauty> beauties) {
+    public Pet(String pet_id, String name, String birthday, String pet_type, String image_url, ArrayList<Walk> walks, ArrayList<Feed> feeds, ArrayList<Vaccine> vaccines, ArrayList<Beauty> beauties) {
         this.pet_id = pet_id;
         this.name = name;
         this.birthday = birthday;
@@ -28,6 +30,18 @@ public class Pet {
         this.vaccines = vaccines;
         this.beauties = beauties;
     }
+
+
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("pet_id",pet_id);
+        result.put("name", name);
+        result.put("image_url", image_url);
+        result.put("pet_type", pet_type);
+        result.put("birthday", birthday);
+        return result;
+    }
+
 
     public String getPet_id() {
         return pet_id;
@@ -45,19 +59,19 @@ public class Pet {
         this.name = name;
     }
 
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
-    public Type getPet_type() {
+    public String getPet_type() {
         return pet_type;
     }
 
-    public void setPet_type(Type pet_type) {
+    public void setPet_type(String pet_type) {
         this.pet_type = pet_type;
     }
 

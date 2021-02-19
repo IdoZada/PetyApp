@@ -2,25 +2,15 @@ package com.example.pety.fragments;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.pety.R;
-import com.example.pety.adapters.ItemAdapter;
-import com.example.pety.objects.Family;
-import com.example.pety.objects.InsertDialog;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
-import java.util.UUID;
 
 
 public class HomeFragment extends Fragment  {

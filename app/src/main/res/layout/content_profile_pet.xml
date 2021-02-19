@@ -11,7 +11,7 @@
         android:layout_centerInParent="true">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imgProfile"
+            android:id="@+id/imgPetProfile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentStart="true"
@@ -22,8 +22,7 @@
             android:onClick="showImage"
             android:padding="3dp"
             android:scaleType="centerInside"
-            android:clickable="false"
-            app:srcCompat="@drawable/ic_person" />
+            app:srcCompat="@drawable/ic_pet_face" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_add_photo"

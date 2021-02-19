@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,9 +18,11 @@ import com.example.pety.fragments.FamilyFragment;
 import com.example.pety.fragments.HomeFragment;
 import com.example.pety.fragments.PetFragment;
 import com.example.pety.fragments.ShareFamilyFragment;
+import com.example.pety.interfaces.InsertDialogInterface;
 import com.example.pety.objects.Fab;
 import com.example.pety.objects.Family;
-import com.example.pety.objects.InsertDialog;
+import com.example.pety.objects.InsertFamilyDialog;
+import com.example.pety.objects.InsertPetDialog;
 import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
 import com.example.pety.utils.MySP;
@@ -46,7 +47,8 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
 
     //Fragments
     Fragment selectedFragment = null;
-    InsertDialog insertDialog;
+    InsertFamilyDialog insertFamilyDialog;
+    InsertPetDialog insertPetDialog;
     HomeFragment homeFragment;
     PetFragment petFragment;
     FamilyFragment familyFragment;
@@ -101,16 +103,18 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,homeFragment).commit();
 
-        insertDialog.setInsertDialogInterface(insert_dialogInterface);
+        insertFamilyDialog.setInsertDialogInterface(insertDialogInterface);
+        insertPetDialog.setInsertDialogInterface(insertDialogInterface);
 
     }
 
 
 
     private void initFragments(){
-        insertDialog = new InsertDialog();
+        insertFamilyDialog = new InsertFamilyDialog();
+        insertPetDialog = new InsertPetDialog();
         homeFragment = new HomeFragment();
-        petFragment = new PetFragment();
+        petFragment = new PetFragment(this);
         shareFamilyFragment = new ShareFamilyFragment();
     }
 
@@ -131,7 +135,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         @Override
         public void sendUser(User user) {
             if(user.getFamilies_map().size() == 0){
-                insertDialog.show(getSupportFragmentManager(),"Insert item");
+                insertFamilyDialog.show(getSupportFragmentManager(),"Insert item");
 
             }else if(user.getFamilies_map().size() > 0) {
                 familyFragment.setCurrentUser(user);
@@ -140,11 +144,17 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         }
     };
 
-    private InsertDialog.insert_DialogInterface insert_dialogInterface = new InsertDialog.insert_DialogInterface() {
+    private InsertDialogInterface insertDialogInterface = new InsertDialogInterface() {
         @Override
         public void applyTexts(String familyName, String imageName,Uri imageUri) {
             Log.d("TAG", "familyName: "+ familyName + "imageName: " + imageName + "imageUri: " + imageUri);
             familyFragment.setItem(familyName,imageName, imageUri);
+        }
+
+        @Override
+        public void applyAttPet(String petName, String petType, String birthday, String petImagePath, Uri imageUri) {
+            //set item pet
+            petFragment.setPetItem(petName,petType, birthday, petImagePath, imageUri);
         }
     };
 
@@ -192,12 +202,13 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
             public void onClick(View v) {
                 switch (fab){
                     case PET_FAB:
+                        insertPetDialog.show(getSupportFragmentManager(),"Insert item");
                         Log.d("TAG", "onClick: PET_FAB");
                         break;
                     case FAMILY_FAB:
                         Log.d("TAG", "onClick: FAMILY_FAB");
-                        insertDialog.show(getSupportFragmentManager(),"Insert item");
-                        insertDialog.setInsertDialogInterface(insert_dialogInterface);
+                        insertFamilyDialog.show(getSupportFragmentManager(),"Insert item");
+                        insertFamilyDialog.setInsertDialogInterface(insertDialogInterface);
                         break;
                     case SHARE_MY_FAMILY_FAB:
                         Log.d("TAG", "onClick: SHARE_MY_FAMILY");

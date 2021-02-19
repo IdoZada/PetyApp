@@ -1,7 +1,5 @@
 package com.example.pety.objects;
 
-import android.net.Uri;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +24,7 @@ public class Family {
         result.put("pets", pets);
         return result;
     }
+
 
     public String getImageUrl() {
         return imageUrl;
@@ -57,5 +56,15 @@ public class Family {
 
     public void setFamily_key(String family_key) {
         this.family_key = family_key;
+    }
+
+    @Override
+    public String toString() {
+        return "Family{" +
+                "family_key='" + family_key + '\'' +
+                ", f_name='" + f_name + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", pets=" + pets +
+                '}';
     }
 }

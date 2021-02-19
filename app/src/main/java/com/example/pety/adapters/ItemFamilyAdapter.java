@@ -12,21 +12,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.pety.R;
+import com.example.pety.interfaces.OnItemClickListener;
 import com.example.pety.objects.Family;
 
 import java.util.ArrayList;
 
-public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
+public class ItemFamilyAdapter extends RecyclerView.Adapter<ItemFamilyAdapter.ViewHolder> {
     ArrayList<Family> mArrayList;
     Context mContext;
     private OnItemClickListener mListener;
 
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-    }
 
 
-    public ItemAdapter(ArrayList<Family> mArrayList, Context mContext) {
+    public ItemFamilyAdapter(ArrayList<Family> mArrayList, Context mContext) {
         this.mContext = mContext;
         if (mArrayList != null) {
             this.mArrayList = mArrayList;

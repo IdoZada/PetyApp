@@ -144,6 +144,7 @@ public class FirebaseDB {
                         String familyImagePath = task.getResult().child("imageURL").getValue().toString();
                         if (task.getResult().hasChild("pets")) {
                             pets = (Map<String, Pet>) task.getResult().child("pets").getValue();
+                            Log.d("TAG", "onComplete: retrieve pets map " + pets);
                             family.setPets(pets);
                         }
                         family.setFamily_key(family_key);
@@ -164,7 +165,7 @@ public class FirebaseDB {
      */
     public void writeNewFamilyToDB(Family family, Map<String, String> families_map, String imageName, Uri contentUri) {
         String key = getDatabase().getReference().child(FAMILIES).push().getKey();
-        final StorageReference image = getFirebaseStorage().getReference().child("pictures/" + FAMILIES + "/" + key + "/" + imageName);
+        final StorageReference image = getFirebaseStorage().getReference().child("pictures/" + imageName);
         image.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -193,8 +194,34 @@ public class FirebaseDB {
         });
     }
 
-    public void deleteFamilyFromDB(User user, String family_key) {
+    public void writeNewPetToDB(Pet pet , Family family,String imageName ,Uri contentUri){
+        String key = getDatabase().getReference().child(FAMILIES).child(family.getFamily_key()).child(PETS).push().getKey();
+        final StorageReference image = getFirebaseStorage().getReference().child("pictures/" + imageName);
+        image.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                image.getDownloadUrl().addOnSuccessListener(uri -> {
+                    pet.setImage_url(uri.toString());
+                    pet.setPet_id(key);
+                    Map<String, Object> petValues = pet.toMap();
+                    Map<String, Object> childUpdates = new HashMap<>();
+                    childUpdates.put("/" + FAMILIES + "/" + family.getFamily_key() + "/" + PETS + "/" + key, petValues);
+                    getDatabase().getReference().updateChildren(childUpdates);
+                });
+                Log.d("TAG", "onSuccess: Upload family successfully");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("TAG", "onFailure: Upload family failed");
+            }
+        });
+    }
+
+    public void deleteFamilyFromDB(Family family, String family_key) {
         Log.d("TAG", "deleteFamilyFromDB: " + family_key);
+
+        //Remove family from families
         DatabaseReference myFamilies = getDatabase().getReference().child(FAMILIES).child(family_key);
         myFamilies.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -209,12 +236,13 @@ public class FirebaseDB {
             }
         });
 
+        //Remove family key from user
         String uid = getFirebaseAuth().getCurrentUser().getUid();
         DatabaseReference myRef = getDatabase().getReference(USERS).child(uid).child(FAMILIES);
         myRef.child(family_key).removeValue();
-        //gs://pety-47235.appspot.com/pictures/families/-MTpqJwQ3olUjsrJpFId
-        //TODO Remove image from database storage
-        StorageReference myPic = getFirebaseStorage().getReference().child("/pictures/" + FAMILIES + "/" + family_key);
+
+        //Remove family image from firebase storage
+        StorageReference myPic = getFirebaseStorage().getReferenceFromUrl(family.getImageUrl());
         myPic.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -226,5 +254,17 @@ public class FirebaseDB {
                 Log.d("TAG", "onFailure: unable to delete pic from storage database");
             }
         });
+        //TODO Remove all pets from realtime database
+
+        //TODO Remove all pictures of pets from storage firebase
+    }
+
+
+    public void deleteAllPetImagesFromStorageDB(){
+
+    }
+
+    public void deletePetFromDB(Pet pet, String pet_key){
+
     }
 }

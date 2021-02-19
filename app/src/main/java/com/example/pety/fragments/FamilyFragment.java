@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -18,24 +17,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.pety.R;
-import com.example.pety.adapters.ItemAdapter;
+import com.example.pety.adapters.ItemFamilyAdapter;
+import com.example.pety.interfaces.OnItemClickListener;
 import com.example.pety.objects.Family;
 import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
-import com.example.pety.utils.MySP;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
 public class FamilyFragment extends Fragment  {
 
     RecyclerView recyclerView;
-    ItemAdapter itemAdapter;
+    ItemFamilyAdapter itemFamilyAdapter;
+    ImageView imgProfile;
     View view;
     FirebaseDB firebaseDB = FirebaseDB.getInstance();
     User currentUser;
@@ -47,19 +47,6 @@ public class FamilyFragment extends Fragment  {
         this.mContext = context;
         this.currentUser = new User();
         families = new ArrayList<>();
-        //MySP.initialize(context);
-
-        //firebaseDB.retrieveUserDataFromDB(currentUser);
-//        user = MySP.getInstance().readDataFromStorage();
-
-//        Handler handler = new Handler();
-//        int delay = 5000; //millisecond
-//        handler.postDelayed(new Runnable(){
-//            public void run() {
-//                if(currentUser.getFamilies_keys().size() == 0)//checking if the data is loaded or not
-//                    handler.postDelayed(this, delay);
-//            }
-//        }, delay);
 
         Handler handler = new Handler();
         int delay = 1000; //milliseconds
@@ -70,27 +57,7 @@ public class FamilyFragment extends Fragment  {
             }
         }, delay);
 
-        itemAdapter = new ItemAdapter(families, mContext);
-
-
-
-//        Log.d("RealTimeDatabase", "FamilyFragment: " + currentUser.toString());
-//        Handler handler = new Handler();
-//        int delay = 1000; //milliseconds
-//        handler.postDelayed(new Runnable(){
-//            public void run(){
-//
-//                if(currentUser.getFamilies_keys() == null){
-//                    handler.postDelayed(this, delay);
-//                    //checking if the data is loaded or not
-//                }
-//
-//            }
-//        }, delay);
-
-
-
-
+        itemFamilyAdapter = new ItemFamilyAdapter(families, mContext);
     }
 
     @Override
@@ -99,19 +66,18 @@ public class FamilyFragment extends Fragment  {
         view = inflater.inflate(R.layout.fragment_family, container, false);
         findViews(view);
 
-        itemAdapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
+        itemFamilyAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
 
                 Family family = families.get(position);
                 sendFamilyCallback.sendFamily(family);
-                //Log.d("TAG", "onCreateView: " + family.getF_name());
             }
         });
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(itemAdapter);
+        recyclerView.setAdapter(itemFamilyAdapter);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
@@ -134,15 +100,15 @@ public class FamilyFragment extends Fragment  {
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            firebaseDB.deleteFamilyFromDB(currentUser,families.get(position).getFamily_key());
+                            firebaseDB.deleteFamilyFromDB(family,families.get(position).getFamily_key());
                             families.remove(position);
-                            itemAdapter.notifyItemRemoved(position);
+                            itemFamilyAdapter.notifyItemRemoved(position);
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            itemAdapter.notifyItemChanged(position);
+                            itemFamilyAdapter.notifyItemChanged(position);
                         }
                     })
                     .setMessage("Are you sure you want to delete this family?")
@@ -164,7 +130,6 @@ public class FamilyFragment extends Fragment  {
         Family family = new Family(familyName);
         family.setImageUrl(imageUri.toString());
 
-        //
         if(currentUser.getFamilies_map() == null) {
             Map<String,String> families_map = new HashMap<>();
             currentUser.setFamilies_map(families_map);
@@ -172,23 +137,21 @@ public class FamilyFragment extends Fragment  {
 
         firebaseDB.writeNewFamilyToDB(family , currentUser.getFamilies_map(),imageName,imageUri);
         families.add(0,family);
-        itemAdapter.notifyItemInserted(0);
-    }
-
-    private void findViews(View view) {
-        recyclerView = view.findViewById(R.id.recyclerView);
+        itemFamilyAdapter.notifyItemInserted(0);
     }
 
     public void setCurrentUser(User user){
         this.currentUser = user;
-
         readFamilies(currentUser.getFamilies_map(), families);
         Log.d("RealTimeDatabase", "setCurrentUser: " + user.toString());
-
-
     }
 
     public void readFamilies(Map<String, String> families_map , ArrayList<Family> families){
         firebaseDB.retrieveAllFamilies(families_map,families);
+    }
+
+    private void findViews(View view) {
+        recyclerView = view.findViewById(R.id.recyclerView);
+        imgProfile = view.findViewById(R.id.imgProfile);
     }
 }

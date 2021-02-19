@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,16 +18,16 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.appcompat.widget.AppCompatImageView;
 
 import com.example.pety.R;
-import com.example.pety.utils.FirebaseDB;
+import com.example.pety.interfaces.InsertDialogInterface;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.File;
 
-public class InsertDialog extends AppCompatDialogFragment {
+public class InsertFamilyDialog extends AppCompatDialogFragment {
 
-    insert_DialogInterface insert_dialogInterface;
+    InsertDialogInterface insertDialogInterface;
     TextInputLayout insertDialog_LAY_familyName;
     FloatingActionButton fab_add_photo;
     AppCompatImageView imgProfile;
@@ -42,7 +41,7 @@ public class InsertDialog extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
-        View view = inflater.inflate(R.layout.insert_dialog, null);
+        View view = inflater.inflate(R.layout.insert_family_dialog, null);
 
         findViews(view);
         initViews();
@@ -67,7 +66,7 @@ public class InsertDialog extends AppCompatDialogFragment {
                             fileUri = null;
                         }else{
                             //"pictures/" + firebaseDB.FAMILIES + "/" + imageFileName
-                            insert_dialogInterface.applyTexts(familyName, imageFileName, fileUri);
+                            insertDialogInterface.applyTexts(familyName, imageFileName, fileUri);
                         }
                     }
                 })
@@ -105,7 +104,7 @@ public class InsertDialog extends AppCompatDialogFragment {
         fab_add_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImagePicker.Companion.with(InsertDialog.this)
+                ImagePicker.Companion.with(InsertFamilyDialog.this)
                         .crop()	    			//Crop image(Optional), Check Customization for more option
                         .compress(1024)			//Final image size will be less than 1 MB(Optional)
                         .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
@@ -114,11 +113,11 @@ public class InsertDialog extends AppCompatDialogFragment {
         });
     }
 
-    public void setInsertDialogInterface(insert_DialogInterface insert_dialogInterface){
-        this.insert_dialogInterface = insert_dialogInterface;
+    public void setInsertDialogInterface(InsertDialogInterface insertDialogInterface){
+        this.insertDialogInterface = insertDialogInterface;
     }
 
-    public interface insert_DialogInterface {
-        void applyTexts(String familyName,String familyImagePath,Uri imageUri);
-    }
+//    public interface insert_DialogInterface {
+//        void applyTexts(String familyName,String familyImagePath,Uri imageUri);
+//    }
 }
