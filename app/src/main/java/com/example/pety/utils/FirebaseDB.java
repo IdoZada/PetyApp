@@ -229,10 +229,8 @@ public class FirebaseDB {
                 snapshot.getRef().removeValue();
                 Log.d("TAG", "Deleted " + snapshot.child("family_key").toString() + " family from " + snapshot.child("f_name").toString());
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
 
@@ -246,20 +244,35 @@ public class FirebaseDB {
         myPic.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d("TAG", "onSuccess: delete pic from storage database");
+                Log.d("TAG", "onSuccess: delete family pic from storage database");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("TAG", "onFailure: unable to delete pic from storage database");
+                Log.d("TAG", "onFailure: unable to delete family pic from storage database");
             }
         });
-        //TODO Remove all pets from realtime database
 
-        //TODO Remove all pictures of pets from storage firebase
+        //Remove all pictures of pets from storage firebase
+        Log.d("TAG", "pet images " + family.getPets().values());
+        List<Pet> petList = new ArrayList<>(family.getPets().values());
+        for(int i = 0 ; i < petList.size(); i++){
+            Pet pet = (Pet) Converter.fromMap((Map<String, Object>) petList.get(i));
+            StorageReference myPicPet = getFirebaseStorage().getReferenceFromUrl(pet.getImage_url());
+            myPicPet.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("TAG", "onSuccess: delete pet pic from storage database");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("TAG", "onFailure: unable to delete pet pic from storage database");
+                }
+            });
+        }
     }
-
-
+    
     public void deleteAllPetImagesFromStorageDB(){
 
     }

@@ -100,7 +100,10 @@ public class FamilyFragment extends Fragment  {
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            Log.d("TAG", "onClick: " + family.getPets().values());
+
                             firebaseDB.deleteFamilyFromDB(family,families.get(position).getFamily_key());
+                            currentUser.getFamilies_map().remove(families.get(position).getFamily_key());
                             families.remove(position);
                             itemFamilyAdapter.notifyItemRemoved(position);
                         }

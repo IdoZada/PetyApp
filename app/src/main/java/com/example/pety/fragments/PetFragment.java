@@ -22,6 +22,7 @@ import com.example.pety.adapters.ItemPetAdapter;
 import com.example.pety.interfaces.OnItemClickListener;
 import com.example.pety.objects.Family;
 import com.example.pety.objects.Pet;
+import com.example.pety.utils.Converter;
 import com.example.pety.utils.FirebaseDB;
 
 import java.util.ArrayList;
@@ -58,7 +59,6 @@ public class PetFragment extends Fragment {
         itemPetAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-
 //                Family family = families.get(position);
 //                sendFamilyCallback.sendFamily(family);
             }
@@ -115,7 +115,7 @@ public class PetFragment extends Fragment {
         // = fromMap(family.getPets().values())
         List<Pet> petList = new ArrayList<Pet>(family.getPets().values());
         for(int i = 0 ; i < petList.size(); i++){
-          Pet pet = fromMap((Map<String, Object>) petList.get(i));
+          Pet pet = (Pet) Converter.fromMap((Map<String, Object>) petList.get(i));
           pets.add(pet);
         }
         //pets.addAll(petList);
@@ -123,22 +123,22 @@ public class PetFragment extends Fragment {
         Log.d("TAG", "displayReceivedData: " + pets);
     }
 
-    public Pet fromMap(Map<String, Object> result){
-        Pet pet = new Pet();
-        Object pet_id = result.get("pet_id");
-        Object name = result.get("name");
-        Object image_url = result.get("image_url");
-        Object pet_type = result.get("pet_type");
-        Object birthday = result.get("birthday");
-
-        pet.setPet_id(pet_id.toString());
-        pet.setName(name.toString());
-        pet.setImage_url(image_url.toString());
-        pet.setPet_type(pet_type.toString());
-        pet.setBirthday(birthday.toString());
-
-        return pet;
-    }
+//    public Pet fromMap(Map<String, Object> result){
+//        Pet pet = new Pet();
+//        Object pet_id = result.get("pet_id");
+//        Object name = result.get("name");
+//        Object image_url = result.get("image_url");
+//        Object pet_type = result.get("pet_type");
+//        Object birthday = result.get("birthday");
+//
+//        pet.setPet_id(pet_id.toString());
+//        pet.setName(name.toString());
+//        pet.setImage_url(image_url.toString());
+//        pet.setPet_type(pet_type.toString());
+//        pet.setBirthday(birthday.toString());
+//
+//        return pet;
+//    }
 
     public void setPetItem(String petName, String petType, String birthday, String petImageName, Uri imageUri){
         Log.d("TAG", "setPetItem: " + petName + " " + petType + " " + birthday + " " + petImageName + " " + imageUri);
