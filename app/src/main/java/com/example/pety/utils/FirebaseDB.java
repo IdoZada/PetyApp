@@ -130,7 +130,7 @@ public class FirebaseDB {
 
         Log.d(TAG, "retrieveAllFamilies: " + families_map.size());
 
-        for (String key: families_map.keySet()) {
+        for (String key : families_map.keySet()) {
             myFamilies.child(key).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -144,8 +144,9 @@ public class FirebaseDB {
                         String familyImagePath = task.getResult().child("imageURL").getValue().toString();
                         if (task.getResult().hasChild("pets")) {
                             pets = (Map<String, Pet>) task.getResult().child("pets").getValue();
-                            Log.d("TAG", "onComplete: retrieve pets map " + pets);
-                            family.setPets(pets);
+                            Map<String, Pet> pets_map = Converter.convertPets(pets);
+                            Log.d("TAG", "onComplete: retrieve pets map " + pets_map);
+                            family.setPets(pets_map);
                         }
                         family.setFamily_key(family_key);
                         family.setF_name(familyName);
@@ -157,6 +158,7 @@ public class FirebaseDB {
         }
 
     }
+
 
     /**
      * This function store in the database new family
@@ -194,8 +196,9 @@ public class FirebaseDB {
         });
     }
 
-    public void writeNewPetToDB(Pet pet , Family family,String imageName ,Uri contentUri){
+    public void writeNewPetToDB(Pet pet, Family family, String imageName, Uri contentUri) {
         String key = getDatabase().getReference().child(FAMILIES).child(family.getFamily_key()).child(PETS).push().getKey();
+        family.getPets().put(key, pet);
         final StorageReference image = getFirebaseStorage().getReference().child("pictures/" + imageName);
         image.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -229,6 +232,7 @@ public class FirebaseDB {
                 snapshot.getRef().removeValue();
                 Log.d("TAG", "Deleted " + snapshot.child("family_key").toString() + " family from " + snapshot.child("f_name").toString());
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -255,10 +259,8 @@ public class FirebaseDB {
 
         //Remove all pictures of pets from storage firebase
         Log.d("TAG", "pet images " + family.getPets().values());
-        List<Pet> petList = new ArrayList<>(family.getPets().values());
-        for(int i = 0 ; i < petList.size(); i++){
-            Pet pet = (Pet) Converter.fromMap((Map<String, Object>) petList.get(i));
-            StorageReference myPicPet = getFirebaseStorage().getReferenceFromUrl(pet.getImage_url());
+        for (Map.Entry<String, Pet> entry : family.getPets().entrySet()) {
+            StorageReference myPicPet = getFirebaseStorage().getReferenceFromUrl(entry.getValue().getImage_url());
             myPicPet.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -272,12 +274,39 @@ public class FirebaseDB {
             });
         }
     }
-    
-    public void deleteAllPetImagesFromStorageDB(){
+
+    public void deleteAllPetImagesFromStorageDB() {
 
     }
 
-    public void deletePetFromDB(Pet pet, String pet_key){
+    public void deletePetFromDB(Pet pet,String family_key) {
+        Log.d("TAG", "deletePetFromDB: " + pet.getPet_id());
 
+        //Remove pet from families
+        DatabaseReference myPet = getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet.getPet_id());
+        myPet.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                snapshot.getRef().removeValue();
+                Log.d("TAG", "Deleted " + snapshot.child("pet_key").toString() + " pet from " + snapshot.child("f_name").toString());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        //Remove pet image from firebase storage
+        StorageReference myPicPet = getFirebaseStorage().getReferenceFromUrl(pet.getImage_url());
+        myPicPet.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("TAG", "onSuccess: delete pet pic from storage database");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("TAG", "onFailure: unable to delete pet pic from storage database");
+            }
+        });
     }
 }

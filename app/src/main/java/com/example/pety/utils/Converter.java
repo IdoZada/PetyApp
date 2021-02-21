@@ -2,6 +2,7 @@ package com.example.pety.utils;
 
 import com.example.pety.objects.Pet;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Converter {
@@ -21,5 +22,14 @@ public class Converter {
         pet.setBirthday(birthday.toString());
 
         return pet;
+    }
+
+    static Map<String, Pet> convertPets(Map<String, Pet> pets) {
+        Map<String,Pet> pets_map = new HashMap<>();
+        for (Map.Entry<String,Pet> entry : pets.entrySet()){
+            Pet pet = (Pet) Converter.fromMap((Map<String, Object>) entry.getValue());
+            pets_map.put(entry.getKey(),pet);
+        }
+        return pets_map;
     }
 }

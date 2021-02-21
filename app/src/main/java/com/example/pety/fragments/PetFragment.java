@@ -85,14 +85,16 @@ public class PetFragment extends Fragment {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             int position  = viewHolder.getAdapterPosition();
             Pet pet = pets.get(position);
+
             new AlertDialog.Builder(getContext())
                     .setTitle("Delete")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-//                            firebaseDB.deleteFamilyFromDB(family,families.get(position).getFamily_key());
-//                            families.remove(position);
-//                            itemAdapter.notifyItemRemoved(position);
+                            firebaseDB.deletePetFromDB(pet, family.getFamily_key());
+                            family.getPets().remove(pet.getPet_id());
+                            pets.remove(position);
+                            itemPetAdapter.notifyItemRemoved(position);
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -112,12 +114,16 @@ public class PetFragment extends Fragment {
         this.family = family;
 
 
-        // = fromMap(family.getPets().values())
-        List<Pet> petList = new ArrayList<Pet>(family.getPets().values());
-        for(int i = 0 ; i < petList.size(); i++){
-          Pet pet = (Pet) Converter.fromMap((Map<String, Object>) petList.get(i));
-          pets.add(pet);
+        for (Map.Entry<String,Pet> entry : family.getPets().entrySet()){
+            pets.add(entry.getValue());
         }
+
+        // = fromMap(family.getPets().values())
+//        List<Pet> petList = new ArrayList<Pet>(family.getPets().values());
+//        for(int i = 0 ; i < petList.size(); i++){
+//            Pet pet = (Pet) Converter.fromMap((Map<String, Object>) petList.get(i));
+//
+//        }
         //pets.addAll(petList);
 
         Log.d("TAG", "displayReceivedData: " + pets);

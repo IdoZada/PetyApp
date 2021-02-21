@@ -60,7 +60,6 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MySP.initialize(Main_Activity.this);
 
         findViews();
         initViews();
@@ -78,26 +77,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         familyFragment.setSendFamilyCallback(sendFamilyCallback);
 
         firebaseDB.retrieveUserDataFromDB(sendFamilyCallback);
-        //Log.d("TAG", "onCreate: " + currentUser.getF_name());
 
-
-//        Handler handler = new Handler();
-//        int delay = 2000; //millisecond
-//        handler.postDelayed(new Runnable(){
-//            public void run() {
-////                if(currentUser.getF_name() ==  null)//checking if the data is loaded or not
-//                    Log.d("RealTimeDatabase", "run: " );
-//
-//            }
-//        }, delay);
-
-
-
-
-        //currentUser = getCurrentUserFromSP();
-        //Log.d("RealTimeDatabase", currentUser.toString());
-
-        //sendFamilyCallback.sendUser(currentUser);
         Log.d("TAG", "after init family fragment ");
 
 
