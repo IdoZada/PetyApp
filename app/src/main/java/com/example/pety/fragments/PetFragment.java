@@ -20,18 +20,14 @@ import android.view.ViewGroup;
 import com.example.pety.R;
 import com.example.pety.adapters.ItemPetAdapter;
 import com.example.pety.interfaces.OnItemClickListener;
+import com.example.pety.objects.Fab;
 import com.example.pety.objects.Family;
 import com.example.pety.objects.Pet;
-import com.example.pety.utils.Converter;
 import com.example.pety.utils.FirebaseDB;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class PetFragment extends Fragment {
 
@@ -41,7 +37,9 @@ public class PetFragment extends Fragment {
     Family family;
     Context mContext;
     FirebaseDB firebaseDB = FirebaseDB.getInstance();
-    int counter  = 0;
+    FamilyFragment.SendFamilyCallback sendFamilyCallback;
+    WalkFeedFragment walkFeedFragment;
+    //BeautyHealthFragment beautyHealthFragment;
 
     public PetFragment(Context context){
         this.mContext = context;
@@ -55,12 +53,20 @@ public class PetFragment extends Fragment {
        View view = inflater.inflate(R.layout.fragment_pet, container, false);
         Log.d("TAG", "onCreateView: pet fragment ");
         findViews(view);
+        //initFragments();
 
         itemPetAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
 //                Family family = families.get(position);
 //                sendFamilyCallback.sendFamily(family);
+
+            }
+
+            @Override
+            public void onItemCareClick(int position, Fab chose_fab) {
+                Pet pet = pets.get(position);
+                sendFamilyCallback.sendPet(family,pet,chose_fab);
             }
         });
 
@@ -107,6 +113,11 @@ public class PetFragment extends Fragment {
                     .show();
         }
     };
+
+    public void setSendFamilyCallback(FamilyFragment.SendFamilyCallback sendFamilyCallback){
+        this.sendFamilyCallback = sendFamilyCallback;
+    }
+
 
     public void displayReceivedData(Family family)
     {
@@ -170,4 +181,9 @@ public class PetFragment extends Fragment {
     private void findViews(View view) {
         recyclerView = view.findViewById(R.id.recyclerView);
     }
+
+//    private void initFragments(){
+//        walkFeedFragment = new WalkFeedFragment(getContext());
+//        //beautyHealthFragment = new BeautyHealthFragment();
+//    }
 }

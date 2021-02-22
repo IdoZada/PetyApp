@@ -22,7 +22,9 @@ import android.widget.ImageView;
 import com.example.pety.R;
 import com.example.pety.adapters.ItemFamilyAdapter;
 import com.example.pety.interfaces.OnItemClickListener;
+import com.example.pety.objects.Fab;
 import com.example.pety.objects.Family;
+import com.example.pety.objects.Pet;
 import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
 
@@ -69,12 +71,15 @@ public class FamilyFragment extends Fragment  {
         itemFamilyAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-
                 Family family = families.get(position);
                 sendFamilyCallback.sendFamily(family);
             }
-        });
 
+            @Override
+            public void onItemCareClick(int position, Fab chose_fab) {
+
+            }
+        });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(itemFamilyAdapter);
@@ -122,6 +127,7 @@ public class FamilyFragment extends Fragment  {
     public interface SendFamilyCallback {
         void sendFamily(Family family);
         void sendUser(User user);
+        void sendPet(Family family,Pet pet, Fab chose_fab);
     }
 
     public void setSendFamilyCallback(SendFamilyCallback sendFamilyCallback){

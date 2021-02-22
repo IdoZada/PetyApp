@@ -10,6 +10,9 @@
 
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+
+    <string name="pick_time" translatable="false">Pick The Time</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">ShareFamilyFragment</string>
     <!-- TODO: Remove or change this placeholder text -->

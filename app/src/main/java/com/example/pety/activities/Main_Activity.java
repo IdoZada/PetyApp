@@ -18,11 +18,14 @@ import com.example.pety.fragments.FamilyFragment;
 import com.example.pety.fragments.HomeFragment;
 import com.example.pety.fragments.PetFragment;
 import com.example.pety.fragments.ShareFamilyFragment;
+import com.example.pety.fragments.WalkFeedFragment;
 import com.example.pety.interfaces.InsertDialogInterface;
 import com.example.pety.objects.Fab;
 import com.example.pety.objects.Family;
 import com.example.pety.objects.InsertFamilyDialog;
 import com.example.pety.objects.InsertPetDialog;
+import com.example.pety.objects.InsertTimeDialog;
+import com.example.pety.objects.Pet;
 import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
 import com.example.pety.utils.MySP;
@@ -55,6 +58,9 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
     ShareFamilyFragment shareFamilyFragment;
     Fab fab = Fab.FAMILY_FAB;
 
+    WalkFeedFragment walkFeedFragment;
+    InsertTimeDialog insertTimeDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +82,9 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         familyFragment = new FamilyFragment(this);
         familyFragment.setSendFamilyCallback(sendFamilyCallback);
 
+        petFragment = new PetFragment(this);
+        petFragment.setSendFamilyCallback(sendFamilyCallback);
+
         firebaseDB.retrieveUserDataFromDB(sendFamilyCallback);
 
         Log.d("TAG", "after init family fragment ");
@@ -85,6 +94,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
 
         insertFamilyDialog.setInsertDialogInterface(insertDialogInterface);
         insertPetDialog.setInsertDialogInterface(insertDialogInterface);
+        insertTimeDialog.setInsertDialogInterface(insertDialogInterface);
 
     }
 
@@ -93,9 +103,11 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
     private void initFragments(){
         insertFamilyDialog = new InsertFamilyDialog();
         insertPetDialog = new InsertPetDialog();
+        insertTimeDialog = new InsertTimeDialog();
         homeFragment = new HomeFragment();
         petFragment = new PetFragment(this);
         shareFamilyFragment = new ShareFamilyFragment();
+        walkFeedFragment = new WalkFeedFragment(this);
     }
 
    private User getCurrentUserFromSP(){
@@ -122,6 +134,19 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
             }
 
         }
+
+        @Override
+        public void sendPet(Family family,Pet pet, Fab chose_fab) {
+            fab = chose_fab;
+            if(Fab.WALK_FAB == chose_fab || Fab.FEED_FAB == chose_fab){
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,walkFeedFragment).commit();
+                walkFeedFragment.setPet(family,pet,chose_fab);
+            }else{
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,walkFeedFragment).commit();
+//                walkFeedFragment.setPet(family,pet,care);
+            }
+
+        }
     };
 
     private InsertDialogInterface insertDialogInterface = new InsertDialogInterface() {
@@ -135,6 +160,19 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         public void applyAttPet(String petName, String petType, String birthday, String petImagePath, Uri imageUri) {
             //set item pet
             petFragment.setPetItem(petName,petType, birthday, petImagePath, imageUri);
+        }
+
+        @Override
+        public void applyTime(String time) {
+            if(fab == Fab.WALK_FAB){
+                Log.d("TAG", "applyTime: from main activity (Walk)" + time);
+                walkFeedFragment.setWalkItem(time);
+            }else{
+                Log.d("TAG", "applyTime: from main activity (Feed)" + time);
+                walkFeedFragment.setFeedItem(time);
+            }
+
+
         }
     };
 
@@ -192,6 +230,14 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
                         break;
                     case SHARE_MY_FAMILY_FAB:
                         Log.d("TAG", "onClick: SHARE_MY_FAMILY");
+                        break;
+                    case WALK_FAB:
+                        insertTimeDialog.show(getSupportFragmentManager(),"Insert walk");
+                        Log.d("TAG", "onClick: WALK_FAB");
+                        break;
+                    case FEED_FAB:
+                        insertTimeDialog.show(getSupportFragmentManager(),"Insert feed");
+                        Log.d("TAG", "onClick: FEED_FAB");
                         break;
                 }
 

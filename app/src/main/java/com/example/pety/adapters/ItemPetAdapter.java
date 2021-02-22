@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.pety.R;
 import com.example.pety.interfaces.OnItemClickListener;
+import com.example.pety.objects.Fab;
 import com.example.pety.objects.Pet;
 
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
             pet_item_img = itemView.findViewById(R.id.pet_item_img);
             pet_item_type = itemView.findViewById(R.id.pet_item_type);
             pet_item_birthday = itemView.findViewById(R.id.pet_item_birthday);
-            pet_item_progressbar_walking = itemView.findViewById(R.id.pet_item_progressbar_walking);
+            pet_item_progressbar_walking = itemView.findViewById(R.id.pet_progressbar_walk_feed);
             pet_item_progressbar_feeding = itemView.findViewById(R.id.pet_item_progressbar_feeding);
             pet_item_progressbar_beauty_care = itemView.findViewById(R.id.pet_item_progressbar_beauty_care);
             pet_item_progressbar_health = itemView.findViewById(R.id.pet_item_progressbar_health);
@@ -99,6 +100,54 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
                     }
                 }
             });
+
+            pet_item_progressbar_walking.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            mListener.onItemCareClick(position, Fab.WALK_FAB);
+                        }
+                    }
+                }
+            });
+
+            pet_item_progressbar_feeding.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            mListener.onItemCareClick(position,Fab.FEED_FAB);
+                        }
+                    }
+                }
+            });
+            pet_item_progressbar_beauty_care.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            //mListener.onItemClick(position);
+                            mListener.onItemCareClick(position, Fab.BEAUTY_FAB);
+                        }
+                    }
+                }
+            });
+            pet_item_progressbar_health.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            mListener.onItemCareClick(position, Fab.HEALTH_FAB);
+                        }
+                    }
+                }
+            });
+
 
         }
     }

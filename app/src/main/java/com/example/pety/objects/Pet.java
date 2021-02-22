@@ -11,15 +11,15 @@ public class Pet {
     private String birthday;
     private String pet_type;
     private String image_url;
-    private ArrayList<Walk> walks;
-    private ArrayList<Feed> feeds;
-    private ArrayList<Vaccine> vaccines;
-    private ArrayList<Beauty> beauties;
+    private Map<String,Walk> walks = new HashMap<>();
+    private Map<String,Feed> feeds = new HashMap<>();
+    private Map<String,Vaccine> vaccines = new HashMap<>();
+    private Map<String,Beauty> beauties = new HashMap<>();
 
     public Pet() {
     }
 
-    public Pet(String pet_id, String name, String birthday, String pet_type, String image_url, ArrayList<Walk> walks, ArrayList<Feed> feeds, ArrayList<Vaccine> vaccines, ArrayList<Beauty> beauties) {
+    public Pet(String pet_id, String name, String birthday, String pet_type, String image_url, Map<String,Walk> walks, Map<String,Feed> feeds, Map<String,Vaccine> vaccines, Map<String,Beauty> beauties) {
         this.pet_id = pet_id;
         this.name = name;
         this.birthday = birthday;
@@ -83,35 +83,50 @@ public class Pet {
         this.image_url = image_url;
     }
 
-    public ArrayList<Walk> getWalks() {
+    public Map<String,Walk> getWalks() {
         return walks;
     }
 
-    public void setWalks(ArrayList<Walk> walks) {
+    public void setWalks(Map<String,Walk> walks) {
         this.walks = walks;
     }
 
-    public ArrayList<Feed> getFeeds() {
+    public Map<String,Feed>  getFeeds() {
         return feeds;
     }
 
-    public void setFeeds(ArrayList<Feed> feeds) {
+    public void setFeeds(Map<String,Feed> feeds) {
         this.feeds = feeds;
     }
 
-    public ArrayList<Vaccine> getVaccines() {
+    public Map<String,Vaccine> getVaccines() {
         return vaccines;
     }
 
-    public void setVaccines(ArrayList<Vaccine> vaccines) {
+    public void setVaccines(Map<String,Vaccine>  vaccines) {
         this.vaccines = vaccines;
     }
 
-    public ArrayList<Beauty> getBeauties() {
+    public Map<String,Beauty> getBeauties() {
         return beauties;
     }
 
-    public void setBeauties(ArrayList<Beauty> beauties) {
+    public void setBeauties(Map<String,Beauty> beauties) {
         this.beauties = beauties;
+    }
+
+    @Override
+    public String toString() {
+        return "Pet{" +
+                "pet_id='" + pet_id + '\'' +
+                ", name='" + name + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", pet_type='" + pet_type + '\'' +
+                ", image_url='" + image_url + '\'' +
+                ", walks=" + walks +
+                ", feeds=" + feeds +
+                ", vaccines=" + vaccines +
+                ", beauties=" + beauties +
+                '}';
     }
 }
