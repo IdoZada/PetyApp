@@ -1,7 +1,5 @@
 package com.example.pety.objects;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,13 +11,13 @@ public class Pet {
     private String image_url;
     private Map<String,Walk> walks = new HashMap<>();
     private Map<String,Feed> feeds = new HashMap<>();
-    private Map<String,Vaccine> vaccines = new HashMap<>();
-    private Map<String,Beauty> beauties = new HashMap<>();
+    private Map<String, Health> health = new HashMap<>();
+    private Map<String,Beauty> beauty = new HashMap<>();
 
     public Pet() {
     }
 
-    public Pet(String pet_id, String name, String birthday, String pet_type, String image_url, Map<String,Walk> walks, Map<String,Feed> feeds, Map<String,Vaccine> vaccines, Map<String,Beauty> beauties) {
+    public Pet(String pet_id, String name, String birthday, String pet_type, String image_url, Map<String,Walk> walks, Map<String,Feed> feeds, Map<String, Health> health, Map<String,Beauty> beauty) {
         this.pet_id = pet_id;
         this.name = name;
         this.birthday = birthday;
@@ -27,8 +25,8 @@ public class Pet {
         this.image_url = image_url;
         this.walks = walks;
         this.feeds = feeds;
-        this.vaccines = vaccines;
-        this.beauties = beauties;
+        this.health = health;
+        this.beauty = beauty;
     }
 
 
@@ -99,20 +97,20 @@ public class Pet {
         this.feeds = feeds;
     }
 
-    public Map<String,Vaccine> getVaccines() {
-        return vaccines;
+    public Map<String, Health> getHealth() {
+        return health;
     }
 
-    public void setVaccines(Map<String,Vaccine>  vaccines) {
-        this.vaccines = vaccines;
+    public void setHealth(Map<String, Health>  health) {
+        this.health = health;
     }
 
-    public Map<String,Beauty> getBeauties() {
-        return beauties;
+    public Map<String,Beauty> getBeauty() {
+        return beauty;
     }
 
-    public void setBeauties(Map<String,Beauty> beauties) {
-        this.beauties = beauties;
+    public void setBeauty(Map<String,Beauty> beauty) {
+        this.beauty = beauty;
     }
 
     @Override
@@ -125,8 +123,8 @@ public class Pet {
                 ", image_url='" + image_url + '\'' +
                 ", walks=" + walks +
                 ", feeds=" + feeds +
-                ", vaccines=" + vaccines +
-                ", beauties=" + beauties +
+                ", health=" + health +
+                ", beauty=" + beauty +
                 '}';
     }
 }

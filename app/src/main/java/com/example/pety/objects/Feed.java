@@ -1,6 +1,7 @@
 package com.example.pety.objects;
 
 public class Feed {
+    private String id;
     private String time;
     private boolean isActive;
 
@@ -26,5 +27,13 @@ public class Feed {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

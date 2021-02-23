@@ -1,13 +1,14 @@
 package com.example.pety.objects;
 
-public class Vaccine {
+public class Health {
+    private String id;
     private String time;
     private boolean isActive;
 
-    public Vaccine() {
+    public Health() {
     }
 
-    public Vaccine(String time, boolean isActive) {
+    public Health(String time, boolean isActive) {
         this.time = time;
         this.isActive = isActive;
     }
@@ -27,4 +28,14 @@ public class Vaccine {
     public void setActive(boolean active) {
         isActive = active;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 }
+

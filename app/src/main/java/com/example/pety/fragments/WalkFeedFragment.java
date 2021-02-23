@@ -23,6 +23,7 @@ import com.example.pety.objects.Family;
 import com.example.pety.objects.Feed;
 import com.example.pety.objects.Pet;
 import com.example.pety.objects.Walk;
+import com.example.pety.utils.FirebaseDB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ public class WalkFeedFragment<T> extends Fragment {
     ImageView pet_progressbar_img_walk_feed;
     RecyclerView pet_recyclerView_walk_feed;
     ItemWalkFeedAdapter itemWalkFeedAdapter;
+    FirebaseDB firebaseDB = FirebaseDB.getInstance();
     ArrayList<T> lists;
     Fab fab = Fab.WALK_FAB;
     Family family;
@@ -99,8 +101,7 @@ public class WalkFeedFragment<T> extends Fragment {
             pet.setWalks(walkMap);
         }
 
-        pet.getWalks().put("S0001",walk);
-        //TODO FirebaseDB.writeNewWalk(Walk walk,Pet pet --> this.pet)
+        firebaseDB.writeNewWalkTimeToDB(pet,family,walk);
         lists.add(0,(T) walk);
         Log.d("TAG", "setWalkItem: " + lists);
         itemWalkFeedAdapter.notifyItemInserted(0);
@@ -114,7 +115,7 @@ public class WalkFeedFragment<T> extends Fragment {
             feedMap = new HashMap<>();
             pet.setFeeds(feedMap);
         }
-
+        //TODO FirebaseDB.writeNewFeed(Walk walk,Pet pet --> this.pet)
         pet.getFeeds().put("S0002",feed);
         lists.add(0,(T) feed);
         Log.d("TAG", "setFeedItem: " + lists);

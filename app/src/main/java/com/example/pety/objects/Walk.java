@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Walk {
-    private String walk_id;
+    private String id;
     private String time;
     private boolean isActive;
 
@@ -32,17 +32,17 @@ public class Walk {
         isActive = active;
     }
 
-    public String getWalk_id() {
-        return walk_id;
+    public String getId() {
+        return id;
     }
 
-    public void setWalk_id(String walk_id) {
-        this.walk_id = walk_id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("walk_id",walk_id);
+        result.put("id",id);
         result.put("time", time);
         result.put("isActive", isActive);
         return result;
@@ -51,7 +51,7 @@ public class Walk {
     @Override
     public String toString() {
         return "Walk{" +
-                "walk_id='" + walk_id + '\'' +
+                "id='" + id + '\'' +
                 ", time='" + time + '\'' +
                 ", isActive=" + isActive +
                 '}';

@@ -6,10 +6,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.pety.fragments.FamilyFragment;
+import com.example.pety.objects.Fab;
 import com.example.pety.objects.Family;
 import com.example.pety.objects.Pet;
 import com.example.pety.objects.User;
 
+import com.example.pety.objects.Walk;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -145,7 +147,8 @@ public class FirebaseDB {
                         if (task.getResult().hasChild("pets")) {
                             pets = (Map<String, Pet>) task.getResult().child("pets").getValue();
                             Map<String, Pet> pets_map = Converter.convertPets(pets);
-                            Log.d("TAG", "onComplete: retrieve pets map " + pets_map);
+                            Log.d("TAG", "onComplete: retrieve pets map " + pets);
+
                             family.setPets(pets_map);
                         }
                         family.setFamily_key(family_key);
@@ -220,6 +223,22 @@ public class FirebaseDB {
             }
         });
     }
+
+    public void writeNewWalkTimeToDB(Pet pet, Family family, Walk walk) {
+        String key = getDatabase().getReference().child(FAMILIES).child(family.getFamily_key()).child(PETS).child("walks").push().getKey();
+        pet.getWalks().put(key, walk);
+        walk.setId(key);
+        Map<String, Object> walkValues = walk.toMap();
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/" + FAMILIES + "/" + family.getFamily_key() + "/" + PETS + "/" + pet.getPet_id() + "/" + "walks" + "/" + key, walkValues);
+        getDatabase().getReference().updateChildren(childUpdates);
+    }
+
+    //TODO writeNewFeedTimeToDB
+
+    //TODO writeNewHealthToDB
+
+    //TODO writeNewBeautyToDB
 
     public void deleteFamilyFromDB(Family family, String family_key) {
         Log.d("TAG", "deleteFamilyFromDB: " + family_key);
