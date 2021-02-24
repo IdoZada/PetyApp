@@ -68,6 +68,11 @@ public class PetFragment extends Fragment {
                 Pet pet = pets.get(position);
                 sendFamilyCallback.sendPet(family,pet,chose_fab);
             }
+
+            @Override
+            public void onSwitchItemClick(boolean isChecked, int position) {
+
+            }
         });
 
 

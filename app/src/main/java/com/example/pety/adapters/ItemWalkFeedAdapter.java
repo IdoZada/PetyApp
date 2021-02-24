@@ -1,9 +1,11 @@
 package com.example.pety.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,8 +50,10 @@ public class ItemWalkFeedAdapter<T> extends RecyclerView.Adapter<ItemWalkFeedAda
         T generic = mArrayList.get(position);
         if(generic instanceof Walk){
             holder.time_LBL_walk.setText(((Walk) generic).getTime());
+            holder.time_piker_switch.setChecked(((Walk)generic).isActive());
         }else if (generic instanceof Feed){
             holder.time_LBL_walk.setText(((Feed) generic).getTime());
+            holder.time_piker_switch.setActivated(((Feed)generic).isActive());
         }
     }
 
@@ -75,6 +79,44 @@ public class ItemWalkFeedAdapter<T> extends RecyclerView.Adapter<ItemWalkFeedAda
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
                             mListener.onItemClick(position);
+                        }
+                    }
+                }
+            });
+
+            time_piker_switch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Log.d("TAG", "onCheckedChanged: " + isChecked);
+                    if (mListener != null) {
+                        int position = getAdapterPosition();
+
+                        if (position != RecyclerView.NO_POSITION) {
+                            T generic = mArrayList.get(position);
+                            if(generic instanceof Walk){
+                                Walk walk = (Walk) generic;
+                                if(walk.isActive() == true){
+                                    walk.setActive(false);
+
+                                }else{
+                                    walk.setActive(true);
+                                }
+                                mListener.onSwitchItemClick(walk.isActive(),position);
+                            }else{
+                                if(generic instanceof Feed){
+                                    Feed feed = (Feed) generic;
+                                    if(feed.isActive() == true){
+                                        feed.setActive(false);
+
+                                    }else{
+                                        feed.setActive(true);
+                                    }
+                                    mListener.onSwitchItemClick(feed.isActive(),position);
+                                }
+                            }
+
+
+
                         }
                     }
                 }

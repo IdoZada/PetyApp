@@ -79,6 +79,11 @@ public class FamilyFragment extends Fragment  {
             public void onItemCareClick(int position, Fab chose_fab) {
 
             }
+
+            @Override
+            public void onSwitchItemClick(boolean isChecked, int position) {
+
+            }
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

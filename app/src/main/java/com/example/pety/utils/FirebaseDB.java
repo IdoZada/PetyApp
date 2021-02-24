@@ -6,8 +6,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.pety.fragments.FamilyFragment;
+import com.example.pety.objects.Beauty;
 import com.example.pety.objects.Fab;
 import com.example.pety.objects.Family;
+import com.example.pety.objects.Feed;
+import com.example.pety.objects.Health;
 import com.example.pety.objects.Pet;
 import com.example.pety.objects.User;
 
@@ -43,6 +46,10 @@ public class FirebaseDB {
     public static final String PHONE_NUMBER = "phone_number";
     public static final String FAMILIES = "families";
     public static final String PETS = "pets";
+    public static final String WALKS = "walks";
+    public static final String FEEDS = "feeds";
+    public static final String BEAUTY = "beauty";
+    public static final String HEALTH = "health";
 
     private FirebaseAuth authDatabase;
     private FirebaseDatabase database;
@@ -223,22 +230,30 @@ public class FirebaseDB {
             }
         });
     }
-
-    public void writeNewWalkTimeToDB(Pet pet, Family family, Walk walk) {
-        String key = getDatabase().getReference().child(FAMILIES).child(family.getFamily_key()).child(PETS).child("walks").push().getKey();
-        pet.getWalks().put(key, walk);
-        walk.setId(key);
-        Map<String, Object> walkValues = walk.toMap();
+    public void writeNewTimeToDB(Pet pet, Family family, Object obj , String option) {
+        String key = getDatabase().getReference().child(FAMILIES).child(family.getFamily_key()).child(PETS).child(option).push().getKey();
+        Map<String, Object> values = null;
+        if(obj instanceof Walk){
+            pet.getWalks().put(key, (Walk) obj);
+            ((Walk) obj).setId(key);
+            values = ((Walk) obj).toMap();
+        }else if(obj instanceof Feed){
+            pet.getFeeds().put(key, (Feed) obj);
+            ((Feed) obj).setId(key);
+            values = ((Feed) obj).toMap();
+        }else if(obj instanceof Beauty){
+            pet.getBeauty().put(key, (Beauty) obj);
+            ((Beauty) obj).setId(key);
+            values = ((Beauty) obj).toMap();
+        }else{
+            pet.getHealth().put(key, (Health) obj);
+            ((Health) obj).setId(key);
+            values = ((Health) obj).toMap();
+        }
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/" + FAMILIES + "/" + family.getFamily_key() + "/" + PETS + "/" + pet.getPet_id() + "/" + "walks" + "/" + key, walkValues);
+        childUpdates.put("/" + FAMILIES + "/" + family.getFamily_key() + "/" + PETS + "/" + pet.getPet_id() + "/" + option + "/" + key, values);
         getDatabase().getReference().updateChildren(childUpdates);
     }
-
-    //TODO writeNewFeedTimeToDB
-
-    //TODO writeNewHealthToDB
-
-    //TODO writeNewBeautyToDB
 
     public void deleteFamilyFromDB(Family family, String family_key) {
         Log.d("TAG", "deleteFamilyFromDB: " + family_key);
@@ -294,7 +309,78 @@ public class FirebaseDB {
         }
     }
 
-    public void deleteAllPetImagesFromStorageDB() {
+    public void updateTimeToDB(String family_key,String pet_key,Object obj){
+        String key;
+        String time = null;
+        String option = null;
+        if(obj instanceof Walk){
+            key = ((Walk) obj).getId();
+            time = ((Walk) obj).getTime();
+            option = firebaseDB.WALKS;
+            Log.d("TAG", "updateTimeToDB: (WALK) 3" + key);
+        }else if(obj instanceof Feed){
+            key = ((Feed) obj).getId();
+            time = ((Feed) obj).getTime();
+            option = firebaseDB.FEEDS;
+            Log.d("TAG", "updateTimeToDB: (FEEDS) 3" + key + " Time: " + time);
+        }else if(obj instanceof Beauty){
+            key = ((Beauty) obj).getId();
+            time = ((Beauty) obj).getTime();
+            option = firebaseDB.BEAUTY;
+        }else{
+            key = ((Health) obj).getId();
+            time = ((Health) obj).getTime();
+            option = firebaseDB.HEALTH;
+        }
+        Log.d("TAG", "updateTimeToDB: " + time);
+        //Remove option from specific pet
+        getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child(option).child(key).child("time").setValue(time);
+//        String finalOption = option;
+//        myOption.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                snapshot.child("time").
+//                Log.d("TAG", "Update " + snapshot.child(finalOption).toString());
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//            }
+//        });
+
+    }
+
+    public void deleteTimeFromDB(String family_key,String pet_key,Object obj) {
+        String key;
+        String option = null;
+        if(obj instanceof Walk){
+            key = ((Walk) obj).getId();
+            option = firebaseDB.WALKS;
+            Log.d("TAG", "deleteTimeFromDB: (WALK) " + key);
+        }else if(obj instanceof Feed){
+            key = ((Feed) obj).getId();
+            option = firebaseDB.FEEDS;
+            Log.d("TAG", "deleteTimeFromDB: (FEEDS) " + key);
+        }else if(obj instanceof Beauty){
+            key = ((Beauty) obj).getId();
+            option = firebaseDB.BEAUTY;
+        }else{
+            key = ((Health) obj).getId();
+            option = firebaseDB.HEALTH;
+        }
+
+        //Remove option from specific pet
+        DatabaseReference myOption = getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child(option).child(key);
+        String finalOption = option;
+        myOption.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                snapshot.getRef().removeValue();
+                Log.d("TAG", "Deleted " + snapshot.child(finalOption).toString());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
     }
 
@@ -327,5 +413,34 @@ public class FirebaseDB {
                 Log.d("TAG", "onFailure: unable to delete pet pic from storage database");
             }
         });
+    }
+
+
+    public void updateSwitchToDB(String family_key,String pet_key,Object obj) {
+        String key;
+        boolean isActive = false;
+        String option = null;
+        if (obj instanceof Walk) {
+            key = ((Walk) obj).getId();
+            isActive = ((Walk) obj).isActive();
+            option = firebaseDB.WALKS;
+            Log.d("TAG", "updateTimeToDB: (WALK) 3" + isActive);
+        } else if (obj instanceof Feed) {
+            key = ((Feed) obj).getId();
+            isActive = ((Feed) obj).isActive();
+            option = firebaseDB.FEEDS;
+            Log.d("TAG", "updateTimeToDB: (FEEDS) 3" + key + " Time: " + isActive);
+        } else if (obj instanceof Beauty) {
+            key = ((Beauty) obj).getId();
+            isActive = ((Beauty) obj).isActive();
+            option = firebaseDB.BEAUTY;
+        } else {
+            key = ((Health) obj).getId();
+            isActive = ((Health) obj).isActive();
+            option = firebaseDB.HEALTH;
+        }
+        Log.d("TAG", "updateTimeToDB: " + isActive);
+        //Remove option from specific pet
+        getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child(option).child(key).child("isActive").setValue(isActive);
     }
 }

@@ -13,7 +13,7 @@
         app:errorEnabled="true"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:padding="15dp"
-        android:hint="Add time"
+        android:hint="Time"
 
         >
 

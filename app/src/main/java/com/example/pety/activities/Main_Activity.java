@@ -74,7 +74,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
 
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer_layout, main_toolbar,
-                R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer_layout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -90,17 +90,17 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         Log.d("TAG", "after init family fragment ");
 
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,homeFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).addToBackStack(null).commit();
 
         insertFamilyDialog.setInsertDialogInterface(insertDialogInterface);
         insertPetDialog.setInsertDialogInterface(insertDialogInterface);
         insertTimeDialog.setInsertDialogInterface(insertDialogInterface);
+        walkFeedFragment.setInsertTimeDialog(insertTimeDialog);
 
     }
 
 
-
-    private void initFragments(){
+    private void initFragments() {
         insertFamilyDialog = new InsertFamilyDialog();
         insertPetDialog = new InsertPetDialog();
         insertTimeDialog = new InsertTimeDialog();
@@ -110,38 +110,38 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         walkFeedFragment = new WalkFeedFragment(this);
     }
 
-   private User getCurrentUserFromSP(){
+    private User getCurrentUserFromSP() {
         mySP = MySP.getInstance();
-       return mySP.readDataFromStorage();
-   }
+        return mySP.readDataFromStorage();
+    }
 
     private FamilyFragment.SendFamilyCallback sendFamilyCallback = new FamilyFragment.SendFamilyCallback() {
         @Override
         public void sendFamily(Family family) {
-            Log.d("TAG", "implement family callback: "+"familyName: "+ family.getF_name() + "imageName: " + family.getImageUrl());
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,petFragment).commit();
+            Log.d("TAG", "implement family callback: " + "familyName: " + family.getF_name() + "imageName: " + family.getImageUrl());
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, petFragment).addToBackStack(null).commit();
             fab = Fab.PET_FAB;
             petFragment.displayReceivedData(family);
         }
 
         @Override
         public void sendUser(User user) {
-            if(user.getFamilies_map().size() == 0){
-                insertFamilyDialog.show(getSupportFragmentManager(),"Insert item");
+            if (user.getFamilies_map().size() == 0) {
+                insertFamilyDialog.show(getSupportFragmentManager(), "Insert item");
 
-            }else if(user.getFamilies_map().size() > 0) {
+            } else if (user.getFamilies_map().size() > 0) {
                 familyFragment.setCurrentUser(user);
             }
 
         }
 
         @Override
-        public void sendPet(Family family,Pet pet, Fab chose_fab) {
+        public void sendPet(Family family, Pet pet, Fab chose_fab) {
             fab = chose_fab;
-            if(Fab.WALK_FAB == chose_fab || Fab.FEED_FAB == chose_fab){
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,walkFeedFragment).commit();
-                walkFeedFragment.setPet(family,pet,chose_fab);
-            }else{
+            if (Fab.WALK_FAB == chose_fab || Fab.FEED_FAB == chose_fab) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, walkFeedFragment).addToBackStack(null).commit();
+                walkFeedFragment.setPet(family, pet, chose_fab);
+            } else {
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,walkFeedFragment).commit();
 //                walkFeedFragment.setPet(family,pet,care);
             }
@@ -151,28 +151,36 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
 
     private InsertDialogInterface insertDialogInterface = new InsertDialogInterface() {
         @Override
-        public void applyTexts(String familyName, String imageName,Uri imageUri) {
-            Log.d("TAG", "familyName: "+ familyName + "imageName: " + imageName + "imageUri: " + imageUri);
-            familyFragment.setItem(familyName,imageName, imageUri);
+        public void applyTexts(String familyName, String imageName, Uri imageUri) {
+            Log.d("TAG", "familyName: " + familyName + "imageName: " + imageName + "imageUri: " + imageUri);
+            familyFragment.setItem(familyName, imageName, imageUri);
         }
 
         @Override
         public void applyAttPet(String petName, String petType, String birthday, String petImagePath, Uri imageUri) {
             //set item pet
-            petFragment.setPetItem(petName,petType, birthday, petImagePath, imageUri);
+            petFragment.setPetItem(petName, petType, birthday, petImagePath, imageUri);
         }
 
         @Override
-        public void applyTime(String time) {
-            if(fab == Fab.WALK_FAB){
-                Log.d("TAG", "applyTime: from main activity (Walk)" + time);
-                walkFeedFragment.setWalkItem(time);
-            }else{
-                Log.d("TAG", "applyTime: from main activity (Feed)" + time);
-                walkFeedFragment.setFeedItem(time);
+        public void applyTime(String time, String op) {
+            if (op.equals(InsertTimeDialog.UPDATE)) {
+                if (fab == Fab.WALK_FAB) {
+                    //Create set walk update method
+                    walkFeedFragment.updateWalkItem(time);
+                } else {
+                    //Create set feed update method
+                    walkFeedFragment.updateFeedItem(time);
+                }
+            } else {
+                if (fab == Fab.WALK_FAB) {
+                    Log.d("TAG", "applyTime: from main activity (Walk)" + time);
+                    walkFeedFragment.setWalkItem(time);
+                } else {
+                    Log.d("TAG", "applyTime: from main activity (Feed)" + time);
+                    walkFeedFragment.setFeedItem(time);
+                }
             }
-
-
         }
     };
 
@@ -180,33 +188,33 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-            switch(item.getItemId()){
+            switch (item.getItemId()) {
                 case R.id.nav_home:
-                        Log.d("TAG", "nav home");
-                        fab_button.setVisibility(View.VISIBLE);
-                        fab = Fab.PET_FAB;
-                        selectedFragment = homeFragment;
+                    Log.d("TAG", "nav home");
+                    fab_button.setVisibility(View.VISIBLE);
+                    fab = Fab.PET_FAB;
+                    selectedFragment = homeFragment;
                     break;
                 case R.id.nav_my_families:
-                        Log.d("TAG", "nav my families");
-                        selectedFragment = familyFragment;
-                        fab  = Fab.FAMILY_FAB;
+                    Log.d("TAG", "nav my families");
+                    selectedFragment = familyFragment;
+                    fab = Fab.FAMILY_FAB;
 
                     break;
                 case R.id.nav_share_families:
-                        Log.d("TAG", "nav share families ");
-                        selectedFragment = shareFamilyFragment;
-                        fab  = Fab.SHARE_MY_FAMILY_FAB;
+                    Log.d("TAG", "nav share families ");
+                    selectedFragment = shareFamilyFragment;
+                    fab = Fab.SHARE_MY_FAMILY_FAB;
                     break;
                 case R.id.nav_info:
-                        Log.d("TAG", "nav info");
-                        fab_button.setVisibility(View.INVISIBLE);
+                    Log.d("TAG", "nav info");
+                    fab_button.setVisibility(View.INVISIBLE);
                     break;
 
             }
 
-            if(selectedFragment != null){
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectedFragment).commit();
+            if (selectedFragment != null) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
             }
             return true;
         }
@@ -218,25 +226,25 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         fab_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (fab){
+                switch (fab) {
                     case PET_FAB:
-                        insertPetDialog.show(getSupportFragmentManager(),"Insert item");
+                        insertPetDialog.show(getSupportFragmentManager(), "Insert item");
                         Log.d("TAG", "onClick: PET_FAB");
                         break;
                     case FAMILY_FAB:
                         Log.d("TAG", "onClick: FAMILY_FAB");
-                        insertFamilyDialog.show(getSupportFragmentManager(),"Insert item");
+                        insertFamilyDialog.show(getSupportFragmentManager(), "Insert item");
                         insertFamilyDialog.setInsertDialogInterface(insertDialogInterface);
                         break;
                     case SHARE_MY_FAMILY_FAB:
                         Log.d("TAG", "onClick: SHARE_MY_FAMILY");
                         break;
                     case WALK_FAB:
-                        insertTimeDialog.show(getSupportFragmentManager(),"Insert walk");
+                        insertTimeDialog.show(getSupportFragmentManager(), "Insert walk");
                         Log.d("TAG", "onClick: WALK_FAB");
                         break;
                     case FEED_FAB:
-                        insertTimeDialog.show(getSupportFragmentManager(),"Insert feed");
+                        insertTimeDialog.show(getSupportFragmentManager(), "Insert feed");
                         Log.d("TAG", "onClick: FEED_FAB");
                         break;
                 }

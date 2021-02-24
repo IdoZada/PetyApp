@@ -1,5 +1,8 @@
 package com.example.pety.objects;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Feed {
     private String id;
     private String time;
@@ -11,6 +14,14 @@ public class Feed {
     public Feed(String time, boolean isActive) {
         this.time = time;
         this.isActive = isActive;
+    }
+
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("id",id);
+        result.put("time", time);
+        result.put("isActive", isActive);
+        return result;
     }
 
     public String getTime() {
