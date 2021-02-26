@@ -55,6 +55,8 @@ public class FirebaseDB {
     public static final String FEEDS = "feeds";
     public static final String BEAUTY = "beauty";
     public static final String HEALTH = "health";
+    public static final String TIME = "time";
+    public static final String TIME_DATE = "time_date";
 
     private FirebaseAuth authDatabase;
     private FirebaseDatabase database;
@@ -87,23 +89,12 @@ public class FirebaseDB {
         return storage;
     }
 
-    /**
-     * @param uid
-     * @param phone_number
-     */
-    public void addNewUserProfile(String uid, String phone_number) {
-        DatabaseReference userRef = database.getReference(USERS);
-        userRef.child(uid);
-        userRef.child(uid).child(PHONE_NUMBER).setValue(phone_number);
-    }
-
     public void updateFirstNameAndLastNameAndImage(User user, String imageName, Uri contentUri) {
         String uid = getFirebaseAuth().getCurrentUser().getUid();
         DatabaseReference userRef = database.getReference(USERS);
         userRef.child(uid).child(FIRST_NAME).setValue(user.getF_name());
         userRef.child(uid).child(LAST_NAME).setValue(user.getL_name());
         userRef.child(uid).child(PHONE_NUMBER).setValue(getFirebaseAuth().getCurrentUser().getPhoneNumber());
-        Log.d("TAG", "updateFirstNameAndLastNameAndImage: " + user.toString());
 
         final StorageReference image = getFirebaseStorage().getReference().child("pictures/" + imageName);
         image.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -111,8 +102,6 @@ public class FirebaseDB {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 image.getDownloadUrl().addOnSuccessListener(uri -> {
                     userRef.child(uid).child(IMAGE_URL).setValue(uri.toString());
-                    user.setImage_url(uri.toString());
-                    Log.d("TAG", "onSuccess: image url: " + user.getImage_url());
                 });
                 Log.d("TAG", "onSuccess: Upload user picture successfully");
             }
@@ -124,7 +113,6 @@ public class FirebaseDB {
         });
     }
 
-
     public void getImageUser(View view, Context context){
         DatabaseReference myRef = getDatabase().getReference().child(USERS + "/" + authDatabase.getCurrentUser().getUid());
         myRef.addValueEventListener(new ValueEventListener() {
@@ -134,11 +122,7 @@ public class FirebaseDB {
                     String imageUrl = snapshot.child(IMAGE_URL).getValue().toString();
                     Glide.with(context).load(imageUrl).into((ImageView) view);
                 }
-                //Log.i("URI VALUE","->"+ uri);
-                //progressDialog.dismiss();
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -154,7 +138,7 @@ public class FirebaseDB {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
-                    Log.d(TAG, "onComplete: Error getting user data");
+                    Log.d("TAG", "onComplete - retrieveUserDataFromDB: Error getting user data");
                 } else {
                     Map<String, String> families_map;
                     String firstName = task.getResult().child(FIRST_NAME).getValue().toString();
@@ -162,32 +146,27 @@ public class FirebaseDB {
                     String phoneNumber = task.getResult().child(PHONE_NUMBER).getValue().toString();
                     if (task.getResult().hasChild(FAMILIES)) {
                         families_map = (Map<String, String>) task.getResult().child(FAMILIES).getValue();
-                        Log.d(TAG, "onComplete: retrieveUserDataFromDB size: " + families_map.size());
                         user.setFamilies_map(families_map);
                     }
                     user.setF_name(firstName);
                     user.setL_name(lastName);
                     user.setPhone_number(phoneNumber);
                     sendFamilyCallback.sendUser(user);
-                    Log.d("ttttt", "onDataChange: " + user.toString());
+                    Log.d("TAG", "onComplete - retrieveUserDataFromDB: task success ->" + user.toString());
                 }
             }
         });
     }
 
-
     public void retrieveAllFamilies(Map<String, String> families_map, ArrayList<Family> families) {
         DatabaseReference myFamilies = getDatabase().getReference().child(FAMILIES);
-        int i;
-
         Log.d(TAG, "retrieveAllFamilies: " + families_map.size());
-
         for (String key : families_map.keySet()) {
             myFamilies.child(key).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (!task.isSuccessful()) {
-                        Log.d(TAG, "onComplete: Error getting families data");
+                        Log.d(TAG, "onComplete - retrieveAllFamilies: Error getting families data");
                     } else {
                         Map<String, Pet> pets;
                         family = new Family();
@@ -197,21 +176,18 @@ public class FirebaseDB {
                         if (task.getResult().hasChild("pets")) {
                             pets = (Map<String, Pet>) task.getResult().child("pets").getValue();
                             Map<String, Pet> pets_map = Converter.convertPets(pets);
-                            Log.d("TAG", "onComplete: retrieve pets map " + pets);
-
                             family.setPets(pets_map);
                         }
                         family.setFamily_key(family_key);
                         family.setF_name(familyName);
                         family.setImageUrl(familyImagePath);
                         families.add(family);
+                        Log.d(TAG, "onComplete - retrieveAllFamilies: families success " + families);
                     }
                 }
             });
         }
-
     }
-
 
     /**
      * This function store in the database new family
@@ -226,7 +202,6 @@ public class FirebaseDB {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 image.getDownloadUrl().addOnSuccessListener(uri -> {
                     family.setImageUrl(uri.toString());
-
                     family.setFamily_key(key);
                     Map<String, Object> familyValues = family.toMap();
                     Map<String, Object> childUpdates = new HashMap<>();
@@ -273,6 +248,7 @@ public class FirebaseDB {
             }
         });
     }
+
     public void writeNewTimeToDB(Pet pet, Family family, Object obj , String option) {
         String key = getDatabase().getReference().child(FAMILIES).child(family.getFamily_key()).child(PETS).child(option).push().getKey();
         Map<String, Object> values = null;
@@ -299,8 +275,6 @@ public class FirebaseDB {
     }
 
     public void deleteFamilyFromDB(Family family, String family_key) {
-        Log.d("TAG", "deleteFamilyFromDB: " + family_key);
-
         //Remove family from families
         DatabaseReference myFamilies = getDatabase().getReference().child(FAMILIES).child(family_key);
         myFamilies.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -309,7 +283,6 @@ public class FirebaseDB {
                 snapshot.getRef().removeValue();
                 Log.d("TAG", "Deleted " + snapshot.child("family_key").toString() + " family from " + snapshot.child("f_name").toString());
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -354,42 +327,31 @@ public class FirebaseDB {
 
     public void updateTimeToDB(String family_key,String pet_key,Object obj){
         String key;
-        String time = null;
+        String timeStamp = null;
         String option = null;
+        String nav_child = null;
         if(obj instanceof Walk){
             key = ((Walk) obj).getId();
-            time = ((Walk) obj).getTime();
+            timeStamp = ((Walk) obj).getTime();
             option = firebaseDB.WALKS;
-            Log.d("TAG", "updateTimeToDB: (WALK) 3" + key);
+            nav_child = TIME;
         }else if(obj instanceof Feed){
             key = ((Feed) obj).getId();
-            time = ((Feed) obj).getTime();
+            timeStamp = ((Feed) obj).getTime();
             option = firebaseDB.FEEDS;
-            Log.d("TAG", "updateTimeToDB: (FEEDS) 3" + key + " Time: " + time);
+            nav_child = TIME;
         }else if(obj instanceof Beauty){
             key = ((Beauty) obj).getId();
-            time = ((Beauty) obj).getTime();
+            timeStamp = ((Beauty) obj).getTimeDate();
             option = firebaseDB.BEAUTY;
+            nav_child = TIME_DATE;
         }else{
             key = ((Health) obj).getId();
-            time = ((Health) obj).getTime();
+            timeStamp = ((Health) obj).getTimeDate();
             option = firebaseDB.HEALTH;
+            nav_child = TIME_DATE;
         }
-        Log.d("TAG", "updateTimeToDB: " + time);
-        //Remove option from specific pet
-        getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child(option).child(key).child("time").setValue(time);
-//        String finalOption = option;
-//        myOption.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                snapshot.child("time").
-//                Log.d("TAG", "Update " + snapshot.child(finalOption).toString());
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//            }
-//        });
-
+        getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child(option).child(key).child(nav_child).setValue(timeStamp);
     }
 
     public void deleteTimeFromDB(String family_key,String pet_key,Object obj) {

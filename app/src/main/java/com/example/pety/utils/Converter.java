@@ -82,6 +82,7 @@ public class Converter {
     private static Object fromMapCares(Map<String, Object> value , Object obj) {
         Object id = value.get("id");
         Object time = value.get("time");
+        Object time_date = value.get("time_date");
         Object isActive = value.get("isActive");
 
         if(obj instanceof Walk){
@@ -94,11 +95,11 @@ public class Converter {
             ((Feed) obj).setActive((Boolean) isActive);
         }else if(obj instanceof Beauty){
             ((Beauty) obj).setId(id.toString());
-            ((Beauty) obj).setTime(time.toString());
+            ((Beauty) obj).setTimeDate(time_date.toString());
             ((Beauty) obj).setActive((Boolean) isActive);
         }else {
             ((Health) obj).setId(id.toString());
-            ((Health) obj).setTime(time.toString());
+            ((Health) obj).setTimeDate(time_date.toString());
             ((Health) obj).setActive((Boolean) isActive);
         }
 

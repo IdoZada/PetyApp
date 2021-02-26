@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.pety.R;
+import com.example.pety.fragments.BeautyHealthFragment;
 import com.example.pety.fragments.FamilyFragment;
 import com.example.pety.fragments.HomeFragment;
 import com.example.pety.fragments.PetFragment;
@@ -25,6 +26,7 @@ import com.example.pety.objects.Fab;
 import com.example.pety.objects.Family;
 import com.example.pety.objects.InsertFamilyDialog;
 import com.example.pety.objects.InsertPetDialog;
+import com.example.pety.objects.InsertTimeDateDialog;
 import com.example.pety.objects.InsertTimeDialog;
 import com.example.pety.objects.Pet;
 import com.example.pety.objects.User;
@@ -59,6 +61,8 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
     Fab fab = Fab.FAMILY_FAB;
 
     WalkFeedFragment walkFeedFragment;
+    BeautyHealthFragment beautyHealthFragment;
+    InsertTimeDateDialog insertTimeDateDialog;
     InsertTimeDialog insertTimeDialog;
     CircleImageView user_image_view;
     TextView navMenuUserNameDisplay;
@@ -99,6 +103,8 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         insertPetDialog.setInsertDialogInterface(insertDialogInterface);
         insertTimeDialog.setInsertDialogInterface(insertDialogInterface);
         walkFeedFragment.setInsertTimeDialog(insertTimeDialog);
+        insertTimeDateDialog.setInsertDialogInterface(insertDialogInterface);
+        beautyHealthFragment.setInsertTimeDateDialog(insertTimeDateDialog);
 
         user_image_view = nav_view.getHeaderView(0).findViewById(R.id.user_image_view);
         navMenuUserNameDisplay = nav_view.getHeaderView(0).findViewById(R.id.navMenuUserNameDisplay);
@@ -113,10 +119,12 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         insertFamilyDialog = new InsertFamilyDialog();
         insertPetDialog = new InsertPetDialog();
         insertTimeDialog = new InsertTimeDialog();
+        insertTimeDateDialog = new InsertTimeDateDialog();
         homeFragment = new HomeFragment();
         petFragment = new PetFragment(this);
         shareFamilyFragment = new ShareFamilyFragment();
         walkFeedFragment = new WalkFeedFragment(this);
+        beautyHealthFragment = new BeautyHealthFragment(this);
     }
 
     private FamilyFragment.SendFamilyCallback sendFamilyCallback = new FamilyFragment.SendFamilyCallback() {
@@ -148,9 +156,9 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
             if (Fab.WALK_FAB == chose_fab || Fab.FEED_FAB == chose_fab) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, walkFeedFragment).addToBackStack(null).commit();
                 walkFeedFragment.setPet(family, pet, chose_fab);
-            } else {
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,walkFeedFragment).commit();
-//                walkFeedFragment.setPet(family,pet,care);
+            } else if(Fab.BEAUTY_FAB == chose_fab || Fab.HEALTH_FAB == chose_fab){
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, beautyHealthFragment).addToBackStack(null).commit();
+                beautyHealthFragment.setPet(family, pet, chose_fab);
             }
 
         }
@@ -189,6 +197,27 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
                 }
             }
         }
+
+        @Override
+        public void applyTimeDate(String time, String op) {
+            if (op.equals(InsertTimeDialog.UPDATE)) {
+                if (fab == Fab.BEAUTY_FAB) {
+                    //Create set beauty update method
+                    beautyHealthFragment.updateBeautyItem(time);
+                } else {
+                    //Create set health update method
+                    beautyHealthFragment.updateHealthItem(time);
+                }
+            } else {
+                if (fab == Fab.BEAUTY_FAB) {
+                    Log.d("TAG", "applyTimeDate: from main activity (Beauty)" + time);
+                    beautyHealthFragment.setBeautyItem(time);
+                } else {
+                    Log.d("TAG", "applyTimeDate: from main activity (Health)" + time);
+                    beautyHealthFragment.setHealthItem(time);
+                }
+            }
+        }
     };
 
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -206,7 +235,6 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
                     Log.d("TAG", "nav my families");
                     selectedFragment = familyFragment;
                     fab = Fab.FAMILY_FAB;
-
                     break;
                 case R.id.nav_share_families:
                     Log.d("TAG", "nav share families ");
@@ -253,6 +281,14 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
                     case FEED_FAB:
                         insertTimeDialog.show(getSupportFragmentManager(), "Insert feed");
                         Log.d("TAG", "onClick: FEED_FAB");
+                        break;
+                    case BEAUTY_FAB:
+                        insertTimeDateDialog.show(getSupportFragmentManager(), "Insert beauty");
+                        Log.d("TAG", "onClick: BEAUTY_FAB");
+                        break;
+                    case HEALTH_FAB:
+                        insertTimeDateDialog.show(getSupportFragmentManager(), "Insert health");
+                        Log.d("TAG", "onClick: HEALTH_FAB");
                         break;
                 }
 

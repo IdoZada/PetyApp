@@ -5,23 +5,23 @@ import java.util.Map;
 
 public class Health {
     private String id;
-    private String time;
+    private String time_date;
     private boolean isActive;
 
     public Health() {
     }
 
-    public Health(String time, boolean isActive) {
-        this.time = time;
+    public Health(String time_date, boolean isActive) {
+        this.time_date = time_date;
         this.isActive = isActive;
     }
 
-    public String getTime() {
-        return time;
+    public String getTimeDate() {
+        return time_date;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setTimeDate(String time_date) {
+        this.time_date = time_date;
     }
 
     public boolean isActive() {
@@ -31,6 +31,7 @@ public class Health {
     public void setActive(boolean active) {
         isActive = active;
     }
+
 
     public String getId() {
         return id;
@@ -43,10 +44,9 @@ public class Health {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("id",id);
-        result.put("time", time);
+        result.put("time_date", time_date);
         result.put("isActive", isActive);
         return result;
     }
-
 }
 

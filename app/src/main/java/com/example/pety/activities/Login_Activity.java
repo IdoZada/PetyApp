@@ -197,12 +197,6 @@ public class Login_Activity extends AppCompatActivity {
                     Intent myIntent = new Intent(Login_Activity.this, Main_Activity.class);
                     startActivity(myIntent);
                 } else {
-                    firebaseDB.addNewUserProfile(user_id,phone_number);
-                    User user = new User("","",phone_number,"");
-                    //Write the data of user to shared preference memory
-                    MySP.initialize(Login_Activity.this);
-                    MySP mySP = MySP.getInstance();
-                    mySP.writeDataToStorage(user);
                     Log.d("TAG", "onDataChange:  New user");
                     Intent myIntent = new Intent(Login_Activity.this, Profile_Activity.class);
                     startActivity(myIntent);

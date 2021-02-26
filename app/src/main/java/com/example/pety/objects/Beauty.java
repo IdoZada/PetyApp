@@ -5,23 +5,23 @@ import java.util.Map;
 
 public class Beauty {
     private String id;
-    private String time;
+    private String time_date;
     private boolean isActive;
 
     public Beauty() {
     }
 
-    public Beauty(String time, boolean isActive) {
-        this.time = time;
+    public Beauty(String time_date, boolean isActive) {
+        this.time_date = time_date;
         this.isActive = isActive;
     }
 
-    public String getTime() {
-        return time;
+    public String getTimeDate() {
+        return time_date;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setTimeDate(String time_date) {
+        this.time_date = time_date;
     }
 
     public boolean isActive() {
@@ -44,7 +44,7 @@ public class Beauty {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("id",id);
-        result.put("time", time);
+        result.put("time_date", time_date);
         result.put("isActive", isActive);
         return result;
     }
