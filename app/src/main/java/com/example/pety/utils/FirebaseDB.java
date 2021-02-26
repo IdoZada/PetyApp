@@ -1,10 +1,14 @@
 package com.example.pety.utils;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
 import com.example.pety.fragments.FamilyFragment;
 import com.example.pety.objects.Beauty;
 import com.example.pety.objects.Fab;
@@ -44,6 +48,7 @@ public class FirebaseDB {
     public static final String FIRST_NAME = "f_name";
     public static final String LAST_NAME = "l_name";
     public static final String PHONE_NUMBER = "phone_number";
+    public static final String IMAGE_URL = "image_url";
     public static final String FAMILIES = "families";
     public static final String PETS = "pets";
     public static final String WALKS = "walks";
@@ -92,15 +97,53 @@ public class FirebaseDB {
         userRef.child(uid).child(PHONE_NUMBER).setValue(phone_number);
     }
 
-    /**
-     * @param firstName
-     * @param LastName
-     */
-    public void updateFirstNameAndLastName(String firstName, String LastName) {
+    public void updateFirstNameAndLastNameAndImage(User user, String imageName, Uri contentUri) {
         String uid = getFirebaseAuth().getCurrentUser().getUid();
         DatabaseReference userRef = database.getReference(USERS);
-        userRef.child(uid).child(FIRST_NAME).setValue(firstName);
-        userRef.child(uid).child(LAST_NAME).setValue(LastName);
+        userRef.child(uid).child(FIRST_NAME).setValue(user.getF_name());
+        userRef.child(uid).child(LAST_NAME).setValue(user.getL_name());
+        userRef.child(uid).child(PHONE_NUMBER).setValue(getFirebaseAuth().getCurrentUser().getPhoneNumber());
+        Log.d("TAG", "updateFirstNameAndLastNameAndImage: " + user.toString());
+
+        final StorageReference image = getFirebaseStorage().getReference().child("pictures/" + imageName);
+        image.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                image.getDownloadUrl().addOnSuccessListener(uri -> {
+                    userRef.child(uid).child(IMAGE_URL).setValue(uri.toString());
+                    user.setImage_url(uri.toString());
+                    Log.d("TAG", "onSuccess: image url: " + user.getImage_url());
+                });
+                Log.d("TAG", "onSuccess: Upload user picture successfully");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("TAG", "onFailure: Upload user picture failed");
+            }
+        });
+    }
+
+
+    public void getImageUser(View view, Context context){
+        DatabaseReference myRef = getDatabase().getReference().child(USERS + "/" + authDatabase.getCurrentUser().getUid());
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.hasChild(IMAGE_URL)){
+                    String imageUrl = snapshot.child(IMAGE_URL).getValue().toString();
+                    Glide.with(context).load(imageUrl).into((ImageView) view);
+                }
+                //Log.i("URI VALUE","->"+ uri);
+                //progressDialog.dismiss();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void retrieveUserDataFromDB(FamilyFragment.SendFamilyCallback sendFamilyCallback) {

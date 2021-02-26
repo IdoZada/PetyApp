@@ -53,7 +53,7 @@ public class ItemWalkFeedAdapter<T> extends RecyclerView.Adapter<ItemWalkFeedAda
             holder.time_piker_switch.setChecked(((Walk)generic).isActive());
         }else if (generic instanceof Feed){
             holder.time_LBL_walk.setText(((Feed) generic).getTime());
-            holder.time_piker_switch.setActivated(((Feed)generic).isActive());
+            holder.time_piker_switch.setChecked(((Feed)generic).isActive());
         }
     }
 

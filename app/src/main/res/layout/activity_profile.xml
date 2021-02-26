@@ -13,9 +13,10 @@
         android:weightSum="100">
 
         <RelativeLayout
+            android:id="@+id/main_top_bar"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="15"
+            android:layout_weight="20"
             android:background="@drawable/gradient_background">
 
             <TextView
@@ -24,13 +25,10 @@
                 android:layout_height="wrap_content"
                 android:textSize="20dp"
                 android:gravity="center"
-                android:layout_marginBottom="20dp"
                 android:textColor="@color/white"
-                android:text="Profile"
-                >
+                android:text="Profile">
 
             </TextView>
-
 
             <ImageView
                 android:id="@+id/main_IMG_parrot"
@@ -84,6 +82,12 @@
 
         </RelativeLayout>
 
+
+        <include
+            android:id="@+id/main_IMG_person"
+            layout="@layout/content_profile">
+
+        </include>
 
     </LinearLayout>
 

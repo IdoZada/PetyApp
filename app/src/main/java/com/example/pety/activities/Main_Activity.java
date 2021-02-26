@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.pety.R;
 import com.example.pety.fragments.FamilyFragment;
@@ -34,6 +35,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.FirebaseDatabase;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class Main_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     FirebaseDatabase database;
@@ -44,9 +47,6 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
     Toolbar main_toolbar;
     FloatingActionButton fab_button;
 
-    //My shared preference singleton class
-    MySP mySP;
-    User currentUser;
 
     //Fragments
     Fragment selectedFragment = null;
@@ -60,6 +60,9 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
 
     WalkFeedFragment walkFeedFragment;
     InsertTimeDialog insertTimeDialog;
+    CircleImageView user_image_view;
+    TextView navMenuUserNameDisplay;
+    TextView navMenuPhoneDisplay;
 
 
     @Override
@@ -97,6 +100,12 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         insertTimeDialog.setInsertDialogInterface(insertDialogInterface);
         walkFeedFragment.setInsertTimeDialog(insertTimeDialog);
 
+        user_image_view = nav_view.getHeaderView(0).findViewById(R.id.user_image_view);
+        navMenuUserNameDisplay = nav_view.getHeaderView(0).findViewById(R.id.navMenuUserNameDisplay);
+        navMenuPhoneDisplay = nav_view.getHeaderView(0).findViewById(R.id.navMenuPhoneDisplay);
+
+        firebaseDB.getImageUser(user_image_view,this);
+
     }
 
 
@@ -110,11 +119,6 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         walkFeedFragment = new WalkFeedFragment(this);
     }
 
-    private User getCurrentUserFromSP() {
-        mySP = MySP.getInstance();
-        return mySP.readDataFromStorage();
-    }
-
     private FamilyFragment.SendFamilyCallback sendFamilyCallback = new FamilyFragment.SendFamilyCallback() {
         @Override
         public void sendFamily(Family family) {
@@ -126,6 +130,9 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
 
         @Override
         public void sendUser(User user) {
+            navMenuUserNameDisplay.setText(user.getF_name() + " " +  user.getL_name());
+            navMenuPhoneDisplay.setText(user.getPhone_number());
+
             if (user.getFamilies_map().size() == 0) {
                 insertFamilyDialog.show(getSupportFragmentManager(), "Insert item");
 

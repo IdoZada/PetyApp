@@ -53,7 +53,8 @@ public class WalkFeedFragment<T> extends Fragment {
     Pet pet;
     Context mContext;
     int position;
-    int fillProgressBar = 0;
+    int fillProgressBar_feed;
+    int fillProgressBar_walk;
 
     public WalkFeedFragment(Context context) {
         this.mContext = context;
@@ -67,8 +68,11 @@ public class WalkFeedFragment<T> extends Fragment {
         findViews(view);
         updateUI(fab);
 //        fillProgressBar = 3;
-        pet_progressbar_walk_feed.setMax(lists.size());
-        pet_progressbar_walk_feed.setProgress(fillProgressBar);
+
+        //pet_progressbar_walk_feed.setProgress(fillProgressBar);
+        //pet_progressbar_walk_feed.setProgress(0);
+
+
         itemWalkFeedAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -90,23 +94,27 @@ public class WalkFeedFragment<T> extends Fragment {
                 Feed feed = null;
                 if(obj instanceof Walk){
                     walk = (Walk) obj;
-                    //pet.getWalks().get(walk.getId()).setActive(isChecked);
-                    //lists.set(position, (T) walk);
+                    if(isChecked){
+                        Log.d("TAG", "onSwitchItemClick: " + isChecked);
+                        fillProgressBar_walk++;
+                    }else{
+                        fillProgressBar_walk--;
+                    }
+                    updateProgress(lists.size(), fillProgressBar_walk);
                 }else{
                     feed = (Feed) obj;
-                    //pet.getFeeds().get(feed.getId()).setActive(isChecked);
-                    //lists.set(position, (T) feed);
+                    if(isChecked){
+                        Log.d("TAG", "onSwitchItemClick: " + isChecked);
+                        fillProgressBar_feed++;
+                    }else{
+                        fillProgressBar_feed--;
+                    }
+                    updateProgress(lists.size(), fillProgressBar_feed);
                 }
                 firebaseDB.updateSwitchToDB(family.getFamily_key(),pet.getPet_id(),obj);
 //                itemWalkFeedAdapter.notifyItemChanged(position);
 //                Log.d("TAG", "onSwitchItemClick: " + lists);
-                if(isChecked){
-                    Log.d("TAG", "onSwitchItemClick: " + isChecked);
-                    fillProgressBar++;
-                }else{
-                    fillProgressBar--;
-                }
-                pet_progressbar_walk_feed.setProgress(fillProgressBar);
+
             }
         });
 
@@ -116,6 +124,10 @@ public class WalkFeedFragment<T> extends Fragment {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(pet_recyclerView_walk_feed);
 
+
+
+        //pet_progressbar_walk_feed.setProgress(fillProgressBar);
+        //Log.d("TAG", "onCreateView: progress: " + fillProgressBar + " size: " + lists.size());
         // Inflate the layout for this fragment
         return view;
     }
@@ -184,13 +196,12 @@ public class WalkFeedFragment<T> extends Fragment {
         if (Fab.WALK_FAB == fab) {
             pet_title_walk_feed.setText("Walking");
             pet_progressbar_img_walk_feed.setImageResource(R.drawable.ic_pet_footprint);
-            //fillProgressBar = 0;
-            //pet_progressbar_walk_feed.setProgress(fillProgressBar);
+            updateProgress(lists.size(),fillProgressBar_walk);
         } else {
             pet_title_walk_feed.setText("Feeding");
             pet_progressbar_img_walk_feed.setImageResource(R.drawable.ic_pet_feeding);
-            //fillProgressBar = 0;
-            //pet_progressbar_walk_feed.setProgress(fillProgressBar);
+            pet_progressbar_walk_feed.setProgress(fillProgressBar_feed);
+            updateProgress(lists.size(),fillProgressBar_feed);
         }
     }
 
@@ -200,7 +211,8 @@ public class WalkFeedFragment<T> extends Fragment {
 
     public void setPet(Family family, Pet pet, Fab chose_fab) {
         lists.clear();
-        fillProgressBar = 0;
+        fillProgressBar_walk = 0;
+        fillProgressBar_feed = 0;
         this.fab = chose_fab;
         this.pet = pet;
         this.family = family;
@@ -208,20 +220,29 @@ public class WalkFeedFragment<T> extends Fragment {
         if (Fab.WALK_FAB == fab) {
             for (Map.Entry<String, Walk> entry : pet.getWalks().entrySet()) {
                 if(entry.getValue().isActive()){
-                    fillProgressBar++;
+                    fillProgressBar_walk++;
+                    Log.d("TAG", "setPet: WALK_FAB" + fillProgressBar_walk);
                 }
                 lists.add((T) entry.getValue());
             }
         } else {
             for (Map.Entry<String, Feed> entry : pet.getFeeds().entrySet()) {
                 if(entry.getValue().isActive()){
-                    fillProgressBar++;
+
+                    fillProgressBar_feed++;
+                    Log.d("TAG", "setPet: FEED_FAB" + fillProgressBar_feed);
                 }
                 lists.add((T) entry.getValue());
             }
         }
+
         Log.d("TAG", "setPet: " + lists.size());
-        Log.d("TAG", "setPet: " + family.toString() + "pet " + pet.toString() + "care: " + chose_fab.name());
+        //Log.d("TAG", "setPet: " + family.toString() + "pet " + pet.toString() + "care: " + chose_fab.name());
+    }
+
+    public void updateProgress(int listSize , int progressbar){
+        pet_progressbar_walk_feed.setMax(listSize);
+        pet_progressbar_walk_feed.setProgress(progressbar);
     }
 
     public void updateWalkItem(String time) {
