@@ -63,6 +63,7 @@ public class FirebaseDB {
     private static FirebaseDB firebaseDB;
     private FirebaseStorage storage;
     Family family;
+    User user;
 
     private FirebaseDB() {
         database = FirebaseDatabase.getInstance();
@@ -102,6 +103,7 @@ public class FirebaseDB {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 image.getDownloadUrl().addOnSuccessListener(uri -> {
                     userRef.child(uid).child(IMAGE_URL).setValue(uri.toString());
+                    user.setImage_url(uri.toString());
                 });
                 Log.d("TAG", "onSuccess: Upload user picture successfully");
             }
@@ -121,6 +123,7 @@ public class FirebaseDB {
                 if(snapshot.hasChild(IMAGE_URL)){
                     String imageUrl = snapshot.child(IMAGE_URL).getValue().toString();
                     Glide.with(context).load(imageUrl).into((ImageView) view);
+                    user.setImage_url(imageUrl);
                 }
             }
             @Override
@@ -131,7 +134,7 @@ public class FirebaseDB {
     }
 
     public void retrieveUserDataFromDB(FamilyFragment.SendFamilyCallback sendFamilyCallback) {
-        User user = new User();
+        user = new User();
         String uid = getFirebaseAuth().getCurrentUser().getUid();
         DatabaseReference myRef = getDatabase().getReference(USERS).child(uid);
         myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -447,5 +450,9 @@ public class FirebaseDB {
         Log.d("TAG", "updateTimeToDB: " + isActive);
         //Remove option from specific pet
         getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child(option).child(key).child("isActive").setValue(isActive);
+    }
+
+    public User getUser(){
+        return user;
     }
 }

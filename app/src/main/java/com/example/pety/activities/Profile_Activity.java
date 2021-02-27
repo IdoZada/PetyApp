@@ -13,10 +13,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.pety.R;
 import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
-import com.example.pety.utils.MySP;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,6 +25,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.io.File;
 
 public class Profile_Activity extends AppCompatActivity {
+    public static final String UPDATE = "update";
+    public static final String NEW = "new";
+
 
     TextInputLayout profile_LAY_firstName;
     TextInputLayout profile_LAY_lastName;
@@ -35,14 +38,34 @@ public class Profile_Activity extends AppCompatActivity {
     AppCompatImageView imgProfile;
     String imageFileName;
     Uri imageUri;
+    String option = NEW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        option = getIntent().getStringExtra(UPDATE);
+
+
+
 
         findViews();
         initViews();
+
+        if(option != null){
+
+            updateUserProfile();
+        }
+    }
+
+    private void updateUserProfile() {
+        User currentUser = firebaseDB.getUser();
+        imageUri = Uri.parse(currentUser.getImage_url());
+
+        profile_BTN_continue.setText("Save");
+        profile_LAY_firstName.getEditText().setText(currentUser.getF_name());
+        profile_LAY_lastName.getEditText().setText(currentUser.getL_name());
+        Glide.with(this).load(currentUser.getImage_url()).into(imgProfile);
     }
 
     @Override
@@ -59,12 +82,11 @@ public class Profile_Activity extends AppCompatActivity {
         }
     }
 
-    private void updateUserProfile() {
-
+    private void uploadUserProfile() {
+        User user = new User();
         String firstName = profile_LAY_firstName.getEditText().getText().toString();
         String LastName = profile_LAY_lastName.getEditText().getText().toString();
 
-        User user = new User();
         user.setF_name(firstName);
         user.setL_name(LastName);
 
@@ -90,7 +112,7 @@ public class Profile_Activity extends AppCompatActivity {
         profile_BTN_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateUserProfile();
+                uploadUserProfile();
             }
         });
     }
@@ -102,4 +124,7 @@ public class Profile_Activity extends AppCompatActivity {
         fab_add_photo = findViewById(R.id.fab_add_photo);
         imgProfile = findViewById(R.id.imgProfile);
     }
+//    private updateUserProfile(){
+//
+//    }
 }

@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -109,7 +111,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         user_image_view = nav_view.getHeaderView(0).findViewById(R.id.user_image_view);
         navMenuUserNameDisplay = nav_view.getHeaderView(0).findViewById(R.id.navMenuUserNameDisplay);
         navMenuPhoneDisplay = nav_view.getHeaderView(0).findViewById(R.id.navMenuPhoneDisplay);
-
+        nav_view.setNavigationItemSelectedListener(navItemSelectedListener);
         firebaseDB.getImageUser(user_image_view,this);
 
     }
@@ -220,6 +222,31 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         }
     };
 
+    private NavigationView.OnNavigationItemSelectedListener navItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+                    break;
+                case R.id.nav_family:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, familyFragment).commit();
+                    break;
+                case R.id.nav_share_families:
+                    break;
+                case R.id.nav_profile:
+                    Intent myIntent = new Intent(Main_Activity.this, Profile_Activity.class);
+                    myIntent.putExtra(Profile_Activity.UPDATE, Profile_Activity.UPDATE);
+                    startActivity(myIntent);
+                    break;
+                case R.id.nav_logout:
+                    break;
+            }
+            drawer_layout.closeDrawer(GravityCompat.START);
+            return true;
+        }
+    };
+
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -245,7 +272,6 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
                     Log.d("TAG", "nav info");
                     fab_button.setVisibility(View.INVISIBLE);
                     break;
-
             }
 
             if (selectedFragment != null) {
