@@ -1,5 +1,9 @@
 package com.example.pety.objects;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,5 +52,24 @@ public class Health {
         result.put("isActive", isActive);
         return result;
     }
+
+    public static Comparator<Health> myTimeDate = new Comparator<Health>(){
+        @Override
+        public int compare(Health h1, Health h2){
+            Date d1=null, d2=null;
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            try {
+                d1 = sdf.parse(h1.getTimeDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            try {
+                d2 = sdf.parse(h2.getTimeDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return d1.compareTo(d2);
+        }
+    };
 }
 

@@ -120,8 +120,8 @@ public class InsertTimeDateDialog extends AppCompatDialogFragment {
     };
 
     private void updateLabel() {
-        String myFormat = "HH:mm, dd/MM/YYYY"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        String myFormat = "dd-MM-yyyy HH:mm"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
 
         insertDialog_LAY_Time_Date.getEditText().setText(sdf.format(myCalendar.getTime()));
     }

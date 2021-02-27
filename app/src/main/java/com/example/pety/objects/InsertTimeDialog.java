@@ -101,7 +101,7 @@ public class InsertTimeDialog extends AppCompatDialogFragment {
 
     private void updateLabel() {
         String myFormat = "HH:mm"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
 
         insertDialog_LAY_walkTime.getEditText().setText(sdf.format(myCalendar.getTime()));
     }

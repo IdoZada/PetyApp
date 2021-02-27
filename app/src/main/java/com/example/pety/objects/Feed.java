@@ -1,5 +1,9 @@
 package com.example.pety.objects;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,4 +51,23 @@ public class Feed {
     public void setId(String id) {
         this.id = id;
     }
+
+    public static Comparator<Feed> myTime = new Comparator<Feed>(){
+        @Override
+        public int compare(Feed f1, Feed f2){
+            Date d1=null, d2=null;
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            try {
+                d1 = sdf.parse(f1.getTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            try {
+                d2 = sdf.parse(f2.getTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return d1.compareTo(d2);
+        }
+    };
 }

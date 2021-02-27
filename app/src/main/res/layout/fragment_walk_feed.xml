@@ -46,12 +46,27 @@
         app:layout_constraintVertical_bias="0.594" />
 
     <ProgressBar
-        android:id="@+id/pet_progressbar_walk_feed"
+        android:id="@+id/pet_progressbar_feed"
         android:layout_width="80dp"
         android:layout_height="71dp"
         android:layout_marginEnd="48dp"
         android:indeterminateOnly="false"
-        android:progress="0"
+        android:progressDrawable="@drawable/progressbar"
+        app:layout_constraintBottom_toBottomOf="@+id/pet_item_container_walking"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="@id/pet_title_walk_feed"
+        app:layout_constraintRight_toRightOf="@id/pet_title_walk_feed"
+        app:layout_constraintStart_toEndOf="@+id/pet_title_walk_feed"
+        app:layout_constraintTop_toTopOf="@+id/pet_item_container_walking"
+        app:layout_constraintVertical_bias="0.62" />
+
+    <ProgressBar
+        android:id="@+id/pet_progressbar_walk"
+        android:layout_width="80dp"
+        android:layout_height="71dp"
+        android:layout_marginEnd="48dp"
+        android:indeterminateOnly="false"
         android:progressDrawable="@drawable/progressbar"
         app:layout_constraintBottom_toBottomOf="@+id/pet_item_container_walking"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,10 +81,10 @@
         android:id="@+id/pet_progressbar_img_walk_feed"
         android:layout_width="32dp"
         android:layout_height="34dp"
-        app:layout_constraintBottom_toBottomOf="@+id/pet_progressbar_walk_feed"
-        app:layout_constraintEnd_toEndOf="@+id/pet_progressbar_walk_feed"
-        app:layout_constraintStart_toStartOf="@+id/pet_progressbar_walk_feed"
-        app:layout_constraintTop_toTopOf="@+id/pet_progressbar_walk_feed"
+        app:layout_constraintBottom_toBottomOf="@+id/pet_progressbar_feed"
+        app:layout_constraintEnd_toEndOf="@+id/pet_progressbar_feed"
+        app:layout_constraintStart_toStartOf="@+id/pet_progressbar_feed"
+        app:layout_constraintTop_toTopOf="@+id/pet_progressbar_feed"
         app:srcCompat="@drawable/ic_pet_footprint" />
 
     <LinearLayout

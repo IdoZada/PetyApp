@@ -51,7 +51,7 @@ public class ItemBeautyHealthAdapter<T> extends RecyclerView.Adapter<ItemBeautyH
             holder.time_date_piker_switch.setChecked(((Beauty)generic).isActive());
         }else if (generic instanceof Health){
             holder.time_date_LBL_beauty.setText(((Health) generic).getTimeDate());
-            holder.time_date_piker_switch.setActivated(((Health)generic).isActive());
+            holder.time_date_piker_switch.setChecked(((Health)generic).isActive());
         }
     }
 
