@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,14 +27,14 @@ public class Profile_Activity extends AppCompatActivity {
     public static final String UPDATE = "update";
     public static final String NEW = "new";
 
-
+    FloatingActionButton fab_add_photo;
+    AppCompatImageView imgProfile;
     TextInputLayout profile_LAY_firstName;
     TextInputLayout profile_LAY_lastName;
     MaterialButton profile_BTN_continue;
+
     FirebaseDB firebaseDB = FirebaseDB.getInstance();
 
-    FloatingActionButton fab_add_photo;
-    AppCompatImageView imgProfile;
     String imageFileName;
     Uri imageUri;
     String option = NEW;
@@ -46,14 +45,10 @@ public class Profile_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         option = getIntent().getStringExtra(UPDATE);
 
-
-
-
         findViews();
         initViews();
 
         if(option != null){
-
             updateUserProfile();
         }
     }
@@ -61,7 +56,6 @@ public class Profile_Activity extends AppCompatActivity {
     private void updateUserProfile() {
         User currentUser = firebaseDB.getUser();
         imageUri = Uri.parse(currentUser.getImage_url());
-
         profile_BTN_continue.setText("Save");
         profile_LAY_firstName.getEditText().setText(currentUser.getF_name());
         profile_LAY_lastName.getEditText().setText(currentUser.getL_name());
@@ -124,7 +118,4 @@ public class Profile_Activity extends AppCompatActivity {
         fab_add_photo = findViewById(R.id.fab_add_photo);
         imgProfile = findViewById(R.id.imgProfile);
     }
-//    private updateUserProfile(){
-//
-//    }
 }
