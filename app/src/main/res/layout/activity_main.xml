@@ -50,61 +50,12 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <LinearLayout
-            android:id="@+id/fragment_nav"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_margin="10dp"
-            android:layout_below="@+id/bottom">
 
-            <TextView
-                android:id="@+id/fragment_nav_title_of_family"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                style="?android:textAppearanceLarge"
-                android:text="Family"
-                android:textColor="@color/black"/>
-
-
-            <ImageView
-                android:id="@+id/fragment_arrow_1"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_baseline_arrow_forward_24"
-                />
-
-            <TextView
-                android:id="@+id/fragment_nav_title_of_pet"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                style="?android:textAppearanceLarge"
-                android:text="Pet"
-                android:textColor="@color/black"/>
-
-            <ImageView
-                android:id="@+id/fragment_arrow_2"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_baseline_arrow_forward_24"
-                />
-
-            <TextView
-                android:id="@+id/fragment_nav_title_of_action"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                style="?android:textAppearanceLarge"
-                android:text="Walking"
-                android:textColor="@color/black"/>
-
-        </LinearLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/fragment_nav"
+            android:layout_below="@+id/bottom"
             android:id="@+id/fragment_container">
 
         </FrameLayout>

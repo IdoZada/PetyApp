@@ -18,13 +18,6 @@
 
     </item>
 
-    <item
-        android:id="@+id/nav_share_families"
-        android:icon="@drawable/ic_share_families"
-        android:title=""
-        >
-
-    </item>
 
     <item
         android:id="@+id/nav_info"

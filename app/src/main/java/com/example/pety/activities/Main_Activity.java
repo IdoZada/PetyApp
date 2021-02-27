@@ -20,8 +20,8 @@ import com.example.pety.R;
 import com.example.pety.fragments.BeautyHealthFragment;
 import com.example.pety.fragments.FamilyFragment;
 import com.example.pety.fragments.HomeFragment;
+import com.example.pety.fragments.InfoFragment;
 import com.example.pety.fragments.PetFragment;
-import com.example.pety.fragments.ShareFamilyFragment;
 import com.example.pety.fragments.WalkFeedFragment;
 import com.example.pety.interfaces.InsertDialogInterface;
 import com.example.pety.objects.Fab;
@@ -33,7 +33,6 @@ import com.example.pety.objects.InsertTimeDialog;
 import com.example.pety.objects.Pet;
 import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
-import com.example.pety.utils.MySP;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -59,7 +58,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
     HomeFragment homeFragment;
     PetFragment petFragment;
     FamilyFragment familyFragment;
-    ShareFamilyFragment shareFamilyFragment;
+    InfoFragment infoFragment;
     Fab fab = Fab.FAMILY_FAB;
 
     WalkFeedFragment walkFeedFragment;
@@ -112,7 +111,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         navMenuUserNameDisplay = nav_view.getHeaderView(0).findViewById(R.id.navMenuUserNameDisplay);
         navMenuPhoneDisplay = nav_view.getHeaderView(0).findViewById(R.id.navMenuPhoneDisplay);
         nav_view.setNavigationItemSelectedListener(navItemSelectedListener);
-        firebaseDB.getImageUser(user_image_view,this);
+        firebaseDB.getImageUser(user_image_view, this);
 
     }
 
@@ -124,7 +123,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         insertTimeDateDialog = new InsertTimeDateDialog();
         homeFragment = new HomeFragment();
         petFragment = new PetFragment(this);
-        shareFamilyFragment = new ShareFamilyFragment();
+        infoFragment = new InfoFragment();
         walkFeedFragment = new WalkFeedFragment(this);
         beautyHealthFragment = new BeautyHealthFragment(this);
     }
@@ -140,7 +139,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
 
         @Override
         public void sendUser(User user) {
-            navMenuUserNameDisplay.setText(user.getF_name() + " " +  user.getL_name());
+            navMenuUserNameDisplay.setText(user.getF_name() + " " + user.getL_name());
             navMenuPhoneDisplay.setText(user.getPhone_number());
 
             if (user.getFamilies_map().size() == 0) {
@@ -158,7 +157,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
             if (Fab.WALK_FAB == chose_fab || Fab.FEED_FAB == chose_fab) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, walkFeedFragment).addToBackStack(null).commit();
                 walkFeedFragment.setPet(family, pet, chose_fab);
-            } else if(Fab.BEAUTY_FAB == chose_fab || Fab.HEALTH_FAB == chose_fab){
+            } else if (Fab.BEAUTY_FAB == chose_fab || Fab.HEALTH_FAB == chose_fab) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, beautyHealthFragment).addToBackStack(null).commit();
                 beautyHealthFragment.setPet(family, pet, chose_fab);
             }
@@ -226,20 +225,16 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.nav_home:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
-                    break;
-                case R.id.nav_family:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, familyFragment).commit();
-                    break;
-                case R.id.nav_share_families:
-                    break;
                 case R.id.nav_profile:
                     Intent myIntent = new Intent(Main_Activity.this, Profile_Activity.class);
                     myIntent.putExtra(Profile_Activity.UPDATE, Profile_Activity.UPDATE);
                     startActivity(myIntent);
                     break;
                 case R.id.nav_logout:
+                    firebaseDB.getFirebaseAuth().signOut();
+                    Intent intent = new Intent(Main_Activity.this, Login_Activity.class);
+                    startActivity(intent);
+                    finish();
                     break;
             }
             drawer_layout.closeDrawer(GravityCompat.START);
@@ -263,12 +258,8 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
                     selectedFragment = familyFragment;
                     fab = Fab.FAMILY_FAB;
                     break;
-                case R.id.nav_share_families:
-                    Log.d("TAG", "nav share families ");
-                    selectedFragment = shareFamilyFragment;
-                    fab = Fab.SHARE_MY_FAMILY_FAB;
-                    break;
                 case R.id.nav_info:
+                    selectedFragment = infoFragment;
                     Log.d("TAG", "nav info");
                     fab_button.setVisibility(View.INVISIBLE);
                     break;

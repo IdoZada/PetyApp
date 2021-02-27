@@ -72,6 +72,11 @@ public class WalkFeedFragment<T> extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_walk_feed, container, false);
         findViews(view);
+//        fillProgressBar_walk = 0;
+//        fillProgressBar_feed = 0;
+//        maxWalkElements = 0;
+//        maxFeedElements = 0;
+
         updateUI(fab);
 
         if(fab == Fab.WALK_FAB) {
@@ -197,6 +202,8 @@ public class WalkFeedFragment<T> extends Fragment {
             pet_progressbar_feed.setVisibility(View.VISIBLE);
             pet_progressbar_img_walk_feed.setImageResource(R.drawable.ic_pet_feeding);
         }
+
+        Log.d("TAG", "updateUI: maxWalkElements: " + maxWalkElements + "fillProgressBar_walk: " + fillProgressBar_walk);
         pet_progressbar_walk.setMax(maxWalkElements);
         pet_progressbar_walk.setProgress(fillProgressBar_walk);
         pet_progressbar_feed.setMax(maxFeedElements);
@@ -207,12 +214,16 @@ public class WalkFeedFragment<T> extends Fragment {
         this.insertTimeDialog = insertTimeDialog;
     }
 
-    public void setPet(Family family, Pet pet, Fab chose_fab) {
-        lists.clear();
+    public void resetSetPet(){
         fillProgressBar_walk = 0;
         fillProgressBar_feed = 0;
         maxWalkElements = 0;
         maxFeedElements = 0;
+    }
+
+    public void setPet(Family family, Pet pet, Fab chose_fab) {
+        lists.clear();
+        resetSetPet();
         this.fab = chose_fab;
         this.pet = pet;
         this.family = family;
