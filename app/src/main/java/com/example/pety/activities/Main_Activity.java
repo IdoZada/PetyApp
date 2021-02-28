@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,15 +22,18 @@ import com.example.pety.fragments.BeautyHealthFragment;
 import com.example.pety.fragments.FamilyFragment;
 import com.example.pety.fragments.HomeFragment;
 import com.example.pety.fragments.InfoFragment;
+import com.example.pety.fragments.MyFavFamilyFragment;
 import com.example.pety.fragments.PetFragment;
 import com.example.pety.fragments.WalkFeedFragment;
 import com.example.pety.interfaces.InsertDialogInterface;
 import com.example.pety.objects.Fab;
 import com.example.pety.objects.Family;
+import com.example.pety.objects.FamilyFlag;
 import com.example.pety.objects.InsertFamilyDialog;
 import com.example.pety.objects.InsertPetDialog;
 import com.example.pety.objects.InsertTimeDateDialog;
 import com.example.pety.objects.InsertTimeDialog;
+import com.example.pety.objects.LoadingDialog;
 import com.example.pety.objects.Pet;
 import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
@@ -37,6 +41,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -50,15 +56,16 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
     Toolbar main_toolbar;
     FloatingActionButton fab_button;
 
-
     //Fragments
     Fragment selectedFragment = null;
     InsertFamilyDialog insertFamilyDialog;
     InsertPetDialog insertPetDialog;
     HomeFragment homeFragment;
     PetFragment petFragment;
+    PetFragment petHomeFragment;
     FamilyFragment familyFragment;
     InfoFragment infoFragment;
+    MyFavFamilyFragment myFavFamilyFragment;
     Fab fab = Fab.FAMILY_FAB;
 
     WalkFeedFragment walkFeedFragment;
@@ -68,7 +75,8 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
     CircleImageView user_image_view;
     TextView navMenuUserNameDisplay;
     TextView navMenuPhoneDisplay;
-
+    FamilyFlag flag = FamilyFlag.HOME;
+    Family family;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +85,25 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
 
         findViews();
         initViews();
+
+        petHomeFragment = new PetFragment(this);
+        petHomeFragment.setSendFamilyCallback(sendFamilyCallback);
+
+
+        LoadingDialog loadingDialog = new LoadingDialog(this);
+        loadingDialog.startLoadingDialog();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fab_button.setVisibility(View.VISIBLE);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, petHomeFragment).addToBackStack(null).commit();
+                loadingDialog.dismissDialog();
+            }
+        }, 5000);
+
+
+
         setSupportActionBar(main_toolbar);
         initFragments();
 
@@ -90,26 +117,33 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         familyFragment = new FamilyFragment(this);
         familyFragment.setSendFamilyCallback(sendFamilyCallback);
 
-        petFragment = new PetFragment(this);
-        petFragment.setSendFamilyCallback(sendFamilyCallback);
+
+        myFavFamilyFragment = new MyFavFamilyFragment(this);
+        myFavFamilyFragment.setSendFamilyCallback(sendFamilyCallback);
+
+
+//        petFragment = new PetFragment(this);
+//        petFragment.setSendFamilyCallback(sendFamilyCallback);
 
         firebaseDB.retrieveUserDataFromDB(sendFamilyCallback);
 
         Log.d("TAG", "after init family fragment ");
 
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).addToBackStack(null).commit();
 
         insertFamilyDialog.setInsertDialogInterface(insertDialogInterface);
         insertPetDialog.setInsertDialogInterface(insertDialogInterface);
         insertTimeDialog.setInsertDialogInterface(insertDialogInterface);
-        walkFeedFragment.setInsertTimeDialog(insertTimeDialog);
+        //walkFeedFragment.setInsertTimeDialog(insertTimeDialog);
         insertTimeDateDialog.setInsertDialogInterface(insertDialogInterface);
-        beautyHealthFragment.setInsertTimeDateDialog(insertTimeDateDialog);
+        //beautyHealthFragment.setInsertTimeDateDialog(insertTimeDateDialog);
+
 
         user_image_view = nav_view.getHeaderView(0).findViewById(R.id.user_image_view);
         navMenuUserNameDisplay = nav_view.getHeaderView(0).findViewById(R.id.navMenuUserNameDisplay);
         navMenuPhoneDisplay = nav_view.getHeaderView(0).findViewById(R.id.navMenuPhoneDisplay);
+
+
         nav_view.setNavigationItemSelectedListener(navItemSelectedListener);
         firebaseDB.getImageUser(user_image_view, this);
 
@@ -123,18 +157,29 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         insertTimeDateDialog = new InsertTimeDateDialog();
         homeFragment = new HomeFragment();
         petFragment = new PetFragment(this);
+        petFragment.setSendFamilyCallback(sendFamilyCallback);
+
         infoFragment = new InfoFragment();
-        walkFeedFragment = new WalkFeedFragment(this);
-        beautyHealthFragment = new BeautyHealthFragment(this);
+//        walkFeedFragment = new WalkFeedFragment(this);
+//        beautyHealthFragment = new BeautyHealthFragment(this);
     }
 
     private FamilyFragment.SendFamilyCallback sendFamilyCallback = new FamilyFragment.SendFamilyCallback() {
         @Override
-        public void sendFamily(Family family) {
-            Log.d("TAG", "implement family callback: " + "familyName: " + family.getF_name() + "imageName: " + family.getImageUrl());
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, petFragment).addToBackStack(null).commit();
-            fab = Fab.PET_FAB;
-            petFragment.displayReceivedData(family);
+        public void sendFamily(Family family1 , FamilyFlag familyFlag) {
+            family = family1;
+            if(FamilyFlag.SEND_TO_FAV_FAMILY_FRAGMENT == familyFlag){
+                myFavFamilyFragment.setFamily(family);
+            }else if(FamilyFlag.SEND_TO_PET_FRAGMENT == familyFlag){
+                Log.d("TAG", "implement family callback: " + "familyName: " + family.getF_name() + "imageName: " + family.getImageUrl());
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, petFragment).addToBackStack(null).commit();
+                fab = Fab.PET_FAB;
+                petFragment.displayReceivedData(family);
+            }else{
+                fab = Fab.PET_FAB;
+                petHomeFragment.displayReceivedData(family);
+            }
+
         }
 
         @Override
@@ -154,7 +199,13 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         @Override
         public void sendPet(Family family, Pet pet, Fab chose_fab) {
             fab = chose_fab;
+            walkFeedFragment = new WalkFeedFragment(Main_Activity.this);
+            beautyHealthFragment = new BeautyHealthFragment(Main_Activity.this);
+            walkFeedFragment.setInsertTimeDialog(insertTimeDialog);
+            beautyHealthFragment.setInsertTimeDateDialog(insertTimeDateDialog);
+
             if (Fab.WALK_FAB == chose_fab || Fab.FEED_FAB == chose_fab) {
+
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, walkFeedFragment).addToBackStack(null).commit();
                 walkFeedFragment.setPet(family, pet, chose_fab);
             } else if (Fab.BEAUTY_FAB == chose_fab || Fab.HEALTH_FAB == chose_fab) {
@@ -162,6 +213,11 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
                 beautyHealthFragment.setPet(family, pet, chose_fab);
             }
 
+        }
+
+        @Override
+        public void sendFamilies(ArrayList<Family> families) {
+            myFavFamilyFragment.setFamilies(families);
         }
     };
 
@@ -175,7 +231,15 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         @Override
         public void applyAttPet(String petName, String petType, String birthday, String petImagePath, Uri imageUri) {
             //set item pet
-            petFragment.setPetItem(petName, petType, birthday, petImagePath, imageUri);
+            if(flag == FamilyFlag.HOME){
+                petHomeFragment.setPetItem(petName, petType, birthday, petImagePath, imageUri);
+                petFragment.displayReceivedData(family);
+            }else if(flag == FamilyFlag.FAMILY){
+                petFragment.setPetItem(petName, petType, birthday, petImagePath, imageUri);
+                petHomeFragment.displayReceivedData(family);
+            }
+
+
         }
 
         @Override
@@ -225,6 +289,10 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
+                case R.id.nav_home_family:
+                    fab_button.setVisibility(View.INVISIBLE);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, myFavFamilyFragment).commit();
+                    break;
                 case R.id.nav_profile:
                     Intent myIntent = new Intent(Main_Activity.this, Profile_Activity.class);
                     myIntent.putExtra(Profile_Activity.UPDATE, Profile_Activity.UPDATE);
@@ -236,6 +304,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
                     startActivity(intent);
                     finish();
                     break;
+
             }
             drawer_layout.closeDrawer(GravityCompat.START);
             return true;
@@ -250,13 +319,17 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
                 case R.id.nav_home:
                     Log.d("TAG", "nav home");
                     fab_button.setVisibility(View.VISIBLE);
+                    flag = FamilyFlag.HOME;
                     fab = Fab.PET_FAB;
-                    selectedFragment = homeFragment;
+                    selectedFragment = petHomeFragment;
                     break;
                 case R.id.nav_my_families:
+                    flag = FamilyFlag.FAMILY;
+                    fab_button.setVisibility(View.VISIBLE);
                     Log.d("TAG", "nav my families");
-                    selectedFragment = familyFragment;
                     fab = Fab.FAMILY_FAB;
+                    selectedFragment = familyFragment;
+
                     break;
                 case R.id.nav_info:
                     selectedFragment = infoFragment;
@@ -280,30 +353,33 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
             public void onClick(View v) {
                 switch (fab) {
                     case PET_FAB:
+                        fab_button.setVisibility(View.VISIBLE);
                         insertPetDialog.show(getSupportFragmentManager(), "Insert item");
                         Log.d("TAG", "onClick: PET_FAB");
                         break;
                     case FAMILY_FAB:
+                        fab_button.setVisibility(View.VISIBLE);
                         Log.d("TAG", "onClick: FAMILY_FAB");
                         insertFamilyDialog.show(getSupportFragmentManager(), "Insert item");
                         insertFamilyDialog.setInsertDialogInterface(insertDialogInterface);
                         break;
-                    case SHARE_MY_FAMILY_FAB:
-                        Log.d("TAG", "onClick: SHARE_MY_FAMILY");
-                        break;
                     case WALK_FAB:
+                        fab_button.setVisibility(View.VISIBLE);
                         insertTimeDialog.show(getSupportFragmentManager(), "Insert walk");
                         Log.d("TAG", "onClick: WALK_FAB");
                         break;
                     case FEED_FAB:
+                        fab_button.setVisibility(View.VISIBLE);
                         insertTimeDialog.show(getSupportFragmentManager(), "Insert feed");
                         Log.d("TAG", "onClick: FEED_FAB");
                         break;
                     case BEAUTY_FAB:
+                        fab_button.setVisibility(View.VISIBLE);
                         insertTimeDateDialog.show(getSupportFragmentManager(), "Insert beauty");
                         Log.d("TAG", "onClick: BEAUTY_FAB");
                         break;
                     case HEALTH_FAB:
+                        fab_button.setVisibility(View.VISIBLE);
                         insertTimeDateDialog.show(getSupportFragmentManager(), "Insert health");
                         Log.d("TAG", "onClick: HEALTH_FAB");
                         break;

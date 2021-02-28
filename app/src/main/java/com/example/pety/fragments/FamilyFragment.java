@@ -24,6 +24,7 @@ import com.example.pety.adapters.ItemFamilyAdapter;
 import com.example.pety.interfaces.OnItemClickListener;
 import com.example.pety.objects.Fab;
 import com.example.pety.objects.Family;
+import com.example.pety.objects.FamilyFlag;
 import com.example.pety.objects.Pet;
 import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
@@ -72,7 +73,7 @@ public class FamilyFragment extends Fragment  {
             @Override
             public void onItemClick(int position) {
                 Family family = families.get(position);
-                sendFamilyCallback.sendFamily(family);
+                sendFamilyCallback.sendFamily(family,FamilyFlag.SEND_TO_PET_FRAGMENT);
             }
 
             @Override
@@ -115,6 +116,7 @@ public class FamilyFragment extends Fragment  {
                             firebaseDB.deleteFamilyFromDB(family,families.get(position).getFamily_key());
                             currentUser.getFamilies_map().remove(families.get(position).getFamily_key());
                             families.remove(position);
+                            sendFamilyCallback.sendFamilies(families);
                             itemFamilyAdapter.notifyItemRemoved(position);
                         }
                     })
@@ -130,9 +132,10 @@ public class FamilyFragment extends Fragment  {
     };
 
     public interface SendFamilyCallback {
-        void sendFamily(Family family);
+        void sendFamily(Family family , FamilyFlag familyFlag);
         void sendUser(User user);
         void sendPet(Family family,Pet pet, Fab chose_fab);
+        void sendFamilies(ArrayList<Family> families);
     }
 
     public void setSendFamilyCallback(SendFamilyCallback sendFamilyCallback){
@@ -150,18 +153,19 @@ public class FamilyFragment extends Fragment  {
         }
 
         firebaseDB.writeNewFamilyToDB(family , currentUser.getFamilies_map(),imageName,imageUri);
-        families.add(0,family);
-        itemFamilyAdapter.notifyItemInserted(0);
+        families.add(family);
+        sendFamilyCallback.sendFamily(family,FamilyFlag.SEND_TO_FAV_FAMILY_FRAGMENT);
+        itemFamilyAdapter.notifyItemInserted(families.size() - 1);
     }
 
     public void setCurrentUser(User user){
         this.currentUser = user;
-        readFamilies(currentUser.getFamilies_map(), families);
+        readFamilies(currentUser.getFamilies_map(), families,sendFamilyCallback);
         Log.d("RealTimeDatabase", "setCurrentUser: " + user.toString());
     }
 
-    public void readFamilies(Map<String, String> families_map , ArrayList<Family> families){
-        firebaseDB.retrieveAllFamilies(families_map,families);
+    public void readFamilies(Map<String, String> families_map , ArrayList<Family> families, SendFamilyCallback sendFamilyCallback){
+        firebaseDB.retrieveAllFamilies(families_map,families,sendFamilyCallback);
     }
 
     private void findViews(View view) {

@@ -10,6 +10,7 @@ public class User {
     private String l_name;
     private String phone_number;
     private String image_url;
+    private String homeFamily_id;
     private Map<String, String> families_map = new HashMap<>(); //Each user contains a map for all families
 
     public User() {
@@ -71,6 +72,14 @@ public class User {
 
     public void setImage_url(String image_url) {
         this.image_url = image_url;
+    }
+
+    public String getHomeFamily_id() {
+        return homeFamily_id;
+    }
+
+    public void setHomeFamily_id(String homeFamily_id) {
+        this.homeFamily_id = homeFamily_id;
     }
 
     @Override

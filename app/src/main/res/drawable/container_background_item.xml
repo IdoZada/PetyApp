@@ -3,9 +3,9 @@
 
     <corners android:radius="20dp"/>
     <gradient
-        android:startColor="#767FE8"
-        android:endColor= "#929AF3"
-        android:angle="90"
+        android:startColor="@color/fab_add_button"
+        android:endColor= "#8F74CC"
+        android:angle="270"
         />
 
 

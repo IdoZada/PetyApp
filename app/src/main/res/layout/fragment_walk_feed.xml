@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    >
 
     <ImageView
         android:id="@+id/pet_item_container_walking"
@@ -32,11 +34,11 @@
         android:id="@+id/pet_title_walk_feed"
         android:layout_width="120dp"
         android:layout_height="49dp"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="20dp"
         android:text="Walking"
+        android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
         android:transitionName="titleTN"
         app:layout_constraintBottom_toBottomOf="@+id/pet_item_container_walking"
         app:layout_constraintEnd_toEndOf="@+id/pet_item_container_walking"
@@ -49,7 +51,7 @@
         android:id="@+id/pet_progressbar_feed"
         android:layout_width="80dp"
         android:layout_height="71dp"
-        android:layout_marginEnd="48dp"
+        android:layout_marginEnd="20dp"
         android:indeterminateOnly="false"
         android:progressDrawable="@drawable/progressbar"
         app:layout_constraintBottom_toBottomOf="@+id/pet_item_container_walking"
@@ -65,7 +67,7 @@
         android:id="@+id/pet_progressbar_walk"
         android:layout_width="80dp"
         android:layout_height="71dp"
-        android:layout_marginEnd="48dp"
+        android:layout_marginEnd="20dp"
         android:indeterminateOnly="false"
         android:progressDrawable="@drawable/progressbar"
         app:layout_constraintBottom_toBottomOf="@+id/pet_item_container_walking"

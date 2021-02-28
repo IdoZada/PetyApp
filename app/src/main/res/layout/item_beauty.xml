@@ -19,7 +19,7 @@
             android:layout_marginLeft="50dp"
             android:text=" 8:30 AM, 21/02/2021"
             android:textSize="18sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:gravity="center"
             >
 

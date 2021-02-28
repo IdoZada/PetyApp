@@ -68,21 +68,29 @@
             android:layout_alignParentBottom="true"
             android:layout_marginRight="30dp"
             android:layout_marginBottom="70dp"
+            android:visibility="invisible"
             android:src="@drawable/ic_baseline_add_24"
             android:backgroundTint="@color/white"
             >
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
+
+
     </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/drawer_menu"
+
         />
+
+
+
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

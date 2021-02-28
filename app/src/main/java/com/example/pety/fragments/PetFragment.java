@@ -44,6 +44,7 @@ public class PetFragment extends Fragment {
     public PetFragment(Context context){
         this.mContext = context;
         pets = new ArrayList<>();
+        family = new Family();
         itemPetAdapter = new ItemPetAdapter(pets, mContext);
     }
 
@@ -105,6 +106,7 @@ public class PetFragment extends Fragment {
                             firebaseDB.deletePetFromDB(pet, family.getFamily_key());
                             family.getPets().remove(pet.getPet_id());
                             pets.remove(position);
+                            sendFamilyCallback.sendFamily(family,null);
                             itemPetAdapter.notifyItemRemoved(position);
                         }
                     })
@@ -128,6 +130,7 @@ public class PetFragment extends Fragment {
     {
         pets.clear();
         this.family = family;
+
 
 
         for (Map.Entry<String,Pet> entry : family.getPets().entrySet()){
@@ -172,15 +175,15 @@ public class PetFragment extends Fragment {
         pet.setBirthday(birthday);
         pet.setImage_url(imageUri.toString());
 
-
+        //Log.d("xxx", "setPetItem: " + family.getPets());
         if(family.getPets() == null) {
             pets_map = new HashMap<>();
             family.setPets(pets_map);
         }
-
-        firebaseDB.writeNewPetToDB(pet,family,petImageName,imageUri);
-        pets.add(0,pet);
-        itemPetAdapter.notifyItemInserted(0);
+        Log.d("xxxx", "displayReceivedData: " + this.family.getFamily_key());
+        firebaseDB.writeNewPetToDB(pet,this.family,petImageName,imageUri);
+        pets.add(pet);
+        itemPetAdapter.notifyItemInserted(pets.size() - 1);
     }
 
     private void findViews(View view) {

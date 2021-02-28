@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">pety</string>
+    <string name="app_name">Pety</string>
     <string name="title_app" translatable="false">Pety</string>
     <string name="phone_number" translatable="false">Phone number</string>
     <string name="continue_" translatable="false">Continue</string>
@@ -13,23 +13,5 @@
 
     <string name="pick_time" translatable="false">Pick The Time</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment" translatable="false">ShareFamilyFragment</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <!--    <string name="hello_blank_fragment">Hello blank fragment</string>-->
-    <!--    <string name="play_btn">Play Video</string>-->
-    <!--    <string name="play_trial_btn">Play Trial</string>-->
-    <!--    <string name="email">Email</string>-->
-    <!--    <string name="play_gameplay_btn">Play Gameplay</string>-->
-    <!--    <string name="review_game_header">Reviews</string>-->
-    <!--    <string name="game_image">Game Image</string>-->
-    <!--    <string name="desctiprion_game_header">Description</string>-->
-    <!--    <string name="add_review_btn">Add Review</string>-->
-    <!--    <string name="review_title">Title: </string>-->
-    <!--    <string name="review_user_name">User: </string>-->
-    <!--    <string name="add_review">Add Review</string>-->
-    <!--    <string name="add_offer">Add offer</string>-->
-    <!--    <string name="market_place">Market Place</string>-->
-    <!--    <string name="appwidget_text">EXAMPLE</string>-->
-    <!--    <string name="add_widget">Add widget</string>-->
+
 </resources>

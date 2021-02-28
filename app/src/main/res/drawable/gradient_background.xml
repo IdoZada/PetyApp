@@ -8,8 +8,8 @@
             <solid android:color="#C72C2F" />
 
             <gradient
-            android:startColor="@color/purple_200"
-            android:endColor= "@color/purple_500"
+            android:startColor="@color/fab_add_button"
+            android:endColor= "#8F74CC"
             android:angle="270" />
 
         </shape>

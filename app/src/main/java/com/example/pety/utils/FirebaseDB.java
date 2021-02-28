@@ -13,6 +13,7 @@ import com.example.pety.fragments.FamilyFragment;
 import com.example.pety.objects.Beauty;
 import com.example.pety.objects.Fab;
 import com.example.pety.objects.Family;
+import com.example.pety.objects.FamilyFlag;
 import com.example.pety.objects.Feed;
 import com.example.pety.objects.Health;
 import com.example.pety.objects.Pet;
@@ -151,6 +152,10 @@ public class FirebaseDB {
                         families_map = (Map<String, String>) task.getResult().child(FAMILIES).getValue();
                         user.setFamilies_map(families_map);
                     }
+                    if (task.getResult().hasChild("homeFamily_id")) {
+                        String homeFamily_id = task.getResult().child("homeFamily_id").getValue().toString();
+                        user.setHomeFamily_id(homeFamily_id);
+                    }
                     user.setF_name(firstName);
                     user.setL_name(lastName);
                     user.setPhone_number(phoneNumber);
@@ -161,9 +166,16 @@ public class FirebaseDB {
         });
     }
 
-    public void retrieveAllFamilies(Map<String, String> families_map, ArrayList<Family> families) {
+    public void updateDefaultFamily(String familyHome_id){
+        String uid = getFirebaseAuth().getCurrentUser().getUid();
+        getDatabase().getReference().child(USERS).child(uid).child("homeFamily_id").setValue(familyHome_id);
+
+    }
+
+    public void retrieveAllFamilies(Map<String, String> families_map, ArrayList<Family> families, FamilyFragment.SendFamilyCallback sendFamilyCallback) {
         DatabaseReference myFamilies = getDatabase().getReference().child(FAMILIES);
         Log.d(TAG, "retrieveAllFamilies: " + families_map.size());
+        int numberOfFamilies = families_map.size();
         for (String key : families_map.keySet()) {
             myFamilies.child(key).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
@@ -185,11 +197,18 @@ public class FirebaseDB {
                         family.setF_name(familyName);
                         family.setImageUrl(familyImagePath);
                         families.add(family);
+                        if(families.size() == numberOfFamilies){
+                            sendFamilyCallback.sendFamilies(families);
+                        }
+                        if(family.getFamily_key().equals(user.getHomeFamily_id())){
+                            sendFamilyCallback.sendFamily(family, FamilyFlag.SEND_TO_PET_HOME_FRAGMENT);
+                        }
                         Log.d(TAG, "onComplete - retrieveAllFamilies: families success " + families);
                     }
                 }
             });
         }
+
     }
 
     /**
