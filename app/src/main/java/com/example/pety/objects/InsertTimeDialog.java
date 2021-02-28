@@ -26,6 +26,8 @@ import java.util.Locale;
 public class InsertTimeDialog extends AppCompatDialogFragment {
     public static final String UPDATE = "update";
     public static final String INSERT = "insert";
+    public static final String YES = "yes";
+    public static final String NO = "no";
 
     InsertDialogInterface insertDialogInterface;
     TextInputLayout insertDialog_LAY_walkTime;
@@ -33,6 +35,7 @@ public class InsertTimeDialog extends AppCompatDialogFragment {
     ItemWalkFeedAdapter itemWalkFeedAdapter;
     String op = INSERT; //Option to update or insert (walk / feed)
     int position;
+    String Click_Cancel = YES;
 
     @NonNull
     @Override
@@ -83,7 +86,10 @@ public class InsertTimeDialog extends AppCompatDialogFragment {
                 .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        itemWalkFeedAdapter.notifyItemChanged(position);
+                        if(Click_Cancel == NO){
+                            itemWalkFeedAdapter.notifyItemChanged(position);
+                        }
+
                     }
                 });
 
@@ -108,6 +114,7 @@ public class InsertTimeDialog extends AppCompatDialogFragment {
 
     public void setInsertOrUpdate(String op, ItemWalkFeedAdapter itemWalkFeedAdapter,int position) {
         this.op = op;
+        this.Click_Cancel = NO;
         this.itemWalkFeedAdapter = itemWalkFeedAdapter;
         this.position = position;
     }

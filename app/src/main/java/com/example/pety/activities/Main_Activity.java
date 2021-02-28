@@ -122,9 +122,6 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         myFavFamilyFragment.setSendFamilyCallback(sendFamilyCallback);
 
 
-//        petFragment = new PetFragment(this);
-//        petFragment.setSendFamilyCallback(sendFamilyCallback);
-
         firebaseDB.retrieveUserDataFromDB(sendFamilyCallback);
 
         Log.d("TAG", "after init family fragment ");
@@ -134,9 +131,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         insertFamilyDialog.setInsertDialogInterface(insertDialogInterface);
         insertPetDialog.setInsertDialogInterface(insertDialogInterface);
         insertTimeDialog.setInsertDialogInterface(insertDialogInterface);
-        //walkFeedFragment.setInsertTimeDialog(insertTimeDialog);
         insertTimeDateDialog.setInsertDialogInterface(insertDialogInterface);
-        //beautyHealthFragment.setInsertTimeDateDialog(insertTimeDateDialog);
 
 
         user_image_view = nav_view.getHeaderView(0).findViewById(R.id.user_image_view);
@@ -158,10 +153,7 @@ public class Main_Activity extends AppCompatActivity implements NavigationView.O
         homeFragment = new HomeFragment();
         petFragment = new PetFragment(this);
         petFragment.setSendFamilyCallback(sendFamilyCallback);
-
         infoFragment = new InfoFragment();
-//        walkFeedFragment = new WalkFeedFragment(this);
-//        beautyHealthFragment = new BeautyHealthFragment(this);
     }
 
     private FamilyFragment.SendFamilyCallback sendFamilyCallback = new FamilyFragment.SendFamilyCallback() {

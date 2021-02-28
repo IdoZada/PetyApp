@@ -28,6 +28,8 @@ import java.util.Locale;
 public class InsertTimeDateDialog extends AppCompatDialogFragment {
     public static final String UPDATE = "update";
     public static final String INSERT = "insert";
+    public static final String YES = "yes";
+    public static final String NO = "no";
 
     InsertDialogInterface insertDialogInterface;
     TextInputLayout insertDialog_LAY_Time_Date;
@@ -36,6 +38,7 @@ public class InsertTimeDateDialog extends AppCompatDialogFragment {
     String op = INSERT; //Option to update or insert (beauty / health)
     int position;
     int day, month, year;
+    String Click_Cancel = YES;
 
     @NonNull
     @Override
@@ -91,7 +94,9 @@ public class InsertTimeDateDialog extends AppCompatDialogFragment {
                 .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        itemBeautyHealthAdapter.notifyItemChanged(position);
+                        if(Click_Cancel == NO) {
+                            itemBeautyHealthAdapter.notifyItemChanged(position);
+                        }
                     }
                 });
 
@@ -128,6 +133,7 @@ public class InsertTimeDateDialog extends AppCompatDialogFragment {
 
     public void setInsertOrUpdate(String op, ItemBeautyHealthAdapter itemBeautyHealthAdapter,int position) {
         this.op = op;
+        this.Click_Cancel = NO;
         this.itemBeautyHealthAdapter = itemBeautyHealthAdapter;
         this.position = position;
     }

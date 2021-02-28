@@ -18,10 +18,10 @@
                 android:endY="108"
                 android:type="linear">
                 <item
-                    android:color="@color/purple_200"
+                    android:color="@color/fab_add_button"
                     android:offset="0.0" />
                 <item
-                    android:color="@color/purple_500"
+                    android:color="#8F74CC"
                     android:offset="1.0" />
             </gradient>
         </aapt:attr>
