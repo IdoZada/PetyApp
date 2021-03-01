@@ -1,6 +1,6 @@
 # Pety App
 
-The app enables the management of pets via a user-friendly interface for adding animals under a family unit easily.
+The app enables the management of pets via a user-friendly interface.
 
 Each animal has a number of update options:
 * Add / update departure time for a walking.
