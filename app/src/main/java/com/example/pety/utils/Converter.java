@@ -1,7 +1,5 @@
 package com.example.pety.utils;
 
-import android.util.Log;
-
 import com.example.pety.objects.Beauty;
 import com.example.pety.objects.Feed;
 import com.example.pety.objects.Pet;
@@ -25,8 +23,6 @@ public class Converter {
         Object image_url = result.get("image_url");
         Object pet_type = result.get("pet_type");
         Object birthday = result.get("birthday");
-
-
 
         Map<String,Walk> walks_map = (Map<String, Walk>) result.get("walks");
         Map<String,Feed> feeds_map = (Map<String, Feed>) result.get("feeds");
@@ -65,7 +61,6 @@ public class Converter {
             }
         }
 
-
         pet.setWalks(walks);
         pet.setFeeds(feeds);
         pet.setBeauty(beauty);
@@ -103,17 +98,17 @@ public class Converter {
             ((Health) obj).setActive((Boolean) isActive);
         }
 
-        Log.d("TAG", "fromMapCares: " + obj);
         return obj;
     }
 
     static Map<String, Pet> convertPets(Map<String, Pet> pets) {
         Map<String,Pet> pets_map = new HashMap<>();
+
         for (Map.Entry<String,Pet> entry : pets.entrySet()){
             Pet pet = (Pet) Converter.fromMap((Map<String, Object>) entry.getValue());
             pets_map.put(entry.getKey(),pet);
         }
+
         return pets_map;
     }
-
 }

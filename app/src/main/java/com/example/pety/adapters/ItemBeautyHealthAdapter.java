@@ -39,7 +39,6 @@ public class ItemBeautyHealthAdapter<T> extends RecyclerView.Adapter<ItemBeautyH
     @Override
     public ItemBeautyHealthAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_beauty, parent, false);
-
         return new ItemBeautyHealthAdapter.ViewHolder(view, mListener);
     }
 
@@ -85,17 +84,14 @@ public class ItemBeautyHealthAdapter<T> extends RecyclerView.Adapter<ItemBeautyH
             time_date_piker_switch.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Log.d("TAG", "onCheckedChanged: " + isChecked);
                     if (mListener != null) {
                         int position = getAdapterPosition();
-
                         if (position != RecyclerView.NO_POSITION) {
                             T generic = mArrayList.get(position);
                             if(generic instanceof Beauty){
                                 Beauty beauty = (Beauty) generic;
                                 if(beauty.isActive() == true){
                                     beauty.setActive(false);
-
                                 }else{
                                     beauty.setActive(true);
                                 }
@@ -105,7 +101,6 @@ public class ItemBeautyHealthAdapter<T> extends RecyclerView.Adapter<ItemBeautyH
                                     Health health = (Health) generic;
                                     if(health.isActive() == true){
                                         health.setActive(false);
-
                                     }else{
                                         health.setActive(true);
                                     }

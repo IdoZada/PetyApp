@@ -9,11 +9,10 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
-import com.example.pety.fragments.FamilyFragment;
+import com.example.pety.interfaces.SendDataCallback;
 import com.example.pety.objects.Beauty;
-import com.example.pety.objects.Fab;
 import com.example.pety.objects.Family;
-import com.example.pety.objects.FamilyFlag;
+import com.example.pety.enums.FamilyFlag;
 import com.example.pety.objects.Feed;
 import com.example.pety.objects.Health;
 import com.example.pety.objects.Pet;
@@ -25,12 +24,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -38,8 +35,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 
@@ -134,7 +129,7 @@ public class FirebaseDB {
         });
     }
 
-    public void retrieveUserDataFromDB(FamilyFragment.SendFamilyCallback sendFamilyCallback) {
+    public void retrieveUserDataFromDB(SendDataCallback sendDataCallback) {
         user = new User();
         String uid = getFirebaseAuth().getCurrentUser().getUid();
         DatabaseReference myRef = getDatabase().getReference(USERS).child(uid);
@@ -159,7 +154,7 @@ public class FirebaseDB {
                     user.setF_name(firstName);
                     user.setL_name(lastName);
                     user.setPhone_number(phoneNumber);
-                    sendFamilyCallback.sendUser(user);
+                    sendDataCallback.sendUser(user);
                     Log.d("TAG", "onComplete - retrieveUserDataFromDB: task success ->" + user.toString());
                 }
             }
@@ -172,7 +167,7 @@ public class FirebaseDB {
 
     }
 
-    public void retrieveAllFamilies(Map<String, String> families_map, ArrayList<Family> families, FamilyFragment.SendFamilyCallback sendFamilyCallback) {
+    public void retrieveAllFamilies(Map<String, String> families_map, ArrayList<Family> families, SendDataCallback sendDataCallback) {
         DatabaseReference myFamilies = getDatabase().getReference().child(FAMILIES);
         Log.d(TAG, "retrieveAllFamilies: " + families_map.size());
         int numberOfFamilies = families_map.size();
@@ -198,10 +193,10 @@ public class FirebaseDB {
                         family.setImageUrl(familyImagePath);
                         families.add(family);
                         if(families.size() == numberOfFamilies){
-                            sendFamilyCallback.sendFamilies(families);
+                            sendDataCallback.sendFamilies(families);
                         }
                         if(family.getFamily_key().equals(user.getHomeFamily_id())){
-                            sendFamilyCallback.sendFamily(family, FamilyFlag.SEND_TO_PET_HOME_FRAGMENT);
+                            sendDataCallback.sendFamily(family, FamilyFlag.SEND_TO_PET_HOME_FRAGMENT);
                         }
                         Log.d(TAG, "onComplete - retrieveAllFamilies: families success " + families);
                     }

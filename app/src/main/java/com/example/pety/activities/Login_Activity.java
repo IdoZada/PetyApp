@@ -10,9 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.pety.R;
-import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
-import com.example.pety.utils.MySP;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -34,23 +32,25 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.concurrent.TimeUnit;
 
 public class Login_Activity extends AppCompatActivity {
+    public static final String LOGIN = "login";
 
     private enum LOGIN_STATE {
         ENTERING_NUMBER,
         ENTERING_CODE,
     }
 
-    MaterialButton signUp_BTN_continue;
-    TextInputLayout signUp_LAY_phone;
     private String phoneInput = "";
     private LOGIN_STATE login_state = LOGIN_STATE.ENTERING_NUMBER;
+
+    MaterialButton signUp_BTN_continue;
+    TextInputLayout signUp_LAY_phone;
+
     FirebaseDB firebaseDB = FirebaseDB.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         validateUser();
         findViews();
         initViews();
@@ -61,16 +61,14 @@ public class Login_Activity extends AppCompatActivity {
      */
     private void validateUser() {
         FirebaseUser firebaseUser = firebaseDB.getFirebaseAuth().getCurrentUser();
-        //Log.d("ttst", "validateUser: " + firebaseUser.getUid());
         if (firebaseUser != null) {
-            Log.d("ttst", "User Exist In The Firebase");
+            Log.d(LOGIN, "User Exist In The Firebase");
             Intent myIntent = new Intent(this, Main_Activity.class);
             startActivity(myIntent);
             finish();
             return;
         }
-
-        Log.d("ttst", "User Not Exist In The Firebase");
+        Log.d(LOGIN, "User Not Exist In The Firebase");
     }
 
     /**
@@ -89,7 +87,7 @@ public class Login_Activity extends AppCompatActivity {
      */
     private void codeEntered() {
         String smsVerificationCode = signUp_LAY_phone.getEditText().getText().toString();
-        Log.d("test", "verificationCode: " + smsVerificationCode);
+        Log.d(LOGIN, "verificationCode: " + smsVerificationCode);
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseAuthSettings firebaseAuthSettings = firebaseAuth.getFirebaseAuthSettings();
@@ -109,8 +107,7 @@ public class Login_Activity extends AppCompatActivity {
      */
     private void startLoginProcess() {
         phoneInput = signUp_LAY_phone.getEditText().getText().toString();
-        Log.d("test", "phoneInput:" + phoneInput);
-
+        Log.d(LOGIN, "phoneInput:" + phoneInput);
 
         FirebaseAuth firebaseAuth = firebaseDB.getFirebaseAuth();
         PhoneAuthOptions options = PhoneAuthOptions.newBuilder(firebaseAuth)
@@ -125,20 +122,20 @@ public class Login_Activity extends AppCompatActivity {
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks onVerificationStateChangedCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
         public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-            Log.d("TAG", "onCodeSent: " + verificationId);
+            Log.d(LOGIN, "onCodeSent: " + verificationId);
             login_state = LOGIN_STATE.ENTERING_CODE;
             updateUI();
         }
 
         @Override
         public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-            Log.d("TAG", "theVerificationCompleted: ");
+            Log.d(LOGIN, "theVerificationCompleted: ");
             signInWithPhoneAuthCredential(phoneAuthCredential);
         }
 
         @Override
         public void onVerificationFailed(FirebaseException e) {
-            Log.d("TAG", "onVerificationFailed: " + e.getMessage());
+            Log.d(LOGIN, "onVerificationFailed: " + e.getMessage());
             e.printStackTrace();
             Toast.makeText(Login_Activity.this, "VerificationFailed" + e.getMessage(), Toast.LENGTH_SHORT);
             login_state = LOGIN_STATE.ENTERING_NUMBER;
@@ -168,14 +165,12 @@ public class Login_Activity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d("TAG", "signInWithCredential:success");
-
+                            Log.d(LOGIN, "signInWithCredential:success");
                             FirebaseUser user = task.getResult().getUser();
                             checkAndCreateUser(user);
-
                         } else {
                             // Sign in failed, display a message and update the UI
-                            Log.w("TAG", "signInWithCredential:failure", task.getException());
+                            Log.w(LOGIN, "signInWithCredential:failure", task.getException());
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 // The verification code entered was invalid
                             }
@@ -184,8 +179,11 @@ public class Login_Activity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Check if your user exist in firebase, if not create new user
+     * @param firebaseUser this parameter allow to access info of specific firebase user
+     */
     private void checkAndCreateUser(FirebaseUser firebaseUser) {
-        String user_id = firebaseUser.getUid();
         String phone_number = firebaseUser.getPhoneNumber();
         DatabaseReference myRef = firebaseDB.getDatabase().getReference("users");
         myRef.orderByChild("phone_number").equalTo(phone_number).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -193,19 +191,19 @@ public class Login_Activity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue() != null) {
                     //it means user already registered
-                    Log.d("TAG", "onDataChange:  User already registered");
+                    Log.d(LOGIN, "onDataChange:  User already registered");
                     Intent myIntent = new Intent(Login_Activity.this, Main_Activity.class);
                     startActivity(myIntent);
                 } else {
-                    Log.d("TAG", "onDataChange:  New user");
+                    Log.d(LOGIN, "onDataChange:  New user");
                     Intent myIntent = new Intent(Login_Activity.this, Profile_Activity.class);
                     startActivity(myIntent);
                 }
                 finish();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }

@@ -1,4 +1,4 @@
-package com.example.pety.objects;
+package com.example.pety.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -27,13 +27,13 @@ import java.io.File;
 
 public class InsertFamilyDialog extends AppCompatDialogFragment {
 
+    String imageFileName;
+    Uri fileUri;
+
     InsertDialogInterface insertDialogInterface;
     TextInputLayout insertDialog_LAY_familyName;
     FloatingActionButton fab_add_photo;
     AppCompatImageView imgProfile;
-
-    String imageFileName;
-    Uri fileUri;
 
     @NonNull
     @Override
@@ -46,31 +46,29 @@ public class InsertFamilyDialog extends AppCompatDialogFragment {
         findViews(view);
         initViews();
         builder.setView(view)
-                .setTitle("Add New Family")
-                .setNegativeButton("Add", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.add_family)
+                .setNegativeButton(R.string.add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String familyName = insertDialog_LAY_familyName.getEditText().getText().toString();
-                        if(familyName.isEmpty() || fileUri == null){
-                            Log.d("TAG", "onClick:  STRING IS EMPTY");
+                        if (familyName.isEmpty() || fileUri == null) {
                             new AlertDialog.Builder(getContext())
-                                    .setTitle("Error")
-                                    .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                                    .setTitle(R.string.error)
+                                    .setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             return;
                                         }
                                     })
-                                    .setMessage("You can't let the fields empty")
+                                    .setMessage(R.string.empty_field)
                                     .show();
                             fileUri = null;
-                        }else{
-                            //"pictures/" + firebaseDB.FAMILIES + "/" + imageFileName
+                        } else {
                             insertDialogInterface.applyTexts(familyName, imageFileName, fileUri);
                         }
                     }
                 })
-                .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -84,40 +82,34 @@ public class InsertFamilyDialog extends AppCompatDialogFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            //Image Uri will not be null for RESULT_OK
-            fileUri = data.getData();
+            fileUri = data.getData();//Image Uri will not be null for RESULT_OK
             File file = ImagePicker.Companion.getFile(data);
             imgProfile.setImageURI(fileUri);
             imgProfile.setScaleType(ImageView.ScaleType.FIT_XY);
             imageFileName = file.getName();
-            Log.d("TAG", "onActivityResult: Gallery Image Uri:  " + imageFileName);
         }
     }
 
-    void findViews(View view){
+    void findViews(View view) {
         insertDialog_LAY_familyName = view.findViewById(R.id.insertDialog_LAY_familyName1);
         fab_add_photo = view.findViewById(R.id.fab_add_photo);
         imgProfile = view.findViewById(R.id.imgProfile);
     }
 
-    void initViews(){
+    void initViews() {
         fab_add_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ImagePicker.Companion.with(InsertFamilyDialog.this)
-                        .crop()	    			//Crop image(Optional), Check Customization for more option
-                        .compress(1024)			//Final image size will be less than 1 MB(Optional)
-                        .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                        .crop()                    //Crop image(Optional), Check Customization for more option
+                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                        .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
                         .start();
             }
         });
     }
 
-    public void setInsertDialogInterface(InsertDialogInterface insertDialogInterface){
+    public void setInsertDialogInterface(InsertDialogInterface insertDialogInterface) {
         this.insertDialogInterface = insertDialogInterface;
     }
-
-//    public interface insert_DialogInterface {
-//        void applyTexts(String familyName,String familyImagePath,Uri imageUri);
-//    }
 }

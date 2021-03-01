@@ -1,7 +1,6 @@
 package com.example.pety.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.pety.R;
 import com.example.pety.interfaces.OnItemClickListener;
-import com.example.pety.objects.Fab;
+import com.example.pety.enums.Fab;
 import com.example.pety.objects.Pet;
 
 import java.util.ArrayList;
@@ -25,8 +24,7 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
     Context mContext;
     private OnItemClickListener mListener;
 
-
-    public ItemPetAdapter(ArrayList<Pet> mArrayList, Context mContext){
+    public ItemPetAdapter(ArrayList<Pet> mArrayList, Context mContext) {
         this.mContext = mContext;
         if (mArrayList != null) {
             this.mArrayList = mArrayList;
@@ -43,14 +41,11 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
     @Override
     public ItemPetAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_pet, parent, false);
-
-
         return new ItemPetAdapter.ViewHolder(view, mListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ItemPetAdapter.ViewHolder holder, int position) {
-        Log.d("TAG", "onBindViewHolder: " + mArrayList.get(position));
         holder.pet_item_name.setText(mArrayList.get(position).getName());
         Glide.with(mContext).load(mArrayList.get(position).getImage_url()).into(holder.pet_item_img);
         holder.pet_item_type.setText(mArrayList.get(position).getPet_type());
@@ -93,10 +88,6 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
                         if (position != RecyclerView.NO_POSITION) {
                             mListener.onItemClick(position);
                         }
-//                        Family family = mArrayList.get(position);
-//                        PetFragment pet = new PetFragment();
-
-                        //Log.d("TAG", "onClick: ViewHolder position:" + mArrayList.get(position).getF_name() );
                     }
                 }
             });
@@ -119,7 +110,7 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
                     if (mListener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
-                            mListener.onItemCareClick(position,Fab.FEED_FAB);
+                            mListener.onItemCareClick(position, Fab.FEED_FAB);
                         }
                     }
                 }
@@ -147,8 +138,6 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
                     }
                 }
             });
-
-
         }
     }
 }

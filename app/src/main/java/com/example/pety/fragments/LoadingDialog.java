@@ -1,4 +1,4 @@
-package com.example.pety.objects;
+package com.example.pety.fragments;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -10,7 +10,6 @@ import com.example.pety.R;
 public class LoadingDialog {
     private Activity activity;
     private AlertDialog dialog;
-
 
     public LoadingDialog(Activity activity){
         this.activity =activity;

@@ -8,9 +8,9 @@
             <solid android:color="#C72C2F" />
 
             <gradient
-            android:startColor="@color/fab_add_button"
-            android:endColor= "#8F74CC"
-            android:angle="270" />
+                android:angle="270"
+                android:endColor="@color/gradient_end"
+                android:startColor="@color/fab_add_button" />
 
         </shape>
 

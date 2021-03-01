@@ -24,6 +24,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.io.File;
 
 public class Profile_Activity extends AppCompatActivity {
+    public static final String PROFILE = "profile";
     public static final String UPDATE = "update";
     public static final String NEW = "new";
 
@@ -53,6 +54,9 @@ public class Profile_Activity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Update user details
+     */
     private void updateUserProfile() {
         User currentUser = firebaseDB.getUser();
         imageUri = Uri.parse(currentUser.getImage_url());
@@ -66,26 +70,26 @@ public class Profile_Activity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            //Image Uri will not be null for RESULT_OK
-            imageUri = data.getData();
+            imageUri = data.getData(); //Image Uri will not be null for RESULT_OK
             File file = ImagePicker.Companion.getFile(data);
             imgProfile.setImageURI(imageUri);
             imgProfile.setScaleType(ImageView.ScaleType.FIT_XY);
             imageFileName = file.getName();
-            Log.d("TAG", "onActivityResult: Image Uri:  " + imageFileName);
+            Log.d(PROFILE, "onActivityResult: Image Uri:  " + imageFileName);
         }
     }
 
+    /**
+     * Upload user details to realtime firebase
+     */
     private void uploadUserProfile() {
         User user = new User();
         String firstName = profile_LAY_firstName.getEditText().getText().toString();
         String LastName = profile_LAY_lastName.getEditText().getText().toString();
-
         user.setF_name(firstName);
         user.setL_name(LastName);
 
         firebaseDB.updateFirstNameAndLastNameAndImage(user, imageFileName, imageUri);
-
         Intent myIntent = new Intent(this, Main_Activity.class);
         startActivity(myIntent);
         finish();

@@ -22,8 +22,6 @@ public class ItemFamilyAdapter extends RecyclerView.Adapter<ItemFamilyAdapter.Vi
     Context mContext;
     private OnItemClickListener mListener;
 
-
-
     public ItemFamilyAdapter(ArrayList<Family> mArrayList, Context mContext) {
         this.mContext = mContext;
         if (mArrayList != null) {
@@ -41,8 +39,6 @@ public class ItemFamilyAdapter extends RecyclerView.Adapter<ItemFamilyAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_family, parent, false);
-
-
         return new ViewHolder(view, mListener);
     }
 
@@ -73,10 +69,6 @@ public class ItemFamilyAdapter extends RecyclerView.Adapter<ItemFamilyAdapter.Vi
                         if (position != RecyclerView.NO_POSITION) {
                             mListener.onItemClick(position);
                         }
-//                        Family family = mArrayList.get(position);
-//                        PetFragment pet = new PetFragment();
-
-                        //Log.d("TAG", "onClick: ViewHolder position:" + mArrayList.get(position).getF_name() );
                     }
                 }
             });

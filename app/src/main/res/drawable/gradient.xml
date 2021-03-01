@@ -4,6 +4,6 @@
 
     <gradient
         android:startColor="@color/fab_add_button"
-        android:endColor= "#8F74CC"
+        android:endColor= "@color/gradient_end"
         android:angle="270" />
 </shape>

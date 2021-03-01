@@ -22,10 +22,10 @@ import android.widget.ImageView;
 import com.example.pety.R;
 import com.example.pety.adapters.ItemFamilyAdapter;
 import com.example.pety.interfaces.OnItemClickListener;
-import com.example.pety.objects.Fab;
+import com.example.pety.enums.Fab;
+import com.example.pety.interfaces.SendDataCallback;
 import com.example.pety.objects.Family;
-import com.example.pety.objects.FamilyFlag;
-import com.example.pety.objects.Pet;
+import com.example.pety.enums.FamilyFlag;
 import com.example.pety.objects.User;
 import com.example.pety.utils.FirebaseDB;
 
@@ -40,10 +40,11 @@ public class FamilyFragment extends Fragment  {
     ItemFamilyAdapter itemFamilyAdapter;
     ImageView imgProfile;
     View view;
-    FirebaseDB firebaseDB = FirebaseDB.getInstance();
-    User currentUser;
+
     ArrayList<Family> families;
-    SendFamilyCallback sendFamilyCallback;
+    User currentUser;
+    SendDataCallback sendDataCallback;
+    FirebaseDB firebaseDB = FirebaseDB.getInstance();
     Context mContext;
 
     public FamilyFragment(Context context){
@@ -68,24 +69,7 @@ public class FamilyFragment extends Fragment  {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_family, container, false);
         findViews(view);
-
-        itemFamilyAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                Family family = families.get(position);
-                sendFamilyCallback.sendFamily(family,FamilyFlag.SEND_TO_PET_FRAGMENT);
-            }
-
-            @Override
-            public void onItemCareClick(int position, Fab chose_fab) {
-
-            }
-
-            @Override
-            public void onSwitchItemClick(boolean isChecked, int position) {
-
-            }
-        });
+        clickFamily();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(itemFamilyAdapter);
@@ -96,6 +80,11 @@ public class FamilyFragment extends Fragment  {
         return view;
     }
 
+    /**
+     * This callback allow to swipe specific family:
+     * swipe right allow to delete family
+     *
+     */
     public ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -111,12 +100,10 @@ public class FamilyFragment extends Fragment  {
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Log.d("TAG", "onClick: " + family.getPets().values());
-
                             firebaseDB.deleteFamilyFromDB(family,families.get(position).getFamily_key());
                             currentUser.getFamilies_map().remove(families.get(position).getFamily_key());
                             families.remove(position);
-                            sendFamilyCallback.sendFamilies(families);
+                            sendDataCallback.sendFamilies(families);
                             itemFamilyAdapter.notifyItemRemoved(position);
                         }
                     })
@@ -131,18 +118,39 @@ public class FamilyFragment extends Fragment  {
         }
     };
 
-    public interface SendFamilyCallback {
-        void sendFamily(Family family , FamilyFlag familyFlag);
-        void sendUser(User user);
-        void sendPet(Family family,Pet pet, Fab chose_fab);
-        void sendFamilies(ArrayList<Family> families);
+    /**
+     * This click listener communicate with pet fragment
+     */
+    public void clickFamily(){
+        itemFamilyAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Family family = families.get(position);
+                sendDataCallback.sendFamily(family,FamilyFlag.SEND_TO_PET_FRAGMENT);
+            }
+
+            @Override
+            public void onItemCareClick(int position, Fab chose_fab) {
+
+            }
+
+            @Override
+            public void onSwitchItemClick(boolean isChecked, int position) {
+
+            }
+        });
     }
 
-    public void setSendFamilyCallback(SendFamilyCallback sendFamilyCallback){
-        this.sendFamilyCallback = sendFamilyCallback;
+    public void setDataCallback(SendDataCallback sendDataCallback){
+        this.sendDataCallback = sendDataCallback;
     }
 
-
+    /**
+     * This method add new family to firebase
+     * @param familyName name of new family
+     * @param imageName name of new image
+     * @param imageUri path of new image
+     */
     public void setItem(String familyName, String imageName, Uri imageUri){
         Family family = new Family(familyName);
         family.setImageUrl(imageUri.toString());
@@ -154,18 +162,17 @@ public class FamilyFragment extends Fragment  {
 
         firebaseDB.writeNewFamilyToDB(family , currentUser.getFamilies_map(),imageName,imageUri);
         families.add(family);
-        sendFamilyCallback.sendFamily(family,FamilyFlag.SEND_TO_FAV_FAMILY_FRAGMENT);
+        sendDataCallback.sendFamily(family,FamilyFlag.SEND_TO_FAV_FAMILY_FRAGMENT);
         itemFamilyAdapter.notifyItemInserted(families.size() - 1);
     }
 
+    /**
+     * This method read all user's families
+     * @param user
+     */
     public void setCurrentUser(User user){
         this.currentUser = user;
-        readFamilies(currentUser.getFamilies_map(), families,sendFamilyCallback);
-        Log.d("RealTimeDatabase", "setCurrentUser: " + user.toString());
-    }
-
-    public void readFamilies(Map<String, String> families_map , ArrayList<Family> families, SendFamilyCallback sendFamilyCallback){
-        firebaseDB.retrieveAllFamilies(families_map,families,sendFamilyCallback);
+        firebaseDB.retrieveAllFamilies(currentUser.getFamilies_map(),families,sendDataCallback);
     }
 
     private void findViews(View view) {

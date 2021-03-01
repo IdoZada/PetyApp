@@ -71,7 +71,6 @@
         android:layout_marginTop="20dp"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:inputType="date"
         android:text="2 Years old"
         app:layout_constraintStart_toEndOf="@+id/pet_item_img"
         app:layout_constraintTop_toBottomOf="@+id/pet_item_type" />

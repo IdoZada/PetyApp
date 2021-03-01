@@ -1,10 +1,9 @@
-package com.example.pety.objects;
+package com.example.pety.fragments;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TimePicker;
@@ -21,20 +20,20 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 public class InsertTimeDialog extends AppCompatDialogFragment {
     public static final String UPDATE = "update";
     public static final String INSERT = "insert";
     public static final String YES = "yes";
     public static final String NO = "no";
+    int position;
 
+    final Calendar myCalendar = Calendar.getInstance();
     InsertDialogInterface insertDialogInterface;
     TextInputLayout insertDialog_LAY_walkTime;
-    final Calendar myCalendar = Calendar.getInstance();
     ItemWalkFeedAdapter itemWalkFeedAdapter;
+
     String op = INSERT; //Option to update or insert (walk / feed)
-    int position;
     String Click_Cancel = YES;
 
     @NonNull
@@ -55,23 +54,21 @@ public class InsertTimeDialog extends AppCompatDialogFragment {
 
 
         builder.setView(view)
-                .setTitle("Set time")
-                .setNegativeButton("Set", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.set_time)
+                .setNegativeButton(R.string.set, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String timeWalking = insertDialog_LAY_walkTime.getEditText().getText().toString();
-                        Log.d("TAG", "onClick: " + timeWalking);
                         if (timeWalking.isEmpty()) {
-                            Log.d("TAG", "onClick:  STRING IS EMPTY");
                             new AlertDialog.Builder(getContext())
-                                    .setTitle("Error")
-                                    .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                                    .setTitle(R.string.error)
+                                    .setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             return;
                                         }
                                     })
-                                    .setMessage("You can't let the fields empty")
+                                    .setMessage(R.string.empty_field)
                                     .show();
                         } else {
                             if (op.equals(UPDATE)) {
@@ -83,7 +80,7 @@ public class InsertTimeDialog extends AppCompatDialogFragment {
                         }
                     }
                 })
-                .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(Click_Cancel == NO){

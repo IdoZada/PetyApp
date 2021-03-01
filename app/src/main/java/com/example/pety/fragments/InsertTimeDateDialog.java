@@ -1,11 +1,10 @@
-package com.example.pety.objects;
+package com.example.pety.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
@@ -23,21 +22,21 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 public class InsertTimeDateDialog extends AppCompatDialogFragment {
     public static final String UPDATE = "update";
     public static final String INSERT = "insert";
     public static final String YES = "yes";
     public static final String NO = "no";
+    int position;
+    int day, month, year;
 
     InsertDialogInterface insertDialogInterface;
     TextInputLayout insertDialog_LAY_Time_Date;
     final Calendar myCalendar = Calendar.getInstance();
+
     ItemBeautyHealthAdapter itemBeautyHealthAdapter;
     String op = INSERT; //Option to update or insert (beauty / health)
-    int position;
-    int day, month, year;
     String Click_Cancel = YES;
 
     @NonNull
@@ -56,30 +55,28 @@ public class InsertTimeDateDialog extends AppCompatDialogFragment {
                 year = calendar.get(Calendar.YEAR);
                 month = calendar.get(Calendar.MONTH);
                 day = calendar.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), date,year, month,day);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), date, year, month, day);
                 datePickerDialog.show();
             }
         });
 
 
         builder.setView(view)
-                .setTitle("Set Time And Date")
-                .setNegativeButton("Set", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.set_time_date)
+                .setNegativeButton(R.string.set, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String timeBeauty = insertDialog_LAY_Time_Date.getEditText().getText().toString();
-                        Log.d("TAG", "onClick: " + timeBeauty);
                         if (timeBeauty.isEmpty()) {
-                            Log.d("TAG", "onClick: STRING IS EMPTY");
                             new AlertDialog.Builder(getContext())
-                                    .setTitle("Error")
-                                    .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                                    .setTitle(R.string.error)
+                                    .setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             return;
                                         }
                                     })
-                                    .setMessage("You can't let the fields empty")
+                                    .setMessage(R.string.empty_field)
                                     .show();
                         } else {
                             if (op.equals(UPDATE)) {
@@ -91,10 +88,10 @@ public class InsertTimeDateDialog extends AppCompatDialogFragment {
                         }
                     }
                 })
-                .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(Click_Cancel == NO) {
+                        if (Click_Cancel == NO) {
                             itemBeautyHealthAdapter.notifyItemChanged(position);
                         }
                     }
@@ -102,7 +99,6 @@ public class InsertTimeDateDialog extends AppCompatDialogFragment {
 
         return builder.create();
     }
-
 
     DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -131,7 +127,7 @@ public class InsertTimeDateDialog extends AppCompatDialogFragment {
         insertDialog_LAY_Time_Date.getEditText().setText(sdf.format(myCalendar.getTime()));
     }
 
-    public void setInsertOrUpdate(String op, ItemBeautyHealthAdapter itemBeautyHealthAdapter,int position) {
+    public void setInsertOrUpdate(String op, ItemBeautyHealthAdapter itemBeautyHealthAdapter, int position) {
         this.op = op;
         this.Click_Cancel = NO;
         this.itemBeautyHealthAdapter = itemBeautyHealthAdapter;

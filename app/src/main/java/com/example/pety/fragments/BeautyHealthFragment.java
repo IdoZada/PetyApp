@@ -23,14 +23,10 @@ import com.example.pety.R;
 import com.example.pety.adapters.ItemBeautyHealthAdapter;
 import com.example.pety.interfaces.OnItemClickListener;
 import com.example.pety.objects.Beauty;
-import com.example.pety.objects.Fab;
+import com.example.pety.enums.Fab;
 import com.example.pety.objects.Family;
-import com.example.pety.objects.Feed;
 import com.example.pety.objects.Health;
-import com.example.pety.objects.InsertTimeDateDialog;
-import com.example.pety.objects.InsertTimeDialog;
 import com.example.pety.objects.Pet;
-import com.example.pety.objects.Walk;
 import com.example.pety.utils.FirebaseDB;
 
 import java.util.ArrayList;
@@ -40,29 +36,35 @@ import java.util.Map;
 
 
 public class BeautyHealthFragment<T> extends Fragment {
-    ImageView pet_img_beauty_health;
-    TextView pet_title_beauty_health;
-    ProgressBar pet_progressbar_health;
-    ProgressBar pet_progressbar_beauty;
-    ImageView pet_progressbar_img_beauty_health;
-    RecyclerView pet_recyclerView_beauty_health;
-    ItemBeautyHealthAdapter itemBeautyHealthAdapter;
-    InsertTimeDateDialog insertTimeDateDialog;
-    FirebaseDB firebaseDB = FirebaseDB.getInstance();
-    ArrayList<T> lists;
-    Fab fab = Fab.BEAUTY_FAB;
-    Family family;
-    Pet pet;
-    Context mContext;
     int position;
     int fillProgressBar_beauty;
     int fillProgressBar_health;
     int maxBeautyElements;
     int maxHealthElements;
 
+    ImageView pet_img_beauty_health;
+    TextView pet_title_beauty_health;
+    ProgressBar pet_progressbar_health;
+    ProgressBar pet_progressbar_beauty;
+    ImageView pet_progressbar_img_beauty_health;
+    RecyclerView pet_recyclerView_beauty_health;
+
+    ItemBeautyHealthAdapter itemBeautyHealthAdapter;
+    InsertTimeDateDialog insertTimeDateDialog;
+
+    ArrayList<T> lists;
+    Pet pet;
+    Family family;
+    Fab fab = Fab.BEAUTY_FAB;
+
+
+    FirebaseDB firebaseDB = FirebaseDB.getInstance();
+    Context mContext;
+
+
     public BeautyHealthFragment(Context context) {
         this.mContext = context;
-        lists = new ArrayList<T>();
+        lists = new ArrayList<>();
         itemBeautyHealthAdapter = new ItemBeautyHealthAdapter(lists, mContext);
     }
 
@@ -71,47 +73,14 @@ public class BeautyHealthFragment<T> extends Fragment {
         View view = inflater.inflate(R.layout.fragment_beauty_health, container, false);
         findViews(view);
         updateUI(fab);
-//        fillProgressBar = 3;
-        if(fab == Fab.BEAUTY_FAB) {
-            Collections.sort((ArrayList<Beauty>)(T)lists, Beauty.myTimeDate);
-            Log.d("TAG", "onCreateView: Collections Beauty " + lists);
-        }else{
-            Collections.sort((ArrayList<Health>)(T)lists, Health.myTimeDate);
-            Log.d("TAG", "onCreateView: Collections Health " + lists);
+
+        if (fab == Fab.BEAUTY_FAB) {
+            Collections.sort((ArrayList<Beauty>) (T) lists, Beauty.myTimeDate);
+        } else {
+            Collections.sort((ArrayList<Health>) (T) lists, Health.myTimeDate);
         }
 
-        itemBeautyHealthAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) { }
-
-            @Override
-            public void onItemCareClick(int position, Fab chose_fab) { }
-
-            @Override
-            public void onSwitchItemClick(boolean isChecked,int position) {
-                T obj = lists.get(position);
-                if(obj instanceof Beauty){
-                    if(isChecked){
-                        Log.d("TAG", "onSwitchItemClick: " + isChecked);
-                        fillProgressBar_beauty++;
-                    }else{
-                        fillProgressBar_beauty--;
-                    }
-                    pet_progressbar_beauty.setMax(lists.size());
-                    pet_progressbar_beauty.setProgress(fillProgressBar_beauty);
-                }else{
-                    if(isChecked){
-                        Log.d("TAG", "onSwitchItemClick: " + isChecked);
-                        fillProgressBar_health++;
-                    }else{
-                        fillProgressBar_health--;
-                    }
-                    pet_progressbar_health.setMax(lists.size());
-                    pet_progressbar_health.setProgress(fillProgressBar_health);
-                }
-                firebaseDB.updateSwitchToDB(family.getFamily_key(),pet.getPet_id(),obj);
-            }
-        });
+        updateSwitchAndProgressBar();
 
         pet_recyclerView_beauty_health.setLayoutManager(new LinearLayoutManager(getActivity()));
         pet_recyclerView_beauty_health.setAdapter(itemBeautyHealthAdapter);
@@ -123,7 +92,49 @@ public class BeautyHealthFragment<T> extends Fragment {
         return view;
     }
 
+    /**
+     * Click on switch to update firebase and top progressBar
+     */
+    public void updateSwitchAndProgressBar() {
+        itemBeautyHealthAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+            }
 
+            @Override
+            public void onItemCareClick(int position, Fab chose_fab) {
+            }
+
+            @Override
+            public void onSwitchItemClick(boolean isChecked, int position) {
+                T obj = lists.get(position);
+                if (obj instanceof Beauty) {
+                    if (isChecked) {
+                        fillProgressBar_beauty++;
+                    } else {
+                        fillProgressBar_beauty--;
+                    }
+                    pet_progressbar_beauty.setMax(lists.size());
+                    pet_progressbar_beauty.setProgress(fillProgressBar_beauty);
+                } else {
+                    if (isChecked) {
+                        fillProgressBar_health++;
+                    } else {
+                        fillProgressBar_health--;
+                    }
+                    pet_progressbar_health.setMax(lists.size());
+                    pet_progressbar_health.setProgress(fillProgressBar_health);
+                }
+                firebaseDB.updateSwitchToDB(family.getFamily_key(), pet.getPet_id(), obj);
+            }
+        });
+    }
+
+    /**
+     * This callback allow to swipe specific time/date:
+     * swipe right allow to delete item time/date
+     * swipe left allow to edit item time/date
+     */
     public ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -136,8 +147,8 @@ public class BeautyHealthFragment<T> extends Fragment {
             T obj = lists.get(position);
             if (direction == ItemTouchHelper.RIGHT) {
                 new AlertDialog.Builder(getContext())
-                        .setTitle("Delete")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setTitle(R.string.delete)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 firebaseDB.deleteTimeFromDB(family.getFamily_key(), pet.getPet_id(), obj);
@@ -152,31 +163,31 @@ public class BeautyHealthFragment<T> extends Fragment {
                                 itemBeautyHealthAdapter.notifyItemRemoved(position);
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 itemBeautyHealthAdapter.notifyItemChanged(position);
                             }
                         })
-                        .setMessage("Are you sure you want to delete?")
+                        .setMessage(R.string.delete)
                         .show();
             } else {
                 new AlertDialog.Builder(getContext())
-                        .setTitle("Edit")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setTitle(R.string.edit)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 insertTimeDateDialog.setInsertOrUpdate(InsertTimeDialog.UPDATE, itemBeautyHealthAdapter, position);
                                 insertTimeDateDialog.show(getParentFragmentManager(), "Update specific beauty");
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 itemBeautyHealthAdapter.notifyItemChanged(position);
                             }
                         })
-                        .setMessage("Are you sure you want to edit?")
+                        .setMessage(R.string.question_edit)
                         .show();
             }
         }
@@ -205,6 +216,13 @@ public class BeautyHealthFragment<T> extends Fragment {
         this.insertTimeDateDialog = insertTimeDateDialog;
     }
 
+    /**
+     * Read all data about beauty/health of specific pet
+     *
+     * @param family
+     * @param pet
+     * @param chose_fab
+     */
     public void setPet(Family family, Pet pet, Fab chose_fab) {
         lists.clear();
         fillProgressBar_beauty = 0;
@@ -216,58 +234,62 @@ public class BeautyHealthFragment<T> extends Fragment {
         this.family = family;
 
         for (Map.Entry<String, Beauty> entry : pet.getBeauty().entrySet()) {
-            if(entry.getValue().isActive()){
+            if (entry.getValue().isActive()) {
                 fillProgressBar_beauty++;
-                Log.d("TAG", "setPet: WALK_FAB" + fillProgressBar_beauty);
             }
             maxBeautyElements++;
-            if (Fab.BEAUTY_FAB == fab){
+            if (Fab.BEAUTY_FAB == fab) {
                 lists.add((T) entry.getValue());
             }
         }
 
         for (Map.Entry<String, Health> entry : pet.getHealth().entrySet()) {
             if (entry.getValue().isActive()) {
-
                 fillProgressBar_health++;
-                Log.d("TAG", "setPet: FEED_FAB" + fillProgressBar_health);
             }
             maxHealthElements++;
-            if (Fab.HEALTH_FAB == fab){
+            if (Fab.HEALTH_FAB == fab) {
                 lists.add((T) entry.getValue());
             }
 
         }
     }
 
+    /**
+     * This method update beauty time/date of specific item
+     *
+     * @param time
+     */
     public void updateBeautyItem(String time) {
-        Log.d("TAG", "updateBeautyItem: " + time);
         T obj = lists.get(position);
         Beauty beauty = (Beauty) obj;
-
         beauty.setTimeDate(time);
         lists.set(position, (T) beauty);
         itemBeautyHealthAdapter.notifyItemChanged(position);
-        Log.d("TAG", "onClick: 2 time " + time);
         pet.getBeauty().get(beauty.getId()).setTimeDate(time);
-
         firebaseDB.updateTimeToDB(family.getFamily_key(), pet.getPet_id(), beauty);
     }
 
+    /**
+     * This method update health time/date of specific item
+     *
+     * @param time
+     */
     public void updateHealthItem(String time) {
-        Log.d("TAG", "updateHealthItem: " + time);
         T obj = lists.get(position);
         Health health = (Health) obj;
-
         health.setTimeDate(time);
         lists.set(position, (T) health);
         itemBeautyHealthAdapter.notifyItemChanged(position);
-        Log.d("TAG", "onClick: 2 time " + time);
         pet.getHealth().get(health.getId()).setTimeDate(time);
-
         firebaseDB.updateTimeToDB(family.getFamily_key(), pet.getPet_id(), health);
     }
 
+    /**
+     * This method write new beauty time/date to firebase
+     *
+     * @param time
+     */
     public void setBeautyItem(String time) {
         Map<String, Beauty> beautyMap;
         Beauty beauty = new Beauty(time, false);
@@ -278,13 +300,16 @@ public class BeautyHealthFragment<T> extends Fragment {
         }
 
         firebaseDB.writeNewTimeToDB(pet, family, beauty, firebaseDB.BEAUTY);
-        lists.add(0, (T) beauty);
+        lists.add((T) beauty);
         pet_progressbar_beauty.setMax(lists.size());
-        //pet_progressbar_beauty_health.setMax(lists.size());
-        Log.d("TAG", "setBeautyItem: " + lists);
-        itemBeautyHealthAdapter.notifyItemInserted(0);
+        itemBeautyHealthAdapter.notifyItemInserted(lists.size() - 1);
     }
 
+    /**
+     * This method write new health time/date to firebase
+     *
+     * @param time
+     */
     public void setHealthItem(String time) {
         Map<String, Health> healthMap;
         Health health = new Health(time, false);
@@ -295,10 +320,9 @@ public class BeautyHealthFragment<T> extends Fragment {
         }
 
         firebaseDB.writeNewTimeToDB(pet, family, health, firebaseDB.HEALTH);
-        lists.add(0, (T) health);
+        lists.add((T) health);
         pet_progressbar_health.setMax(lists.size());
-        Log.d("TAG", "setHealthItem: " + lists);
-        itemBeautyHealthAdapter.notifyItemInserted(0);
+        itemBeautyHealthAdapter.notifyItemInserted(lists.size() - 1);
     }
 
     public void findViews(View view) {

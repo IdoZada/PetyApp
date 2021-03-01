@@ -1,6 +1,6 @@
 package com.example.pety.interfaces;
 
-import com.example.pety.objects.Fab;
+import com.example.pety.enums.Fab;
 
 public interface OnItemClickListener {
     void onItemClick(int position);

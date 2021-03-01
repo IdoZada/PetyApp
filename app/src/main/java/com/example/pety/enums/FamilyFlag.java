@@ -1,4 +1,4 @@
-package com.example.pety.objects;
+package com.example.pety.enums;
 
 public enum FamilyFlag {
     SEND_TO_FAV_FAMILY_FRAGMENT,
