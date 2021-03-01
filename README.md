@@ -1,4 +1,4 @@
-![ic_launcher](https://user-images.githubusercontent.com/48810056/109519239-b9362480-7ab3-11eb-9e9c-96be73efc96a.png) # Pety App 
+![ic_launcher](https://user-images.githubusercontent.com/48810056/109519239-b9362480-7ab3-11eb-9e9c-96be73efc96a.png)  # Pety App 
 
 The app enables the management of pets via a user-friendly interface.
 
