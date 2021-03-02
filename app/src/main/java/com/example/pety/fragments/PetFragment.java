@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,6 +87,10 @@ public class PetFragment extends Fragment {
         });
     }
 
+    public void refreshPetUI(int fillProgressBar , int maxElements, Fab fab){
+        itemPetAdapter.setProgressBar(fillProgressBar,maxElements,fab);
+    }
+
     /**
      * This callback allow to swipe specific pet:
      * swipe right allow to delete pet
@@ -134,6 +139,7 @@ public class PetFragment extends Fragment {
         for (Map.Entry<String, Pet> entry : family.getPets().entrySet()) {
             pets.add(entry.getValue());
         }
+
     }
 
     public void setPetItem(String petName, String petType, String birthday, String petImageName, Uri imageUri) {

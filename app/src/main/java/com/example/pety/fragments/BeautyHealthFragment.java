@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.example.pety.R;
 import com.example.pety.adapters.ItemBeautyHealthAdapter;
 import com.example.pety.interfaces.OnItemClickListener;
+import com.example.pety.interfaces.SendDataCallback;
 import com.example.pety.objects.Beauty;
 import com.example.pety.enums.Fab;
 import com.example.pety.objects.Family;
@@ -51,6 +52,7 @@ public class BeautyHealthFragment<T> extends Fragment {
 
     ItemBeautyHealthAdapter itemBeautyHealthAdapter;
     InsertTimeDateDialog insertTimeDateDialog;
+    SendDataCallback sendDataCallback;
 
     ArrayList<T> lists;
     Pet pet;
@@ -116,6 +118,8 @@ public class BeautyHealthFragment<T> extends Fragment {
                     }
                     pet_progressbar_beauty.setMax(lists.size());
                     pet_progressbar_beauty.setProgress(fillProgressBar_beauty);
+                    updatePetUI(fillProgressBar_beauty , lists.size(), Fab.BEAUTY_FAB);
+                    firebaseDB.updateSwitchToDB(family.getFamily_key(), pet.getPet_id(), obj,fillProgressBar_beauty,lists.size());
                 } else {
                     if (isChecked) {
                         fillProgressBar_health++;
@@ -124,8 +128,10 @@ public class BeautyHealthFragment<T> extends Fragment {
                     }
                     pet_progressbar_health.setMax(lists.size());
                     pet_progressbar_health.setProgress(fillProgressBar_health);
+                    updatePetUI(fillProgressBar_health , lists.size(), Fab.HEALTH_FAB);
+                    firebaseDB.updateSwitchToDB(family.getFamily_key(), pet.getPet_id(), obj,fillProgressBar_health,lists.size());
                 }
-                firebaseDB.updateSwitchToDB(family.getFamily_key(), pet.getPet_id(), obj);
+
             }
         });
     }
@@ -151,13 +157,30 @@ public class BeautyHealthFragment<T> extends Fragment {
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                firebaseDB.deleteTimeFromDB(family.getFamily_key(), pet.getPet_id(), obj);
+
                                 if (obj instanceof Beauty) {
                                     Beauty beauty = (Beauty) obj;
+                                    if(pet.getBeauty().get(beauty.getId()).isActive()){
+                                        fillProgressBar_beauty--;
+                                    }
+                                    maxBeautyElements--;
+                                    pet_progressbar_beauty.setMax(maxBeautyElements);
+                                    pet_progressbar_beauty.setProgress(fillProgressBar_beauty);
                                     pet.getBeauty().remove(beauty.getId());
+                                    updatePetUI(fillProgressBar_beauty , maxBeautyElements, Fab.BEAUTY_FAB);
+                                    firebaseDB.deleteTimeFromDB(family.getFamily_key(), pet.getPet_id(), obj,maxBeautyElements,fillProgressBar_beauty);
+
                                 } else if (obj instanceof Health) {
                                     Health health = (Health) obj;
+                                    if(pet.getHealth().get(health.getId()).isActive()){
+                                        fillProgressBar_health--;
+                                    }
+                                    maxHealthElements--;
+                                    pet_progressbar_health.setMax(maxHealthElements);
+                                    pet_progressbar_health.setProgress(fillProgressBar_health);
                                     pet.getHealth().remove(health.getId());
+                                    updatePetUI(fillProgressBar_health , maxHealthElements, Fab.HEALTH_FAB);
+                                    firebaseDB.deleteTimeFromDB(family.getFamily_key(), pet.getPet_id(), obj,maxHealthElements,fillProgressBar_health);
                                 }
                                 lists.remove(position);
                                 itemBeautyHealthAdapter.notifyItemRemoved(position);
@@ -169,7 +192,7 @@ public class BeautyHealthFragment<T> extends Fragment {
                                 itemBeautyHealthAdapter.notifyItemChanged(position);
                             }
                         })
-                        .setMessage(R.string.delete)
+                        .setMessage(R.string.question_delete)
                         .show();
             } else {
                 new AlertDialog.Builder(getContext())
@@ -212,8 +235,23 @@ public class BeautyHealthFragment<T> extends Fragment {
         pet_progressbar_health.setProgress(fillProgressBar_health);
     }
 
+    public void updatePetUI(int fillProgressBar , int maxElements , Fab fab){
+        sendDataCallback.sendActionPetUi(fillProgressBar,maxElements,fab);
+    }
+
+    public void setDataCallback(SendDataCallback sendDataCallback){
+        this.sendDataCallback = sendDataCallback;
+    }
+
     public void setInsertTimeDateDialog(InsertTimeDateDialog insertTimeDateDialog) {
         this.insertTimeDateDialog = insertTimeDateDialog;
+    }
+
+    public void resetSetPet() {
+        fillProgressBar_beauty = 0;
+        fillProgressBar_health = 0;
+        maxBeautyElements = 0;
+        maxHealthElements = 0;
     }
 
     /**
@@ -225,10 +263,7 @@ public class BeautyHealthFragment<T> extends Fragment {
      */
     public void setPet(Family family, Pet pet, Fab chose_fab) {
         lists.clear();
-        fillProgressBar_beauty = 0;
-        fillProgressBar_health = 0;
-        maxBeautyElements = 0;
-        maxHealthElements = 0;
+        resetSetPet();
         this.fab = chose_fab;
         this.pet = pet;
         this.family = family;
@@ -302,6 +337,7 @@ public class BeautyHealthFragment<T> extends Fragment {
         firebaseDB.writeNewTimeToDB(pet, family, beauty, firebaseDB.BEAUTY);
         lists.add((T) beauty);
         pet_progressbar_beauty.setMax(lists.size());
+        updatePetUI(fillProgressBar_beauty,lists.size(),Fab.BEAUTY_FAB);
         itemBeautyHealthAdapter.notifyItemInserted(lists.size() - 1);
     }
 
@@ -322,6 +358,7 @@ public class BeautyHealthFragment<T> extends Fragment {
         firebaseDB.writeNewTimeToDB(pet, family, health, firebaseDB.HEALTH);
         lists.add((T) health);
         pet_progressbar_health.setMax(lists.size());
+        updatePetUI(fillProgressBar_health,lists.size(),Fab.HEALTH_FAB);
         itemBeautyHealthAdapter.notifyItemInserted(lists.size() - 1);
     }
 

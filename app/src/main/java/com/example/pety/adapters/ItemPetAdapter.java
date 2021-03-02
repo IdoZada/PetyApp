@@ -1,6 +1,7 @@
 package com.example.pety.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
     ArrayList<Pet> mArrayList;
     Context mContext;
     private OnItemClickListener mListener;
+    //int fill
+    int position = 0;
 
     public ItemPetAdapter(ArrayList<Pet> mArrayList, Context mContext) {
         this.mContext = mContext;
@@ -46,6 +49,14 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ItemPetAdapter.ViewHolder holder, int position) {
+        holder.pet_item_progressbar_walking.setMax( mArrayList.get(position).getMaxProgressBarWalking());
+        holder.pet_item_progressbar_walking.setProgress( mArrayList.get(position).getFillProgressBarWalking());
+        holder.pet_item_progressbar_feeding.setMax(mArrayList.get(position).getMaxProgressBarFeeding());
+        holder.pet_item_progressbar_feeding.setProgress(mArrayList.get(position).getFillProgressBarFeeding());
+        holder.pet_item_progressbar_beauty_care.setMax(mArrayList.get(position).getMaxProgressBarBeauty());
+        holder.pet_item_progressbar_beauty_care.setProgress(mArrayList.get(position).getFillProgressBarBeauty());
+        holder.pet_item_progressbar_health.setMax(mArrayList.get(position).getMaxProgressBarHealth());
+        holder.pet_item_progressbar_health.setProgress(mArrayList.get(position).getFillProgressBarHealth());
         holder.pet_item_name.setText(mArrayList.get(position).getName());
         Glide.with(mContext).load(mArrayList.get(position).getImage_url()).into(holder.pet_item_img);
         holder.pet_item_type.setText(mArrayList.get(position).getPet_type());
@@ -55,6 +66,23 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
     @Override
     public int getItemCount() {
         return mArrayList.size();
+    }
+
+    public void setProgressBar(int fillProgressBar , int maxProgressBar , Fab fab){
+        Log.d("TAG", "displayReceivedData: " +  mArrayList.size());
+        if(Fab.WALK_FAB == fab){
+            mArrayList.get(this.position).setMaxProgressBarWalking(maxProgressBar);
+            mArrayList.get(this.position).setFillProgressBarWalking(fillProgressBar);
+        }else if(Fab.FEED_FAB == fab){
+            mArrayList.get(this.position).setMaxProgressBarFeeding(maxProgressBar);
+            mArrayList.get(this.position).setFillProgressBarFeeding(fillProgressBar);
+        }else if(Fab.BEAUTY_FAB == fab){
+            mArrayList.get(this.position).setMaxProgressBarBeauty(maxProgressBar);
+            mArrayList.get(this.position).setFillProgressBarBeauty(fillProgressBar);
+        }else{
+            mArrayList.get(this.position).setMaxProgressBarHealth(maxProgressBar);
+            mArrayList.get(this.position).setFillProgressBarHealth(fillProgressBar);
+        }
     }
 
 
@@ -84,7 +112,7 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     if (mListener != null) {
-                        int position = getAdapterPosition();
+                        position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
                             mListener.onItemClick(position);
                         }
@@ -96,7 +124,7 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     if (mListener != null) {
-                        int position = getAdapterPosition();
+                        position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
                             mListener.onItemCareClick(position, Fab.WALK_FAB);
                         }
@@ -108,7 +136,7 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     if (mListener != null) {
-                        int position = getAdapterPosition();
+                        position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
                             mListener.onItemCareClick(position, Fab.FEED_FAB);
                         }
@@ -119,7 +147,7 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     if (mListener != null) {
-                        int position = getAdapterPosition();
+                        position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
                             //mListener.onItemClick(position);
                             mListener.onItemCareClick(position, Fab.BEAUTY_FAB);
@@ -131,7 +159,7 @@ public class ItemPetAdapter extends RecyclerView.Adapter<ItemPetAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     if (mListener != null) {
-                        int position = getAdapterPosition();
+                        position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
                             mListener.onItemCareClick(position, Fab.HEALTH_FAB);
                         }

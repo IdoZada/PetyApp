@@ -13,4 +13,5 @@ public interface SendDataCallback {
     void sendUser(User user);
     void sendPet(Family family, Pet pet, Fab chose_fab);
     void sendFamilies(ArrayList<Family> families);
+    void sendActionPetUi(int fillProgressBar_walk,int fillProgressBar_feed,Fab fab);
 }

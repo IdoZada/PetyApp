@@ -9,6 +9,14 @@ public class Pet {
     private String birthday;
     private String pet_type;
     private String image_url;
+    private int fillProgressBarWalking = 0;
+    private int maxProgressBarWalking = 0;
+    private int fillProgressBarFeeding = 0;
+    private int maxProgressBarFeeding = 0;
+    private int fillProgressBarBeauty = 0;
+    private int maxProgressBarBeauty = 0;
+    private int fillProgressBarHealth = 0;
+    private int maxProgressBarHealth = 0;
     private Map<String,Walk> walks = new HashMap<>();
     private Map<String,Feed> feeds = new HashMap<>();
     private Map<String, Health> health = new HashMap<>();
@@ -37,6 +45,14 @@ public class Pet {
         result.put("image_url", image_url);
         result.put("pet_type", pet_type);
         result.put("birthday", birthday);
+        result.put("fillProgressBarWalking",fillProgressBarWalking);
+        result.put("maxProgressBarWalking",maxProgressBarWalking);
+        result.put("fillProgressBarFeeding",fillProgressBarFeeding);
+        result.put("maxProgressBarFeeding",maxProgressBarFeeding);
+        result.put("fillProgressBarBeauty",fillProgressBarBeauty);
+        result.put("maxProgressBarBeauty",maxProgressBarBeauty);
+        result.put("fillProgressBarHealth",fillProgressBarHealth);
+        result.put("maxProgressBarHealth",maxProgressBarHealth);
         return result;
     }
 
@@ -113,6 +129,70 @@ public class Pet {
         this.beauty = beauty;
     }
 
+    public int getFillProgressBarWalking() {
+        return fillProgressBarWalking;
+    }
+
+    public void setFillProgressBarWalking(Integer fillProgressBarWalking) {
+        this.fillProgressBarWalking = fillProgressBarWalking;
+    }
+
+    public int getMaxProgressBarWalking() {
+        return maxProgressBarWalking;
+    }
+
+    public void setMaxProgressBarWalking(int maxProgressBarWalking) {
+        this.maxProgressBarWalking = maxProgressBarWalking;
+    }
+
+    public int getFillProgressBarFeeding() {
+        return fillProgressBarFeeding;
+    }
+
+    public void setFillProgressBarFeeding(int fillProgressBarFeeding) {
+        this.fillProgressBarFeeding = fillProgressBarFeeding;
+    }
+
+    public int getMaxProgressBarFeeding() {
+        return maxProgressBarFeeding;
+    }
+
+    public void setMaxProgressBarFeeding(int maxProgressBarFeeding) {
+        this.maxProgressBarFeeding = maxProgressBarFeeding;
+    }
+
+    public int getFillProgressBarBeauty() {
+        return fillProgressBarBeauty;
+    }
+
+    public void setFillProgressBarBeauty(int fillProgressBarBeauty) {
+        this.fillProgressBarBeauty = fillProgressBarBeauty;
+    }
+
+    public int getMaxProgressBarBeauty() {
+        return maxProgressBarBeauty;
+    }
+
+    public void setMaxProgressBarBeauty(int maxProgressBarBeauty) {
+        this.maxProgressBarBeauty = maxProgressBarBeauty;
+    }
+
+    public int getFillProgressBarHealth() {
+        return fillProgressBarHealth;
+    }
+
+    public void setFillProgressBarHealth(int fillProgressBarHealth) {
+        this.fillProgressBarHealth = fillProgressBarHealth;
+    }
+
+    public int getMaxProgressBarHealth() {
+        return maxProgressBarHealth;
+    }
+
+    public void setMaxProgressBarHealth(int maxProgressBarHealth) {
+        this.maxProgressBarHealth = maxProgressBarHealth;
+    }
+
     @Override
     public String toString() {
         return "Pet{" +
@@ -121,6 +201,14 @@ public class Pet {
                 ", birthday='" + birthday + '\'' +
                 ", pet_type='" + pet_type + '\'' +
                 ", image_url='" + image_url + '\'' +
+                ", fillProgressBarWalking=" + fillProgressBarWalking +
+                ", maxProgressBarWalking=" + maxProgressBarWalking +
+                ", fillProgressBarFeeding=" + fillProgressBarFeeding +
+                ", maxProgressBarFeeding=" + maxProgressBarFeeding +
+                ", fillProgressBarBeauty=" + fillProgressBarBeauty +
+                ", maxProgressBarBeauty=" + maxProgressBarBeauty +
+                ", fillProgressBarHealth=" + fillProgressBarHealth +
+                ", maxProgressBarHealth=" + maxProgressBarHealth +
                 ", walks=" + walks +
                 ", feeds=" + feeds +
                 ", health=" + health +

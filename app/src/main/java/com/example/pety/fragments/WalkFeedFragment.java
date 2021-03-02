@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.example.pety.R;
 import com.example.pety.adapters.ItemWalkFeedAdapter;
 import com.example.pety.interfaces.OnItemClickListener;
 import com.example.pety.enums.Fab;
+import com.example.pety.interfaces.SendDataCallback;
 import com.example.pety.objects.Family;
 import com.example.pety.objects.Feed;
 import com.example.pety.objects.Pet;
@@ -53,6 +55,8 @@ public class WalkFeedFragment<T> extends Fragment {
 
     ItemWalkFeedAdapter itemWalkFeedAdapter;
     InsertTimeDialog insertTimeDialog;
+    SendDataCallback sendDataCallback;
+
 
     ArrayList<T> lists;
     Fab fab = Fab.WALK_FAB;
@@ -115,6 +119,9 @@ public class WalkFeedFragment<T> extends Fragment {
                     }
                     pet_progressbar_walk.setMax(lists.size());
                     pet_progressbar_walk.setProgress(fillProgressBar_walk);
+                    Log.d("TAG", "onSwitchItemClick: " + lists.size());
+                    updatePetUI(fillProgressBar_walk , lists.size(), Fab.WALK_FAB);
+                    firebaseDB.updateSwitchToDB(family.getFamily_key(), pet.getPet_id(), obj,fillProgressBar_walk,lists.size());
                 } else {
                     if (isChecked) {
                         fillProgressBar_feed++;
@@ -123,8 +130,9 @@ public class WalkFeedFragment<T> extends Fragment {
                     }
                     pet_progressbar_feed.setMax(lists.size());
                     pet_progressbar_feed.setProgress(fillProgressBar_feed);
+                    updatePetUI(fillProgressBar_feed , lists.size(), Fab.FEED_FAB);
+                    firebaseDB.updateSwitchToDB(family.getFamily_key(), pet.getPet_id(), obj,fillProgressBar_feed,lists.size());
                 }
-                firebaseDB.updateSwitchToDB(family.getFamily_key(), pet.getPet_id(), obj);
             }
         });
     }
@@ -150,13 +158,29 @@ public class WalkFeedFragment<T> extends Fragment {
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                firebaseDB.deleteTimeFromDB(family.getFamily_key(), pet.getPet_id(), obj);
+
                                 if (obj instanceof Walk) {
                                     Walk walk = (Walk) obj;
+                                    if(pet.getWalks().get(walk.getId()).isActive()){
+                                        fillProgressBar_walk--;
+                                    }
+                                    maxWalkElements--;
+                                    pet_progressbar_walk.setMax(maxWalkElements);
+                                    pet_progressbar_walk.setProgress(fillProgressBar_walk);
                                     pet.getWalks().remove(walk.getId());
+                                    updatePetUI(fillProgressBar_walk , maxWalkElements, Fab.WALK_FAB);
+                                    firebaseDB.deleteTimeFromDB(family.getFamily_key(), pet.getPet_id(), obj,maxWalkElements,fillProgressBar_walk);
                                 } else if (obj instanceof Feed) {
                                     Feed feed = (Feed) obj;
+                                    if(pet.getFeeds().get(feed.getId()).isActive()){
+                                        fillProgressBar_feed--;
+                                    }
+                                    maxFeedElements--;
+                                    pet_progressbar_feed.setMax(maxFeedElements);
+                                    pet_progressbar_feed.setProgress(fillProgressBar_feed);
                                     pet.getFeeds().remove(feed.getId());
+                                    updatePetUI(fillProgressBar_feed , maxFeedElements, Fab.FEED_FAB);
+                                    firebaseDB.deleteTimeFromDB(family.getFamily_key(), pet.getPet_id(), obj,maxFeedElements,fillProgressBar_feed);
                                 }
                                 lists.remove(position);
                                 itemWalkFeedAdapter.notifyItemRemoved(position);
@@ -209,6 +233,15 @@ public class WalkFeedFragment<T> extends Fragment {
         pet_progressbar_walk.setProgress(fillProgressBar_walk);
         pet_progressbar_feed.setMax(maxFeedElements);
         pet_progressbar_feed.setProgress(fillProgressBar_feed);
+
+    }
+
+    public void updatePetUI(int fillProgressBar , int maxElements , Fab fab){
+        sendDataCallback.sendActionPetUi(fillProgressBar,maxElements,fab);
+    }
+
+    public void setDataCallback(SendDataCallback sendDataCallback){
+        this.sendDataCallback = sendDataCallback;
     }
 
     public void setInsertTimeDialog(InsertTimeDialog insertTimeDialog) {
@@ -304,6 +337,7 @@ public class WalkFeedFragment<T> extends Fragment {
         firebaseDB.writeNewTimeToDB(pet, family, walk, firebaseDB.WALKS);
         lists.add((T) walk);
         pet_progressbar_walk.setMax(lists.size());
+        updatePetUI(fillProgressBar_walk,lists.size(),Fab.WALK_FAB);
         itemWalkFeedAdapter.notifyItemInserted(lists.size() - 1);
     }
 
@@ -324,6 +358,7 @@ public class WalkFeedFragment<T> extends Fragment {
         firebaseDB.writeNewTimeToDB(pet, family, feed, firebaseDB.FEEDS);
         lists.add((T) feed);
         pet_progressbar_feed.setMax(lists.size());
+        updatePetUI(fillProgressBar_feed,lists.size(),Fab.FEED_FAB);
         itemWalkFeedAdapter.notifyItemInserted(lists.size() - 1);
     }
 

@@ -177,7 +177,9 @@ public class Main_Activity extends AppCompatActivity {
         public void sendPet(Family family, Pet pet, Fab chose_fab) {
             fab = chose_fab;
             walkFeedFragment = new WalkFeedFragment(Main_Activity.this);
+            walkFeedFragment.setDataCallback(sendDataCallback);
             beautyHealthFragment = new BeautyHealthFragment(Main_Activity.this);
+            beautyHealthFragment.setDataCallback(sendDataCallback);
             walkFeedFragment.setInsertTimeDialog(insertTimeDialog);
             beautyHealthFragment.setInsertTimeDateDialog(insertTimeDateDialog);
 
@@ -194,6 +196,15 @@ public class Main_Activity extends AppCompatActivity {
         @Override
         public void sendFamilies(ArrayList<Family> families) {
             myFavFamilyFragment.setFamilies(families);
+        }
+
+        @Override
+        public void sendActionPetUi(int fillProgressBar, int maxElements,Fab fab) {
+            if(flag == FamilyFlag.HOME){
+                petHomeFragment.refreshPetUI(fillProgressBar,maxElements,fab);
+            }else{
+                petFragment.refreshPetUI(fillProgressBar,maxElements,fab);
+            }
         }
     };
 

@@ -23,6 +23,15 @@ public class Converter {
         Object image_url = result.get("image_url");
         Object pet_type = result.get("pet_type");
         Object birthday = result.get("birthday");
+        Object fillProgressBarWalking =  result.get("fillProgressBarWalking");
+        Object maxProgressBarWalking =  result.get("maxProgressBarWalking");
+        Object fillProgressBarFeeding = result.get("fillProgressBarFeeding");
+        Object maxProgressBarFeeding = result.get("maxProgressBarFeeding");
+        Object fillProgressBarBeauty = result.get("fillProgressBarBeauty");
+        Object maxProgressBarBeauty = result.get("maxProgressBarBeauty");
+        Object fillProgressBarHealth = result.get("fillProgressBarHealth");
+        Object maxProgressBarHealth = result.get("maxProgressBarHealth");
+
 
         Map<String,Walk> walks_map = (Map<String, Walk>) result.get("walks");
         Map<String,Feed> feeds_map = (Map<String, Feed>) result.get("feeds");
@@ -61,6 +70,7 @@ public class Converter {
             }
         }
 
+
         pet.setWalks(walks);
         pet.setFeeds(feeds);
         pet.setBeauty(beauty);
@@ -70,6 +80,14 @@ public class Converter {
         pet.setImage_url(image_url.toString());
         pet.setPet_type(pet_type.toString());
         pet.setBirthday(birthday.toString());
+        pet.setFillProgressBarWalking( Integer.parseInt(fillProgressBarWalking.toString()));
+        pet.setMaxProgressBarWalking(Integer.parseInt(maxProgressBarWalking.toString()));
+        pet.setFillProgressBarFeeding(Integer.parseInt(fillProgressBarFeeding.toString()));
+        pet.setMaxProgressBarFeeding(Integer.parseInt(maxProgressBarFeeding.toString()));
+        pet.setFillProgressBarBeauty(Integer.parseInt(fillProgressBarBeauty.toString()));
+        pet.setMaxProgressBarBeauty(Integer.parseInt(maxProgressBarBeauty.toString()));
+        pet.setFillProgressBarHealth(Integer.parseInt(fillProgressBarHealth.toString()));
+        pet.setMaxProgressBarHealth(Integer.parseInt(maxProgressBarHealth.toString()));
 
         return pet;
     }

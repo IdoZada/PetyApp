@@ -371,23 +371,31 @@ public class FirebaseDB {
         getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child(option).child(key).child(nav_child).setValue(timeStamp);
     }
 
-    public void deleteTimeFromDB(String family_key,String pet_key,Object obj) {
+    public void deleteTimeFromDB(String family_key,String pet_key,Object obj,int maxProgressBar,int fillProgressBar) {
         String key;
         String option = null;
         if(obj instanceof Walk){
             key = ((Walk) obj).getId();
             option = firebaseDB.WALKS;
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("fillProgressBarWalking").setValue(fillProgressBar);
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("maxProgressBarWalking").setValue(maxProgressBar);
             Log.d("TAG", "deleteTimeFromDB: (WALK) " + key);
         }else if(obj instanceof Feed){
             key = ((Feed) obj).getId();
             option = firebaseDB.FEEDS;
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("fillProgressBarFeeding").setValue(fillProgressBar);
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("maxProgressBarFeeding").setValue(maxProgressBar);
             Log.d("TAG", "deleteTimeFromDB: (FEEDS) " + key);
         }else if(obj instanceof Beauty){
             key = ((Beauty) obj).getId();
             option = firebaseDB.BEAUTY;
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("fillProgressBarBeauty").setValue(fillProgressBar);
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("maxProgressBarBeauty").setValue(maxProgressBar);
         }else{
             key = ((Health) obj).getId();
             option = firebaseDB.HEALTH;
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("fillProgressBarHealth").setValue(fillProgressBar);
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("maxProgressBarHealth").setValue(maxProgressBar);
         }
 
         //Remove option from specific pet
@@ -438,7 +446,7 @@ public class FirebaseDB {
     }
 
 
-    public void updateSwitchToDB(String family_key,String pet_key,Object obj) {
+    public void updateSwitchToDB(String family_key,String pet_key,Object obj,int fillProgressBar , int maxProgressBar) {
         String key;
         boolean isActive = false;
         String option = null;
@@ -447,19 +455,27 @@ public class FirebaseDB {
             isActive = ((Walk) obj).isActive();
             option = firebaseDB.WALKS;
             Log.d("TAG", "updateTimeToDB: (WALK) 3" + isActive);
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("fillProgressBarWalking").setValue(fillProgressBar);
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("maxProgressBarWalking").setValue(maxProgressBar);
         } else if (obj instanceof Feed) {
             key = ((Feed) obj).getId();
             isActive = ((Feed) obj).isActive();
             option = firebaseDB.FEEDS;
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("fillProgressBarFeeding").setValue(fillProgressBar);
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("maxProgressBarFeeding").setValue(maxProgressBar);
             Log.d("TAG", "updateTimeToDB: (FEEDS) 3" + key + " Time: " + isActive);
         } else if (obj instanceof Beauty) {
             key = ((Beauty) obj).getId();
             isActive = ((Beauty) obj).isActive();
             option = firebaseDB.BEAUTY;
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("fillProgressBarBeauty").setValue(fillProgressBar);
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("maxProgressBarBeauty").setValue(maxProgressBar);
         } else {
             key = ((Health) obj).getId();
             isActive = ((Health) obj).isActive();
             option = firebaseDB.HEALTH;
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("fillProgressBarHealth").setValue(fillProgressBar);
+            getDatabase().getReference().child(FAMILIES).child(family_key).child(PETS).child(pet_key).child("maxProgressBarHealth").setValue(maxProgressBar);
         }
         Log.d("TAG", "updateTimeToDB: " + isActive);
         //Remove option from specific pet
