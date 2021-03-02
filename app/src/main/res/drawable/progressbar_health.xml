@@ -5,7 +5,7 @@
             android:shape="ring"
             android:thicknessRatio="16"
             android:useLevel="false">
-            <solid android:color="#DDD"/>
+            <solid android:color="#FFFFFF"/>
         </shape>
     </item>
     <item>
@@ -16,13 +16,14 @@
             android:shape="ring"
             android:thicknessRatio="16"
             android:useLevel="true">
-            <gradient android:endColor="@color/teal_700"
-                android:centerColor="#02AF9E"
-                android:startColor="@color/teal_200"
-                android:type="sweep"
-                android:useLevel="false">
+<!--            <gradient android:endColor="#22F42B"-->
+<!--                android:centerColor="#5EF364"-->
+<!--                android:startColor="#8BF690"-->
+<!--                android:type="sweep"-->
+<!--                android:useLevel="false">-->
 
-            </gradient>
+<!--            </gradient>-->
+            <solid android:color="#2DC633"/>
         </shape>
         </rotate>
     </item>

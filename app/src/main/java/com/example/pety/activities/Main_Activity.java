@@ -111,7 +111,7 @@ public class Main_Activity extends AppCompatActivity {
      * Set loading dialog until the info will upload from database
      */
     private void loadingDialog(){
-        long delay = 5000;
+        long delay = 6000;
         LoadingDialog loadingDialog = new LoadingDialog(this);
         loadingDialog.startLoadingDialog();
         Handler handler = new Handler();

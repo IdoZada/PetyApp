@@ -38,7 +38,7 @@ public class ItemBeautyHealthAdapter<T> extends RecyclerView.Adapter<ItemBeautyH
     @NonNull
     @Override
     public ItemBeautyHealthAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_beauty, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_time_date, parent, false);
         return new ItemBeautyHealthAdapter.ViewHolder(view, mListener);
     }
 

@@ -97,6 +97,12 @@ public class Profile_Activity extends AppCompatActivity {
     }
 
     private void initViews() {
+        imgProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         fab_add_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

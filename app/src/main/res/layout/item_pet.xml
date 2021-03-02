@@ -12,14 +12,12 @@
         android:layout_width="0dp"
         android:layout_height="135dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:background="@drawable/container_background_item"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
-
 
     <ImageView
 
@@ -31,7 +29,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
 
@@ -77,12 +75,13 @@
 
     <ProgressBar
         android:id="@+id/pet_progressbar_walk_feed"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="12dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
         android:indeterminateOnly="false"
-        android:progress="0"
-        android:progressDrawable="@drawable/progressbar"
+        android:progress="100"
+        android:progressDrawable="@drawable/progressbar_walking"
         app:layout_constraintHorizontal_bias="0.462"
         app:layout_constraintLeft_toLeftOf="@id/pet_item_name"
         app:layout_constraintRight_toRightOf="@id/pet_item_container"
@@ -90,8 +89,8 @@
 
     <ImageView
         android:id="@+id/pet_progressbar_img_walk_feed"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         app:srcCompat="@drawable/ic_pet_footprint"
         app:layout_constraintBottom_toBottomOf="@+id/pet_progressbar_walk_feed"
         app:layout_constraintEnd_toEndOf="@+id/pet_progressbar_walk_feed"
@@ -100,12 +99,12 @@
 
     <ProgressBar
         android:id="@+id/pet_item_progressbar_feeding"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="12dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="5dp"
         android:indeterminateOnly="false"
-        android:progress="0"
-        android:progressDrawable="@drawable/progressbar"
+        android:progress="100"
+        android:progressDrawable="@drawable/progressbar_feeding"
         app:layout_constraintHorizontal_bias="0.752"
         app:layout_constraintLeft_toLeftOf="@id/pet_progressbar_walk_feed"
         app:layout_constraintRight_toRightOf="@id/pet_item_container"
@@ -113,8 +112,8 @@
 
     <ImageView
         android:id="@+id/pet_item_progressbar_feeding_image"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         app:srcCompat="@drawable/ic_pet_feeding"
         app:layout_constraintBottom_toBottomOf="@+id/pet_item_progressbar_feeding"
         app:layout_constraintEnd_toEndOf="@+id/pet_item_progressbar_feeding"
@@ -123,12 +122,12 @@
 
     <ProgressBar
         android:id="@+id/pet_item_progressbar_beauty_care"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:layout_marginTop="68dp"
         android:indeterminateOnly="false"
-        android:progress="0"
-        android:progressDrawable="@drawable/progressbar"
+        android:progress="100"
+        android:progressDrawable="@drawable/progressbar_beauty"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@id/pet_progressbar_walk_feed"
         app:layout_constraintRight_toRightOf="@id/pet_item_container"
@@ -136,8 +135,8 @@
 
     <ImageView
         android:id="@+id/pet_item_progressbar_beauty_care_image"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         app:layout_constraintBottom_toBottomOf="@+id/pet_item_progressbar_beauty_care"
         app:layout_constraintEnd_toEndOf="@+id/pet_item_progressbar_beauty_care"
         app:layout_constraintHorizontal_bias="0.484"
@@ -147,12 +146,12 @@
 
     <ProgressBar
         android:id="@+id/pet_item_progressbar_health"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:layout_marginTop="68dp"
         android:indeterminateOnly="false"
-        android:progress="0"
-        android:progressDrawable="@drawable/progressbar"
+        android:progress="100"
+        android:progressDrawable="@drawable/progressbar_health"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@id/pet_item_progressbar_feeding"
         app:layout_constraintRight_toRightOf="@id/pet_item_container"
@@ -160,8 +159,8 @@
 
     <ImageView
         android:id="@+id/pet_item_progressbar_health_image"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         app:layout_constraintBottom_toBottomOf="@+id/pet_item_progressbar_health"
         app:layout_constraintEnd_toEndOf="@+id/pet_item_progressbar_health"
         app:layout_constraintHorizontal_bias="0.484"

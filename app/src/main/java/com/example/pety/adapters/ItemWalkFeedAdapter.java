@@ -38,7 +38,7 @@ public class ItemWalkFeedAdapter<T> extends RecyclerView.Adapter<ItemWalkFeedAda
     @NonNull
     @Override
     public ItemWalkFeedAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_walk, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_time, parent, false);
         return new ItemWalkFeedAdapter.ViewHolder(view, mListener);
     }
 
