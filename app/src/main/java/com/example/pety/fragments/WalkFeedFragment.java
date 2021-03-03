@@ -334,10 +334,12 @@ public class WalkFeedFragment<T> extends Fragment {
             pet.setWalks(walkMap);
         }
 
-        firebaseDB.writeNewTimeToDB(pet, family, walk, firebaseDB.WALKS);
+
         lists.add((T) walk);
-        pet_progressbar_walk.setMax(lists.size());
-        updatePetUI(fillProgressBar_walk,lists.size(),Fab.WALK_FAB);
+        maxWalkElements++;
+        pet_progressbar_walk.setMax(maxWalkElements);
+        firebaseDB.writeNewTimeToDB(pet, family, walk, firebaseDB.WALKS,maxWalkElements);
+        updatePetUI(fillProgressBar_walk,maxWalkElements,Fab.WALK_FAB);
         itemWalkFeedAdapter.notifyItemInserted(lists.size() - 1);
     }
 
@@ -355,10 +357,12 @@ public class WalkFeedFragment<T> extends Fragment {
             pet.setFeeds(feedMap);
         }
 
-        firebaseDB.writeNewTimeToDB(pet, family, feed, firebaseDB.FEEDS);
+
         lists.add((T) feed);
-        pet_progressbar_feed.setMax(lists.size());
-        updatePetUI(fillProgressBar_feed,lists.size(),Fab.FEED_FAB);
+        maxFeedElements++;
+        pet_progressbar_feed.setMax(maxFeedElements);
+        firebaseDB.writeNewTimeToDB(pet, family, feed, firebaseDB.FEEDS,maxFeedElements);
+        updatePetUI(fillProgressBar_feed,maxFeedElements,Fab.FEED_FAB);
         itemWalkFeedAdapter.notifyItemInserted(lists.size() - 1);
     }
 

@@ -3,7 +3,6 @@ package com.example.pety.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -333,11 +332,11 @@ public class BeautyHealthFragment<T> extends Fragment {
             beautyMap = new HashMap<>();
             pet.setBeauty(beautyMap);
         }
-
-        firebaseDB.writeNewTimeToDB(pet, family, beauty, firebaseDB.BEAUTY);
         lists.add((T) beauty);
-        pet_progressbar_beauty.setMax(lists.size());
-        updatePetUI(fillProgressBar_beauty,lists.size(),Fab.BEAUTY_FAB);
+        maxBeautyElements++;
+        pet_progressbar_beauty.setMax(maxBeautyElements);
+        firebaseDB.writeNewTimeToDB(pet, family, beauty, firebaseDB.BEAUTY,maxBeautyElements);
+        updatePetUI(fillProgressBar_beauty,maxBeautyElements,Fab.BEAUTY_FAB);
         itemBeautyHealthAdapter.notifyItemInserted(lists.size() - 1);
     }
 
@@ -354,11 +353,11 @@ public class BeautyHealthFragment<T> extends Fragment {
             healthMap = new HashMap<>();
             pet.setHealth(healthMap);
         }
-
-        firebaseDB.writeNewTimeToDB(pet, family, health, firebaseDB.HEALTH);
         lists.add((T) health);
-        pet_progressbar_health.setMax(lists.size());
-        updatePetUI(fillProgressBar_health,lists.size(),Fab.HEALTH_FAB);
+        maxHealthElements++;
+        pet_progressbar_health.setMax(maxHealthElements);
+        firebaseDB.writeNewTimeToDB(pet, family, health, firebaseDB.HEALTH,maxHealthElements);
+        updatePetUI(fillProgressBar_health,maxHealthElements,Fab.HEALTH_FAB);
         itemBeautyHealthAdapter.notifyItemInserted(lists.size() - 1);
     }
 

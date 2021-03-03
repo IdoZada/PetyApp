@@ -266,25 +266,29 @@ public class FirebaseDB {
         });
     }
 
-    public void writeNewTimeToDB(Pet pet, Family family, Object obj , String option) {
+    public void writeNewTimeToDB(Pet pet, Family family, Object obj , String option,int maxProgressBar) {
         String key = getDatabase().getReference().child(FAMILIES).child(family.getFamily_key()).child(PETS).child(option).push().getKey();
         Map<String, Object> values = null;
         if(obj instanceof Walk){
             pet.getWalks().put(key, (Walk) obj);
             ((Walk) obj).setId(key);
             values = ((Walk) obj).toMap();
+            getDatabase().getReference().child(FAMILIES).child(family.getFamily_key()).child(PETS).child(pet.getPet_id()).child("maxProgressBarWalking").setValue(maxProgressBar);
         }else if(obj instanceof Feed){
             pet.getFeeds().put(key, (Feed) obj);
             ((Feed) obj).setId(key);
             values = ((Feed) obj).toMap();
+            getDatabase().getReference().child(FAMILIES).child(family.getFamily_key()).child(PETS).child(pet.getPet_id()).child("maxProgressBarFeeding").setValue(maxProgressBar);
         }else if(obj instanceof Beauty){
             pet.getBeauty().put(key, (Beauty) obj);
             ((Beauty) obj).setId(key);
             values = ((Beauty) obj).toMap();
+            getDatabase().getReference().child(FAMILIES).child(family.getFamily_key()).child(PETS).child(pet.getPet_id()).child("maxProgressBarBeauty").setValue(maxProgressBar);
         }else{
             pet.getHealth().put(key, (Health) obj);
             ((Health) obj).setId(key);
             values = ((Health) obj).toMap();
+            getDatabase().getReference().child(FAMILIES).child(family.getFamily_key()).child(PETS).child(pet.getPet_id()).child("maxProgressBarHealth").setValue(maxProgressBar);
         }
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/" + FAMILIES + "/" + family.getFamily_key() + "/" + PETS + "/" + pet.getPet_id() + "/" + option + "/" + key, values);
