@@ -19,7 +19,7 @@ The app uses the services of Firebase:
 ![screen8](https://user-images.githubusercontent.com/48810056/109517635-25178d80-7ab2-11eb-92ed-28a92b19c868.JPG)
 
 ## Home Tab Screens
-![Screen2](https://user-images.githubusercontent.com/48810056/109517749-42e4f280-7ab2-11eb-970d-b4f4355ccf33.JPG)
+![4](https://user-images.githubusercontent.com/48810056/109789035-94a78d00-7c18-11eb-878c-19a1e682a32d.JPG)
 ![Screen3](https://user-images.githubusercontent.com/48810056/109517994-850e3400-7ab2-11eb-9b33-fa1c44c9c76c.JPG)
 ![1](https://user-images.githubusercontent.com/48810056/109788619-24990700-7c18-11eb-8faf-ccaaa74f89b2.JPG)
 
