@@ -152,7 +152,7 @@ public class Main_Activity extends AppCompatActivity {
             if(FamilyFlag.SEND_TO_FAV_FAMILY_FRAGMENT == familyFlag){
                 myFavFamilyFragment.setFamily(family);
             }else if(FamilyFlag.SEND_TO_PET_FRAGMENT == familyFlag){
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, petFragment).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, petFragment).commit();
                 fab = Fab.PET_FAB;
                 petFragment.displayReceivedData(family);
             }else{
