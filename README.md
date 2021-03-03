@@ -21,11 +21,11 @@ The app uses the services of Firebase:
 ## Home Tab Screens
 ![Screen2](https://user-images.githubusercontent.com/48810056/109517749-42e4f280-7ab2-11eb-970d-b4f4355ccf33.JPG)
 ![Screen3](https://user-images.githubusercontent.com/48810056/109517994-850e3400-7ab2-11eb-9b33-fa1c44c9c76c.JPG)
-![Screen_One](https://user-images.githubusercontent.com/48810056/109517813-56905900-7ab2-11eb-93ec-a7ae66c55414.JPG)
+![Screen1](https://user-images.githubusercontent.com/48810056/109788076-9290fe80-7c17-11eb-96bf-17187b042c30.JPG)
 
 ## Manage Pet Screens
-![Screen4](https://user-images.githubusercontent.com/48810056/109518104-a2db9900-7ab2-11eb-8d29-509e93bed5de.JPG)
-![screen5](https://user-images.githubusercontent.com/48810056/109518109-a4a55c80-7ab2-11eb-9336-4045aac041ab.JPG)
+![Screen22](https://user-images.githubusercontent.com/48810056/109788156-a9375580-7c17-11eb-83e2-6a66f0933bbf.JPG)
+![e](https://user-images.githubusercontent.com/48810056/109788185-b3f1ea80-7c17-11eb-8b7f-6ad583e6cccf.JPG)
 
 ## Add Dialog Screens
 ![screen7](https://user-images.githubusercontent.com/48810056/109518152-ad962e00-7ab2-11eb-9de5-292afb4b4f95.JPG)
